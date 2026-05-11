@@ -162,6 +162,30 @@ namespace WeatherWall
             ApplyTheme();
 
             if (_config.AutoLocation) _ = DetectLocationAsync();
+
+            _ = CheckFirstLaunchAsync();
+        }
+
+        private async Task CheckFirstLaunchAsync()
+        {
+            // Wait a bit for the window to be ready
+            await Task.Delay(500);
+
+            if (string.IsNullOrEmpty(_config.WallpaperFolderPath) || !Directory.Exists(_config.WallpaperFolderPath))
+            {
+                Dispatcher.Invoke(() => {
+                    var result = System.Windows.MessageBox.Show(
+                        "Welcome to WeatherWall! \n\nPlease select a folder containing your wallpapers to get started.",
+                        "First Launch",
+                        MessageBoxButton.OKCancel,
+                        MessageBoxImage.Information);
+
+                    if (result == MessageBoxResult.OK)
+                    {
+                        SelectFolder_Click(this, new RoutedEventArgs());
+                    }
+                });
+            }
         }
 
         private async Task DetectLocationAsync()
@@ -290,16 +314,21 @@ namespace WeatherWall
 
         private void RefreshUI()
         {
-            // Trigger property change notification or refresh lists to reload thumbnails
-            var files = FileListBox.ItemsSource;
-            FileListBox.ItemsSource = null;
-            FileListBox.ItemsSource = files;
+            Dispatcher.Invoke(() => {
+                // Reload thumbnails when window is shown
+                var files = FileListBox.ItemsSource;
+                FileListBox.ItemsSource = null;
+                FileListBox.ItemsSource = files;
 
-            var gallery = RuleWallpaperGallery.ItemsSource;
-            RuleWallpaperGallery.ItemsSource = null;
-            RuleWallpaperGallery.ItemsSource = gallery;
+                var gallery = RuleWallpaperGallery.ItemsSource;
+                RuleWallpaperGallery.ItemsSource = null;
+                RuleWallpaperGallery.ItemsSource = gallery;
 
-            RefreshRulesList();
+                RefreshRulesList();
+
+                // Ensure empty states are correctly shown
+                NoWallpapersState.Visibility = (FileListBox.ItemsSource == null || !((IEnumerable<WallpaperItem>)FileListBox.ItemsSource).Any()) ? Visibility.Visible : Visibility.Collapsed;
+            });
         }
 
 
@@ -489,7 +518,6 @@ namespace WeatherWall
             try
             {
                 string fullConfigPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigFileName);
-                
                 if (File.Exists(fullConfigPath))
                 {
                     string json = File.ReadAllText(fullConfigPath);
@@ -498,18 +526,7 @@ namespace WeatherWall
                 }
                 else
                 {
-                    // First launch: create default clean config
-                    _config = new AppConfig
-                    {
-                        WallpaperFolderPath = "",
-                        StartWithWindows = false,
-                        IsPaused = false,
-                        Rules = new(),
-                        Latitude = 0.0,
-                        Longitude = 0.0,
-                        LocationName = "Auto-detect",
-                        AutoLocation = true
-                    };
+                    // First launch: Save default config
                     SaveConfig();
                 }
             }
@@ -527,42 +544,8 @@ namespace WeatherWall
                     FolderPathText.Text = _config.WallpaperFolderPath;
                     _ = Task.Run(() => ScanFolder(_config.WallpaperFolderPath));
                 }
-                else if (string.IsNullOrEmpty(_config.WallpaperFolderPath))
-                {
-                    // First launch or no folder set: prompt user to select folder
-                    Dispatcher.BeginInvoke(new Action(() => {
-                        var result = System.Windows.MessageBox.Show(
-                            "Welcome to WeatherWall!\n\nPlease select a folder containing your wallpaper images.",
-                            "Select Wallpaper Folder",
-                            MessageBoxButton.OKCancel,
-                            MessageBoxImage.Information);
-                        
-                        if (result == MessageBoxResult.OK)
-                        {
-                            PromptSelectFolder();
-                        }
-                    }), System.Windows.Threading.DispatcherPriority.Background);
-                }
                 RefreshRulesList();
             });
-        }
-
-        private void PromptSelectFolder()
-        {
-            var dialog = new OpenFolderDialog
-            {
-                Title = "Select Wallpaper Folder",
-                InitialDirectory = _config.WallpaperFolderPath ?? string.Empty
-            };
-
-            if (dialog.ShowDialog() == true)
-            {
-                string folderPath = dialog.FolderName;
-                FolderPathText.Text = folderPath;
-                _config.WallpaperFolderPath = folderPath;
-                SaveConfig();
-                _ = Task.Run(() => ScanFolder(folderPath));
-            }
         }
 
         private void SaveConfig()
@@ -825,9 +808,9 @@ namespace WeatherWall
         public bool IsPaused { get; set; } = false;
         public List<WallpaperRule> Rules { get; set; } = new();
 
-        public double Latitude { get; set; } = 23.0225;
-        public double Longitude { get; set; } = 72.5714;
-        public string LocationName { get; set; } = "Ahmedabad";
+        public double Latitude { get; set; } = 0;
+        public double Longitude { get; set; } = 0;
+        public string LocationName { get; set; } = "Unknown";
         public bool AutoLocation { get; set; } = true;
     }
 }

@@ -1,77 +1,25 @@
-# WeatherWall
+# WeatherWall - Premium Adaptive Wallpaper Utility
 
-WeatherWall is a sophisticated Windows utility that automatically synchronizes your desktop wallpaper with real-time weather conditions and the time of day.
+WeatherWall is a sophisticated Windows utility that automatically synchronizes your desktop wallpaper with real-time weather conditions and the time of day. 
 
-## 🎯 For End Users
+## ✨ Features
+- **Adaptive Environments**: Automatically switches wallpapers based on clear, cloudy, rainy, foggy, or stormy weather.
+- **Time-Aware**: Transitions between morning, afternoon, evening, and night themes.
+- **Premium Transitions**: Smooth, flicker-free fullscreen fade transitions between wallpapers.
+- **Visual Polish**: Modern Windows 11-inspired UI with Light/Dark mode support.
+- **Optimized Performance**: Extremely low idle RAM usage with lazy-loaded thumbnails and aggressive resource cleanup.
+- **Production Ready**: Standalone single-file executable, system tray integration, and auto-start capability.
 
-### Download
-Pre-built releases are available on the [Releases](../../releases) page.
+## 🚀 Getting Started
+1. Run `WeatherWall.exe`.
+2. Select your wallpaper folder.
+3. Assign images to specific weather/time combinations in the "Rules" tab.
+4. Minimize to tray and let it run in the background.
 
-### Features
-- **Adaptive Environments**: Auto-switches wallpapers based on weather (clear, cloudy, rainy, foggy, stormy)
-- **Time-Aware**: Morning, afternoon, evening, and night themes
-- **Smooth Transitions**: Flicker-free fullscreen fade transitions
-- **Modern UI**: Windows 11-inspired interface with Light/Dark mode
-- **Lightweight**: Minimal system resources, runs quietly in system tray
-- **Auto-Start**: Optional background launching on startup
-
-### System Requirements
-- Windows 10 or later
-- .NET Runtime 8.0 (included in release downloads)
-- Active internet connection for weather updates
-
----
-
-## 💻 For Developers
-
-### Building From Source
-
-**Prerequisites:**
-- Visual Studio 2022 or Visual Studio Code with C# extension
-- .NET 8.0 SDK
-- Windows 10/11
-
-**Build Steps:**
-```bash
-git clone https://github.com/MayankArambhi/WeatherWall.git
-cd WeatherWall
-dotnet build -c Release
-```
-
-**Output:** Built executable will be in `bin/Release/net8.0-windows/win-x64/`
-
-### Project Structure
-```
-WeatherWall/
-├── App.xaml                 # Application configuration
-├── MainWindow.xaml          # Main UI
-├── SplashWindow.xaml        # Splash screen
-├── config.json              # User configuration
-├── WeatherWall.csproj       # Project file
-├── WeatherWall.sln          # Solution file
-└── WW/                      # Resources (icons, images)
-```
-
-### Technologies
-- **WPF** (Windows Presentation Foundation) for UI
-- **.NET 8** (Windows Desktop Targeted)
-- **Windows Forms** for system tray integration
-
-### Creating a Release Build
-```bash
-dotnet publish -c Release -r win-x64 --self-contained
-```
+## 🛠 Stability
+- Robust error handling for network and file issues.
+- Atomic configuration saving to prevent data loss.
+- Single-instance protection.
 
 ---
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 👤 Author
-
-**Mayank Arambhi**
-
----
-
-*For feature requests and bug reports, please use the [Issues](../../issues) tab.*
+*Developed by Antigravity AI*

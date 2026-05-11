@@ -3,8 +3,8 @@
   "StartWithWindows": false,
   "IsPaused": false,
   "Rules": [],
-  "Latitude": 0.0,
-  "Longitude": 0.0,
-  "LocationName": "Auto-detect",
+  "Latitude": 0,
+  "Longitude": 0,
+  "LocationName": "Unknown",
   "AutoLocation": true
 }
