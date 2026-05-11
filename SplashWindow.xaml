@@ -17,7 +17,7 @@
     <Border Background="#121212" CornerRadius="12" BorderBrush="#2A2A2A" BorderThickness="1">
         <Grid>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                <Image Source="pack://application:,,,/WW/HD.png" Width="120" Height="120" RenderOptions.BitmapScalingMode="HighQuality">
+                <Image Source="pack://application:,,,/logo.png" Width="120" Height="120" RenderOptions.BitmapScalingMode="HighQuality">
                     <Image.Effect>
                         <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="Black" Opacity="0.5"/>
                     </Image.Effect>

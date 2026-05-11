@@ -168,8 +168,8 @@ namespace WeatherWall
 
         private async Task CheckFirstLaunchAsync()
         {
-            // Wait a bit for the window to be ready
-            await Task.Delay(500);
+            // Wait for splash screen to finish (3s) + extra buffer
+            await Task.Delay(4000);
 
             if (string.IsNullOrEmpty(_config.WallpaperFolderPath) || !Directory.Exists(_config.WallpaperFolderPath))
             {
@@ -258,7 +258,7 @@ namespace WeatherWall
                 _notifyIcon = new Forms.NotifyIcon();
                 
                 // Load from Small_NoBG.ico resource for maximum compatibility
-                var iconUri = new Uri("pack://application:,,,/WW/Small_NoBG.ico");
+                var iconUri = new Uri("pack://application:,,,/icon.ico");
                 var streamInfo = System.Windows.Application.GetResourceStream(iconUri);
                 if (streamInfo != null)
                 {
@@ -358,9 +358,8 @@ namespace WeatherWall
         {
             if (e.Source is System.Windows.Controls.TabControl)
             {
-                // When switching tabs, clear thumbnails to free memory
-                // They will reload automatically when the user returns to the tab
-                FlushMemory();
+                // Removed FlushMemory() call to eliminate 2-3s switching lag.
+                // GC collection is expensive and should only happen when minimized.
             }
         }
 

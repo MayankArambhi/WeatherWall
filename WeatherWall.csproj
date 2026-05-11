@@ -7,7 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
-    <ApplicationIcon>WW\Small_NoBG.ico</ApplicationIcon>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
     <Title>WeatherWall</Title>
     <Company>WeatherWall</Company>
     <Product>WeatherWall</Product>
@@ -17,9 +17,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Resource Include="WW\HD.png" />
-    <Resource Include="WW\Small_NoBG.ico" />
     <Resource Include="logo.png" />
+    <Resource Include="icon.ico" />
   </ItemGroup>
 
 </Project>

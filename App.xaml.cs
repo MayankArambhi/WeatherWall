@@ -30,12 +30,18 @@ namespace WeatherWall
             var startTime = DateTime.Now;
             var mainWindow = new MainWindow();
 
-            // Ensure splash stays for at least 1 second
+            // Ensure splash stays for at least 3 seconds
             var elapsed = DateTime.Now - startTime;
-            if (elapsed.TotalMilliseconds < 1000)
+            if (elapsed.TotalMilliseconds < 3000)
             {
-                await Task.Delay(1000 - (int)elapsed.TotalMilliseconds);
+                await Task.Delay(3000 - (int)elapsed.TotalMilliseconds);
             }
+
+            // Fade out and close splash FIRST
+            await splash.FadeOutAndClose();
+
+            // Small extra delay for a cleaner transition (3.1 - 3.2s total)
+            await Task.Delay(150);
 
             // Check if we should start minimized
             if (e.Args.Contains("--minimized"))
@@ -49,8 +55,8 @@ namespace WeatherWall
                 mainWindow.Activate();
             }
 
-            // Fade out and close splash
-            await splash.FadeOutAndClose();
+            // Reset shutdown mode to normal now that windows are managed
+            System.Windows.Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
         }
     }
 }

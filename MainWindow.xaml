@@ -13,7 +13,7 @@
         SnapsToDevicePixels="True"
         TextOptions.TextFormattingMode="Display"
         TextOptions.TextRenderingMode="ClearType"
-        Icon="WW/Small_NoBG.ico">
+        Icon="icon.ico">
     
     <Window.Resources>
         <ResourceDictionary>
@@ -284,7 +284,7 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal">
                     <Border Width="44" Height="44" CornerRadius="10" Background="Transparent" Margin="0,0,16,0">
-                        <Image Source="WW/HD.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <Image Source="logo.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
                     </Border>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="WeatherWall" Style="{StaticResource TitleText}" FontSize="20"/>
@@ -308,7 +308,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="TabItem">
-                                <Border x:Name="Border" Padding="24,12" Margin="0,0,12,12" CornerRadius="8" Background="Transparent">
+                                <Border x:Name="Border" Padding="24,12" Margin="0,0,12,12" CornerRadius="8" Background="Transparent" BorderThickness="2" BorderBrush="Transparent">
                                     <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <ContentPresenter.Resources>
                                             <Style TargetType="TextBlock">
@@ -320,24 +320,35 @@
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource AccentBrush}"/>
-                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="Border" Property="Background" Value="#10000000"/>
+                                        <Setter TargetName="Border" Property="Background" Value="#10FFFFFF"/>
                                     </Trigger>
                                     <MultiTrigger>
                                         <MultiTrigger.Conditions>
                                             <Condition Property="IsSelected" Value="True"/>
                                             <Condition Property="IsMouseOver" Value="True"/>
                                         </MultiTrigger.Conditions>
-                                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource AccentBrush}"/>
-                                        <Setter Property="Opacity" Value="0.9"/>
+                                        <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                        <Setter TargetName="Border" Property="Background" Value="#08FFFFFF"/>
                                     </MultiTrigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
+                </Style>
+
+                <Style TargetType="CheckBox">
+                    <Setter Property="Foreground" Value="#94A3B8"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+                        </Trigger>
+                    </Style.Triggers>
                 </Style>
             </TabControl.Resources>
 
@@ -554,7 +565,7 @@
                 <Border Style="{StaticResource ModernCard}">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="500">
                         <Border Width="100" Height="100" CornerRadius="24" Background="Transparent" Margin="0,0,0,24" HorizontalAlignment="Center">
-                            <Image Source="WW/HD.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <Image Source="logo.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
                         </Border>
                         <TextBlock Text="WeatherWall" Style="{StaticResource TitleText}" HorizontalAlignment="Center" FontSize="32"/>
                         <TextBlock Text="Version 1.0.0" Style="{StaticResource MetadataText}" HorizontalAlignment="Center" Margin="0,8,0,24"/>

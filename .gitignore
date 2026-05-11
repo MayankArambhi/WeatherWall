@@ -26,8 +26,8 @@ WeatherWall_Release/
 *.nupkg
 
 ## Release Artifacts & Distribution
-WeatherWall/              # Ignore release folder and all contents
-/WeatherWall/**          # All files inside release folder
+WeatherWall/
+/WeatherWall/**
 bin/
 obj/
 
