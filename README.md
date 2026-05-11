@@ -64,17 +64,13 @@ dotnet publish -c Release -r win-x64 --self-contained
 
 ---
 
-## 📝 License
-
-[Add your license here]
-
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 👤 Authors
+## 👤 Author
 
-**Mayankarambhi**
+**Mayank Arambhi**
 
 ---
 
