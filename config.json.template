@@ -1,0 +1,21 @@
+{
+  "WallpaperFolderPath": "C:\\Path\\To\\Your\\Pictures",
+  "StartWithWindows": true,
+  "Rules": [
+    {
+      "Weather": "clear",
+      "TimePeriod": "morning",
+      "FileName": "Clear-Morning.png"
+    },
+    {
+      "Weather": "clear",
+      "TimePeriod": "evening",
+      "FileName": "Clear-Evening.png"
+    },
+    {
+      "Weather": "clear",
+      "TimePeriod": "night",
+      "FileName": "Clear-Night.png"
+    }
+  ]
+}

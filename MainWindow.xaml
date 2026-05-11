@@ -1,0 +1,610 @@
+<Window x:Class="WeatherWall.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WeatherWall"
+        mc:Ignorable="d"
+        Title="WeatherWall" Height="750" Width="1100"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Segoe UI Variable Display, Segoe UI"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        Icon="WW/Small_NoBG.ico">
+    
+    <Window.Resources>
+        <ResourceDictionary>
+            <Color x:Key="WindowBackgroundColor">#111827</Color>
+            <Color x:Key="CardBackgroundColor">#1F2937</Color>
+            <Color x:Key="PrimaryTextColor">#F9FAFB</Color>
+            <Color x:Key="SecondaryTextColor">#9CA3AF</Color>
+            <Color x:Key="AccentColor">#3B82F6</Color>
+            <Color x:Key="BorderColor">#374151</Color>
+
+            <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{StaticResource WindowBackgroundColor}"/>
+            <SolidColorBrush x:Key="CardBackgroundBrush" Color="{StaticResource CardBackgroundColor}"/>
+            <SolidColorBrush x:Key="PrimaryTextBrush" Color="{StaticResource PrimaryTextColor}"/>
+            <SolidColorBrush x:Key="SecondaryTextBrush" Color="{StaticResource SecondaryTextColor}"/>
+            <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
+            <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
+
+            <SolidColorBrush x:Key="WeatherChipBackground" Color="#1E293B"/>
+            <SolidColorBrush x:Key="WeatherChipForeground" Color="#94A3B8"/>
+            <SolidColorBrush x:Key="TimeChipBackground" Color="#2D1E14"/>
+            <SolidColorBrush x:Key="TimeChipForeground" Color="#D29664"/>
+
+            <!-- Typography System -->
+            <Style x:Key="TitleText" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="24"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+                <Setter Property="FontFamily" Value="Segoe UI Variable Display, Segoe UI"/>
+            </Style>
+
+            <Style x:Key="SectionHeader" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+                <Setter Property="Margin" Value="0,0,0,12"/>
+            </Style>
+
+            <Style x:Key="BodyText" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+                <Setter Property="LineHeight" Value="20"/>
+            </Style>
+
+            <Style x:Key="MetadataText" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}"/>
+            </Style>
+
+            <!-- Modern Component Styles -->
+            <Style x:Key="ModernCard" TargetType="Border">
+                <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}"/>
+                <Setter Property="CornerRadius" Value="12"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+                <Setter Property="Padding" Value="24"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect BlurRadius="20" ShadowDepth="2" Opacity="0.04" Color="Black"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="Button">
+                <Setter Property="Padding" Value="16,10"/>
+                <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Style.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="8"/>
+                    </Style>
+                </Style.Resources>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Opacity" Value="0.9"/>
+                        <Setter Property="Effect">
+                            <Setter.Value>
+                                <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.1" Color="Black"/>
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                <Setter Property="Background" Value="#F3F4F6"/>
+                <Setter Property="Foreground" Value="#374151"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#E5E7EB"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                <Setter Property="Background" Value="#EF4444"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Style>
+
+            <Style x:Key="BaseChip" TargetType="Border">
+                <Setter Property="CornerRadius" Value="8"/>
+                <Setter Property="Padding" Value="10,4"/>
+                <Setter Property="Height" Value="24"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="WeatherChip" TargetType="Border" BasedOn="{StaticResource BaseChip}">
+                <Setter Property="Background" Value="{DynamicResource WeatherChipBackground}"/>
+                <Style.Resources>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource MetadataText}">
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="Foreground" Value="{DynamicResource WeatherChipForeground}"/>
+                    </Style>
+                </Style.Resources>
+            </Style>
+
+            <Style x:Key="TimeChip" TargetType="Border" BasedOn="{StaticResource BaseChip}">
+                <Setter Property="Background" Value="{DynamicResource TimeChipBackground}"/>
+                <Style.Resources>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource MetadataText}">
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="Foreground" Value="{DynamicResource TimeChipForeground}"/>
+                    </Style>
+                </Style.Resources>
+            </Style>
+
+            <Style TargetType="{x:Type ScrollBar}">
+                <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
+                <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
+                <Setter Property="Width" Value="6"/>
+                <Setter Property="Margin" Value="4,0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ScrollBar}">
+                            <Grid x:Name="Bg" SnapsToDevicePixels="true">
+                                <Track x:Name="PART_Track" IsDirectionReversed="true" IsEnabled="{TemplateBinding IsEnabled}">
+                                    <Track.Thumb>
+                                        <Thumb x:Name="Thumb">
+                                            <Thumb.Template>
+                                                <ControlTemplate TargetType="{x:Type Thumb}">
+                                                    <Border Background="{DynamicResource BorderBrush}" CornerRadius="3" />
+                                                </ControlTemplate>
+                                            </Thumb.Template>
+                                        </Thumb>
+                                    </Track.Thumb>
+                                </Track>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="SmoothListBox" TargetType="ListBox">
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True"/>
+                <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling"/>
+                <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel"/>
+                <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            </Style>
+
+            <Style TargetType="ComboBox">
+                <Setter Property="Height" Value="40"/>
+                <Setter Property="Background" Value="{DynamicResource WindowBackgroundBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="12,0"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ComboBox">
+                            <Grid>
+                                <ToggleButton Name="ToggleButton" 
+                                              BorderBrush="{TemplateBinding BorderBrush}" 
+                                              Background="{TemplateBinding Background}" 
+                                              Foreground="{TemplateBinding Foreground}"
+                                              IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                              Grid.Column="2">
+                                    <ToggleButton.Template>
+                                        <ControlTemplate TargetType="ToggleButton">
+                                            <Border Name="Border" CornerRadius="8" BorderThickness="1" 
+                                                    Background="{TemplateBinding Background}" 
+                                                    BorderBrush="{TemplateBinding BorderBrush}">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition />
+                                                        <ColumnDefinition Width="30" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Path Name="Arrow" Grid.Column="1" Fill="{DynamicResource SecondaryTextBrush}" 
+                                                          HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                                          Data="M 0 0 L 4 4 L 8 0 Z"/>
+                                                </Grid>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Border" Property="Background" Value="#10FFFFFF"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </ToggleButton.Template>
+                                </ToggleButton>
+                                <ContentPresenter Name="ContentSite" IsHitTestVisible="False" 
+                                                  Content="{TemplateBinding SelectionBoxItem}"
+                                                  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                  Margin="12,0,30,0" VerticalAlignment="Center"/>
+                                <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" 
+                                       AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                    <Grid Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                        <Border Name="DropDownBorder" Background="{DynamicResource CardBackgroundBrush}" 
+                                                BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" CornerRadius="8"/>
+                                        <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                        </ScrollViewer>
+                                    </Grid>
+                                </Popup>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="ComboBoxItem">
+                <Setter Property="Padding" Value="12,8"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ComboBoxItem">
+                            <Border Name="Border" Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}" CornerRadius="4">
+                                <ContentPresenter />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Margin="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Header -->
+            <RowDefinition Height="*"/>    <!-- Content -->
+            <RowDefinition Height="Auto"/> <!-- Status Bar -->
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Padding="32,20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Border Width="44" Height="44" CornerRadius="10" Background="Transparent" Margin="0,0,16,0">
+                        <Image Source="WW/HD.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="WeatherWall" Style="{StaticResource TitleText}" FontSize="20"/>
+                        <TextBlock Text="Adaptive Desktop Environments" Style="{StaticResource MetadataText}"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Background="{DynamicResource WeatherChipBackground}" CornerRadius="12" Padding="16,8">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="WeatherIconText" Text="⏳" FontSize="18" Margin="0,0,12,0"/>
+                            <TextBlock x:Name="WeatherStatusText" Text="Syncing..." FontSize="14" FontWeight="Bold" Foreground="{DynamicResource WeatherChipForeground}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="32,24" SelectionChanged="TabControl_SelectionChanged">
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                                <Border x:Name="Border" Padding="24,12" Margin="0,0,12,12" CornerRadius="8" Background="Transparent">
+                                    <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <ContentPresenter.Resources>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}"/>
+                                            </Style>
+                                        </ContentPresenter.Resources>
+                                    </ContentPresenter>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Border" Property="Background" Value="#10000000"/>
+                                    </Trigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="True"/>
+                                            <Condition Property="IsMouseOver" Value="True"/>
+                                        </MultiTrigger.Conditions>
+                                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                        <Setter Property="Opacity" Value="0.9"/>
+                                    </MultiTrigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
+
+            <TabItem Header="Library">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border Style="{StaticResource ModernCard}" Margin="0,0,0,24">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Wallpaper Source" Style="{StaticResource MetadataText}" FontWeight="Bold" Margin="0,0,0,8"/>
+                                <TextBlock x:Name="FolderPathText" Text="No folder selected" Style="{StaticResource BodyText}" FontSize="16" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                <Button Content="Change Folder" Click="SelectFolder_Click" HorizontalAlignment="Left" Margin="0,12,0,0" Padding="12,6" FontSize="12"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="20,0,0,0">
+                                <TextBlock Text="Location Settings" Style="{StaticResource MetadataText}" FontWeight="Bold" Margin="0,0,0,8"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="LocationInput" Height="34" VerticalContentAlignment="Center" Padding="8,0" Background="{DynamicResource WindowBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" Foreground="{DynamicResource PrimaryTextBrush}" Margin="0,0,8,0"/>
+                                    <Button Grid.Column="1" Content="Update" Click="UpdateLocation_Click" Padding="12,0" Height="34" FontSize="12"/>
+                                </Grid>
+                                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                                    <CheckBox x:Name="AutoLocationCheck" Content="Auto-detect" VerticalAlignment="Center" Margin="0,0,16,0" Click="AutoLocation_Click"/>
+                                    <CheckBox x:Name="StartWithWindowsCheck" Content="Auto-Start" VerticalAlignment="Center" Click="StartWithWindows_Click"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Row="1" Style="{StaticResource ModernCard}" Padding="12">
+                        <Grid>
+                            <ListBox x:Name="FileListBox" 
+                                     Style="{StaticResource SmoothListBox}"
+                                     SelectionChanged="FileListBox_SelectionChanged"
+                                     HorizontalContentAlignment="Stretch">
+
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="Transparent" CornerRadius="12" Margin="0,0,0,8" Padding="12" BorderThickness="0">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="120"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Width="120" Height="68" CornerRadius="8" ClipToBounds="True">
+                                                    <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                </Border>
+                                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0">
+                                                    <TextBlock Text="{Binding FileName}" Style="{StaticResource BodyText}" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="Local Image" Style="{StaticResource MetadataText}" Margin="0,4,0,0"/>
+                                                </StackPanel>
+                                                <Button Grid.Column="2" Content="Apply Now" Click="SetWallpaper_Click" Style="{StaticResource SecondaryButton}" VerticalAlignment="Center" Padding="12,6" FontSize="12"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <StackPanel x:Name="NoWallpapersState" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
+                                <TextBlock Text="🖼️" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                                <TextBlock Text="Your library is empty" Style="{StaticResource SectionHeader}" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Select a folder to start managing your wallpapers" Style="{StaticResource MetadataText}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Automation Rules">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="420"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource ModernCard}" Margin="0,0,24,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Create New Rule" Style="{StaticResource SectionHeader}"/>
+                            <StackPanel Grid.Row="1" Margin="0,0,0,24">
+                                <TextBlock Text="1. Select Condition" Style="{StaticResource MetadataText}" FontWeight="Bold" Margin="0,0,0,12"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Margin="0,0,12,0">
+                                        <TextBlock Text="Weather" Style="{StaticResource MetadataText}" Margin="0,0,0,6"/>
+                                        <ComboBox x:Name="RuleWeatherCombo" Height="38">
+                                            <ComboBoxItem Content="clear" IsSelected="True"/>
+                                            <ComboBoxItem Content="partly_cloudy"/>
+                                            <ComboBoxItem Content="cloudy"/>
+                                            <ComboBoxItem Content="overcast"/>
+                                            <ComboBoxItem Content="rainy"/>
+                                            <ComboBoxItem Content="drizzle"/>
+                                            <ComboBoxItem Content="thunderstorm"/>
+                                            <ComboBoxItem Content="foggy"/>
+                                            <ComboBoxItem Content="snowy"/>
+                                            <ComboBoxItem Content="windy"/>
+                                        </ComboBox>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Time of Day" Style="{StaticResource MetadataText}" Margin="0,0,0,6"/>
+                                        <ComboBox x:Name="RuleTimeCombo" Height="38">
+                                            <ComboBoxItem Content="morning" IsSelected="True"/>
+                                            <ComboBoxItem Content="afternoon"/>
+                                            <ComboBoxItem Content="evening"/>
+                                            <ComboBoxItem Content="night"/>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                            <StackPanel Grid.Row="2">
+                                <TextBlock Text="2. Choose Wallpaper" Style="{StaticResource MetadataText}" FontWeight="Bold" Margin="0,0,0,12"/>
+                                <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="10" Height="280">
+                                    <ListBox x:Name="RuleWallpaperGallery" 
+                                             Style="{StaticResource SmoothListBox}"
+                                             Padding="8">
+
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Width="110" Height="70" CornerRadius="6" Margin="4" BorderThickness="2" x:Name="GalleryBorder" BorderBrush="Transparent" ClipToBounds="True">
+                                                    <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                </Border>
+                                                <DataTemplate.Triggers>
+                                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                        <Setter TargetName="GalleryBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                                    </DataTrigger>
+                                                </DataTemplate.Triggers>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                        <ListBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel IsItemsHost="True" />
+                                            </ItemsPanelTemplate>
+                                        </ListBox.ItemsPanel>
+                                    </ListBox>
+                                </Border>
+                            </StackPanel>
+                            <Button Grid.Row="3" Content="Add Rule" Click="CreateRule_Click" Height="48" FontWeight="Bold" Margin="0,24,0,0"/>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Column="1" Style="{StaticResource ModernCard}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Margin="0,0,0,24">
+                                <TextBlock Text="Active Rules" Style="{StaticResource SectionHeader}"/>
+                                <Button Content="Refresh Rules" Click="TestRules_Click" HorizontalAlignment="Right" Style="{StaticResource SecondaryButton}" Padding="16,6" FontSize="12"/>
+                            </Grid>
+                            <ListBox Grid.Row="1" x:Name="ActiveRulesListBox" 
+                                     Style="{StaticResource SmoothListBox}"
+                                     HorizontalContentAlignment="Stretch">
+
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="Transparent" CornerRadius="12" Margin="0,0,0,12" Padding="12" Height="90" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="120"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" Width="120" Height="68" CornerRadius="8" ClipToBounds="True">
+                                                    <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                </Border>
+                                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0">
+                                                    <TextBlock Text="{Binding FileName}" Style="{StaticResource BodyText}" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                                        <Border Style="{StaticResource WeatherChip}" Margin="0,0,10,0">
+                                                            <TextBlock Text="{Binding Weather}"/>
+                                                        </Border>
+                                                        <Border Style="{StaticResource TimeChip}">
+                                                            <TextBlock Text="{Binding TimePeriod}"/>
+                                                        </Border>
+                                                    </StackPanel>
+
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Button Content="Preview" Click="PreviewRule_Click" Style="{StaticResource SecondaryButton}" Padding="14,8" Margin="0,0,10,0" FontSize="11"/>
+                                                    <Button Content="Delete" Click="DeleteRule_Click" Style="{StaticResource DangerButton}" Padding="14,8" FontSize="11"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <StackPanel x:Name="NoRulesState" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
+                                <TextBlock Text="⚡" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                                <TextBlock Text="No active rules" Style="{StaticResource SectionHeader}" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Create a rule on the left to automate your workspace" Style="{StaticResource MetadataText}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="About">
+                <Border Style="{StaticResource ModernCard}">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="500">
+                        <Border Width="100" Height="100" CornerRadius="24" Background="Transparent" Margin="0,0,0,24" HorizontalAlignment="Center">
+                            <Image Source="WW/HD.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Border>
+                        <TextBlock Text="WeatherWall" Style="{StaticResource TitleText}" HorizontalAlignment="Center" FontSize="32"/>
+                        <TextBlock Text="Version 1.0.0" Style="{StaticResource MetadataText}" HorizontalAlignment="Center" Margin="0,8,0,24"/>
+                        <TextBlock Text="A premium Windows utility that automatically synchronizes your desktop wallpaper with real-time weather conditions. Designed for minimal intrusion and maximum workspace comfort." 
+                                   TextAlignment="Center" TextWrapping="Wrap" Style="{StaticResource BodyText}" Margin="0,0,0,32" Opacity="0.8"/>
+                        
+                        <Border Background="{DynamicResource WindowBackgroundBrush}" CornerRadius="12" Padding="20" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                            <StackPanel>
+                                <TextBlock Text="System Status" Style="{StaticResource MetadataText}" FontWeight="Bold" Margin="0,0,0,12"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Engine" Style="{StaticResource MetadataText}"/>
+                                        <TextBlock Text="IDesktopWallpaper COM" Style="{StaticResource BodyText}" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Resources" Style="{StaticResource MetadataText}"/>
+                                        <TextBlock Text="Optimized (Low RAM)" Style="{StaticResource BodyText}" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </TabItem>
+        </TabControl>
+
+        <Border Grid.Row="2" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0" Padding="32,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="StatusMatchedText" Text="Rule Match: None" Style="{StaticResource MetadataText}" Margin="0,0,24,0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="StatusLastUpdateText" Text="Last Sync: Never" Style="{StaticResource MetadataText}" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,24,0" VerticalAlignment="Center">
+                    <TextBlock x:Name="StatusConditionText" Text="CLEAR + MORNING" Style="{StaticResource MetadataText}" FontWeight="Bold" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                    <Ellipse Width="8" Height="8" Fill="#10B981" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBlock x:Name="AutoSyncLabel" Text="ACTIVE" Style="{StaticResource MetadataText}" FontWeight="Bold" Foreground="#10B981" VerticalAlignment="Center"/>
+                </StackPanel>
+                <Border Grid.Column="2" Background="{DynamicResource AccentBrush}" Opacity="0.1" CornerRadius="6" Padding="12,4">
+                    <TextBlock x:Name="StatusModeText" Text="RUNNING" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center"/>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

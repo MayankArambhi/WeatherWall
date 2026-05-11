@@ -1,0 +1,42 @@
+## Visual Studio
+.vs/
+[Bb]in/
+[Oo]bj/
+[Rr]eleaseBuild/
+[Pp]ublish/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## .NET
+*.pdb
+*.cache
+*.tmp
+*.log
+weatherwall.log
+
+## Build Output
+ReleaseBuild.zip
+*.exe
+*.dll
+*.msi
+*.nupkg
+
+## User Secrets & Local Config
+config.json
+[Cc]onfig.local.json
+[Aa]ppsettings.local.json
+
+## IDE - VS Code
+.vscode/
+
+## Temp
+temp/
+cache/
+logs/
+thumbnail/
+
+## Git specific
+.DS_Store
+Thumbs.db

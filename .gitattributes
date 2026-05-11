@@ -1,0 +1,11 @@
+# Git LFS Configuration
+*.dll binary filter=lfs diff=lfs merge=lfs -text
+*.exe binary filter=lfs diff=lfs merge=lfs -text
+*.pdb binary filter=lfs diff=lfs merge=lfs -text
+
+# Document files
+*.md text
+*.json text
+*.xaml text
+*.cs text
+*.csproj text
