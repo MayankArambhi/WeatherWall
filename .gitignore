@@ -18,10 +18,18 @@ weatherwall.log
 
 ## Build Output
 ReleaseBuild.zip
+WeatherWall.zip
+WeatherWall_Release/
 *.exe
 *.dll
 *.msi
 *.nupkg
+
+## Release Artifacts & Distribution
+WeatherWall/              # Ignore release folder and all contents
+/WeatherWall/**          # All files inside release folder
+bin/
+obj/
 
 ## User Secrets & Local Config
 config.json
@@ -30,13 +38,26 @@ config.json
 
 ## IDE - VS Code
 .vscode/
+.vs/
+.idea/
 
 ## Temp
 temp/
 cache/
 logs/
 thumbnail/
+*.bak
 
-## Git specific
+## Distribution
+dist/
+release/
+publish/
+
+## OS Files
 .DS_Store
 Thumbs.db
+*.swp
+*~
+
+## VS Code extensions
+*.code-workspace

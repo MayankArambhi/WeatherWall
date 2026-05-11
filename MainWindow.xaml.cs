@@ -489,11 +489,28 @@ namespace WeatherWall
             try
             {
                 string fullConfigPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigFileName);
+                
                 if (File.Exists(fullConfigPath))
                 {
                     string json = File.ReadAllText(fullConfigPath);
                     var loadedConfig = JsonSerializer.Deserialize<AppConfig>(json);
                     if (loadedConfig != null) _config = loadedConfig;
+                }
+                else
+                {
+                    // First launch: create default clean config
+                    _config = new AppConfig
+                    {
+                        WallpaperFolderPath = "",
+                        StartWithWindows = false,
+                        IsPaused = false,
+                        Rules = new(),
+                        Latitude = 0.0,
+                        Longitude = 0.0,
+                        LocationName = "Auto-detect",
+                        AutoLocation = true
+                    };
+                    SaveConfig();
                 }
             }
             catch (Exception ex)
@@ -510,8 +527,42 @@ namespace WeatherWall
                     FolderPathText.Text = _config.WallpaperFolderPath;
                     _ = Task.Run(() => ScanFolder(_config.WallpaperFolderPath));
                 }
+                else if (string.IsNullOrEmpty(_config.WallpaperFolderPath))
+                {
+                    // First launch or no folder set: prompt user to select folder
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        var result = System.Windows.MessageBox.Show(
+                            "Welcome to WeatherWall!\n\nPlease select a folder containing your wallpaper images.",
+                            "Select Wallpaper Folder",
+                            MessageBoxButton.OKCancel,
+                            MessageBoxImage.Information);
+                        
+                        if (result == MessageBoxResult.OK)
+                        {
+                            PromptSelectFolder();
+                        }
+                    }), System.Windows.Threading.DispatcherPriority.Background);
+                }
                 RefreshRulesList();
             });
+        }
+
+        private void PromptSelectFolder()
+        {
+            var dialog = new OpenFolderDialog
+            {
+                Title = "Select Wallpaper Folder",
+                InitialDirectory = _config.WallpaperFolderPath ?? string.Empty
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                string folderPath = dialog.FolderName;
+                FolderPathText.Text = folderPath;
+                _config.WallpaperFolderPath = folderPath;
+                SaveConfig();
+                _ = Task.Run(() => ScanFolder(folderPath));
+            }
         }
 
         private void SaveConfig()
