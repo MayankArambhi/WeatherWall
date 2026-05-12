@@ -14,17 +14,13 @@
         </Storyboard>
     </Window.Resources>
 
-    <Border Background="#121212" CornerRadius="12" BorderBrush="#2A2A2A" BorderThickness="1">
+    <Border Background="#0B0B0B" CornerRadius="0" BorderBrush="#222222" BorderThickness="1">
         <Grid>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                <Image Source="pack://application:,,,/logo.png" Width="120" Height="120" RenderOptions.BitmapScalingMode="HighQuality">
-                    <Image.Effect>
-                        <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="Black" Opacity="0.5"/>
-                    </Image.Effect>
-                </Image>
+                <Image Source="pack://application:,,,/logo.png" Width="120" Height="120" RenderOptions.BitmapScalingMode="HighQuality"/>
                 
                 <TextBlock Text="WeatherWall" 
-                           Foreground="White" 
+                           Foreground="#F8F8F8" 
                            FontSize="24" 
                            FontWeight="SemiBold" 
                            HorizontalAlignment="Center" 
@@ -37,7 +33,7 @@
                 </TextBlock>
                 
                 <TextBlock Text="Adaptive Desktop Environments" 
-                           Foreground="#888888" 
+                           Foreground="#808080" 
                            FontSize="12" 
                            HorizontalAlignment="Center" 
                            Margin="0,4,0,0">
@@ -55,9 +51,9 @@
                          VerticalAlignment="Bottom" 
                          Background="Transparent" 
                          BorderThickness="0" 
-                         Foreground="#3A3A3A" 
+                         Foreground="#4ADE80" 
                          Margin="40,0,40,30" 
-                         Opacity="0.5"/>
+                         Opacity="0.8"/>
         </Grid>
     </Border>
 </Window>

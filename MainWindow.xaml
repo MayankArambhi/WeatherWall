@@ -8,21 +8,21 @@
         Title="WeatherWall" Height="750" Width="1100"
         Background="{DynamicResource WindowBackgroundBrush}"
         WindowStartupLocation="CenterScreen"
-        FontFamily="Segoe UI Variable Display, Segoe UI"
+        FontFamily="Segoe UI Variable Text, Geist, Inter, IBM Plex Sans, Segoe UI"
         UseLayoutRounding="True"
         SnapsToDevicePixels="True"
         TextOptions.TextFormattingMode="Display"
         TextOptions.TextRenderingMode="ClearType"
-        Icon="icon.ico">
+        Icon="icon_.ico">
     
     <Window.Resources>
         <ResourceDictionary>
-            <Color x:Key="WindowBackgroundColor">#111827</Color>
-            <Color x:Key="CardBackgroundColor">#1F2937</Color>
-            <Color x:Key="PrimaryTextColor">#F9FAFB</Color>
-            <Color x:Key="SecondaryTextColor">#9CA3AF</Color>
-            <Color x:Key="AccentColor">#3B82F6</Color>
-            <Color x:Key="BorderColor">#374151</Color>
+            <Color x:Key="WindowBackgroundColor">#0B0B0B</Color>
+            <Color x:Key="CardBackgroundColor">#121212</Color>
+            <Color x:Key="PrimaryTextColor">#F8F8F8</Color>
+            <Color x:Key="SecondaryTextColor">#808080</Color>
+            <Color x:Key="AccentColor">#4ADE80</Color>
+            <Color x:Key="BorderColor">#222222</Color>
 
             <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{StaticResource WindowBackgroundColor}"/>
             <SolidColorBrush x:Key="CardBackgroundBrush" Color="{StaticResource CardBackgroundColor}"/>
@@ -31,92 +31,133 @@
             <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
             <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
 
-            <SolidColorBrush x:Key="WeatherChipBackground" Color="#1E293B"/>
-            <SolidColorBrush x:Key="WeatherChipForeground" Color="#94A3B8"/>
-            <SolidColorBrush x:Key="TimeChipBackground" Color="#2D1E14"/>
-            <SolidColorBrush x:Key="TimeChipForeground" Color="#D29664"/>
+            <SolidColorBrush x:Key="WeatherChipBackground" Color="#15201A"/>
+            <SolidColorBrush x:Key="WeatherChipForeground" Color="#4ADE80"/>
+            <SolidColorBrush x:Key="TimeChipBackground" Color="#1D1D1D"/>
+            <SolidColorBrush x:Key="TimeChipForeground" Color="#AAAAAA"/>
 
             <!-- Typography System -->
             <Style x:Key="TitleText" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="24"/>
-                <Setter Property="FontWeight" Value="Bold"/>
-                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
-                <Setter Property="FontFamily" Value="Segoe UI Variable Display, Segoe UI"/>
-            </Style>
-
-            <Style x:Key="SectionHeader" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="18"/>
                 <Setter Property="FontWeight" Value="SemiBold"/>
                 <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
-                <Setter Property="Margin" Value="0,0,0,12"/>
+                <Setter Property="FontFamily" Value="Segoe UI Variable Display, Geist, Inter, IBM Plex Sans, Segoe UI"/>
+            </Style>
+
+            <Style x:Key="SectionHeader" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+                <Setter Property="FontFamily" Value="Segoe UI Variable Display, Geist, Inter, IBM Plex Sans, Segoe UI"/>
+                <Setter Property="Margin" Value="0,0,0,14"/>
+                <Setter Property="Opacity" Value="0.9"/>
             </Style>
 
             <Style x:Key="BodyText" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="FontSize" Value="13"/>
                 <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
-                <Setter Property="LineHeight" Value="20"/>
+                <Setter Property="FontFamily" Value="Segoe UI Variable Text, Geist, Inter, IBM Plex Sans, Segoe UI"/>
             </Style>
 
             <Style x:Key="MetadataText" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontSize" Value="10"/>
                 <Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}"/>
+                <Setter Property="FontFamily" Value="Segoe UI Variable Text, Geist, Inter, IBM Plex Sans, Segoe UI"/>
+                <Setter Property="FontWeight" Value="Medium"/>
+            </Style>
+
+            <!-- Refined ListBox Selection -->
+            <Style x:Key="SubtleListBoxItem" TargetType="ListBoxItem">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="Margin" Value="0,0,0,4"/>
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem">
+                            <Border x:Name="SelectionBorder" 
+                                    Background="{TemplateBinding Background}" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="{TemplateBinding BorderThickness}" 
+                                    Padding="{TemplateBinding Padding}"
+                                    CornerRadius="0">
+                                <ContentPresenter />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="SelectionBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                    <Setter TargetName="SelectionBorder" Property="Background" Value="#05FFFFFF"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="SelectionBorder" Property="Background" Value="#08FFFFFF"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
             <!-- Modern Component Styles -->
             <Style x:Key="ModernCard" TargetType="Border">
                 <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}"/>
-                <Setter Property="CornerRadius" Value="12"/>
+                <Setter Property="CornerRadius" Value="0"/>
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
                 <Setter Property="Padding" Value="24"/>
-                <Setter Property="Effect">
-                    <Setter.Value>
-                        <DropShadowEffect BlurRadius="20" ShadowDepth="2" Opacity="0.04" Color="Black"/>
-                    </Setter.Value>
-                </Setter>
             </Style>
 
             <Style TargetType="Button">
-                <Setter Property="Padding" Value="16,10"/>
+                <Setter Property="Padding" Value="16,8"/>
                 <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
-                <Setter Property="Foreground" Value="White"/>
-                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Foreground" Value="#0B0B0B"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
                 <Setter Property="Cursor" Value="Hand"/>
                 <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="FontSize" Value="13"/>
                 <Style.Resources>
                     <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="8"/>
+                        <Setter Property="CornerRadius" Value="0"/>
                     </Style>
                 </Style.Resources>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Opacity" Value="0.9"/>
-                        <Setter Property="Effect">
-                            <Setter.Value>
-                                <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.1" Color="Black"/>
-                            </Setter.Value>
-                        </Setter>
+                        <Setter Property="Background" Value="#5CDB95"/>
+                        <Setter Property="BorderBrush" Value="#5CDB95"/>
+                    </Trigger>
+                    <Trigger Property="IsPressed" Value="True">
+                        <Setter Property="Opacity" Value="0.7"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
 
             <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                <Setter Property="Background" Value="#F3F4F6"/>
-                <Setter Property="Foreground" Value="#374151"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#E5E7EB"/>
+                        <Setter Property="Background" Value="#10FFFFFF"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource SecondaryTextBrush}"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
 
             <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                <Setter Property="Background" Value="#EF4444"/>
-                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="#FF6666"/>
+                <Setter Property="BorderBrush" Value="#442222"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#20FF4444"/>
+                        <Setter Property="BorderBrush" Value="#FF4444"/>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
 
             <Style x:Key="BaseChip" TargetType="Border">
-                <Setter Property="CornerRadius" Value="8"/>
+                <Setter Property="CornerRadius" Value="0"/>
                 <Setter Property="Padding" Value="10,4"/>
                 <Setter Property="Height" Value="24"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
@@ -156,7 +197,7 @@
                                         <Thumb x:Name="Thumb">
                                             <Thumb.Template>
                                                 <ControlTemplate TargetType="{x:Type Thumb}">
-                                                    <Border Background="{DynamicResource BorderBrush}" CornerRadius="3" />
+                                                    <Border Background="{DynamicResource BorderBrush}" CornerRadius="0" />
                                                 </ControlTemplate>
                                             </Thumb.Template>
                                         </Thumb>
@@ -176,6 +217,7 @@
                 <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel"/>
                 <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
                 <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+                <Setter Property="ItemContainerStyle" Value="{StaticResource SubtleListBoxItem}"/>
             </Style>
 
             <Style TargetType="ComboBox">
@@ -198,7 +240,7 @@
                                               Grid.Column="2">
                                     <ToggleButton.Template>
                                         <ControlTemplate TargetType="ToggleButton">
-                                            <Border Name="Border" CornerRadius="8" BorderThickness="1" 
+                                            <Border Name="Border" CornerRadius="0" BorderThickness="1" 
                                                     Background="{TemplateBinding Background}" 
                                                     BorderBrush="{TemplateBinding BorderBrush}">
                                                 <Grid>
@@ -228,7 +270,7 @@
                                        AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
                                     <Grid Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
                                         <Border Name="DropDownBorder" Background="{DynamicResource CardBackgroundBrush}" 
-                                                BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" CornerRadius="8"/>
+                                                BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" CornerRadius="0"/>
                                         <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
                                             <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
                                         </ScrollViewer>
@@ -247,7 +289,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ComboBoxItem">
-                            <Border Name="Border" Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}" CornerRadius="4">
+                            <Border Name="Border" Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}" CornerRadius="0">
                                 <ContentPresenter />
                             </Border>
                             <ControlTemplate.Triggers>
@@ -275,7 +317,7 @@
             <RowDefinition Height="Auto"/> <!-- Status Bar -->
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Padding="32,20">
+        <Border Grid.Row="0" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Padding="28,16">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -283,19 +325,19 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal">
-                    <Border Width="44" Height="44" CornerRadius="10" Background="Transparent" Margin="0,0,16,0">
+                    <Border Width="36" Height="36" CornerRadius="0" Background="Transparent" Margin="0,0,14,0">
                         <Image Source="logo.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
                     </Border>
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="WeatherWall" Style="{StaticResource TitleText}" FontSize="20"/>
-                        <TextBlock Text="Adaptive Desktop Environments" Style="{StaticResource MetadataText}"/>
+                        <TextBlock Text="WeatherWall" Style="{StaticResource TitleText}" FontSize="18" FontWeight="SemiBold"/>
+                        <TextBlock Text="Adaptive Desktop Environments" Style="{StaticResource MetadataText}" Opacity="0.7"/>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Background="{DynamicResource WeatherChipBackground}" CornerRadius="12" Padding="16,8">
+                    <Border Background="{DynamicResource WeatherChipBackground}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="0" Padding="12,6">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock x:Name="WeatherIconText" Text="⏳" FontSize="18" Margin="0,0,12,0"/>
-                            <TextBlock x:Name="WeatherStatusText" Text="Syncing..." FontSize="14" FontWeight="Bold" Foreground="{DynamicResource WeatherChipForeground}" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="WeatherIconText" Text="⏳" FontSize="15" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="WeatherStatusText" Text="Syncing..." FontSize="12" FontWeight="Bold" Foreground="{DynamicResource WeatherChipForeground}" VerticalAlignment="Center" FontFamily="Segoe UI Variable Display, Geist, Inter, IBM Plex Sans, Segoe UI"/>
                         </StackPanel>
                     </Border>
                 </StackPanel>
@@ -308,7 +350,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="TabItem">
-                                <Border x:Name="Border" Padding="24,12" Margin="0,0,12,12" CornerRadius="8" Background="Transparent" BorderThickness="2" BorderBrush="Transparent">
+                                <Border x:Name="Border" Padding="24,12" Margin="0,0,12,12" CornerRadius="0" Background="Transparent" BorderThickness="2" BorderBrush="Transparent">
                                     <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <ContentPresenter.Resources>
                                             <Style TargetType="TextBlock">
@@ -341,7 +383,7 @@
                 </Style>
 
                 <Style TargetType="CheckBox">
-                    <Setter Property="Foreground" Value="#94A3B8"/>
+                    <Setter Property="Foreground" Value="#808080"/>
                     <Setter Property="VerticalContentAlignment" Value="Center"/>
                     <Setter Property="Cursor" Value="Hand"/>
                     <Style.Triggers>
@@ -395,14 +437,14 @@
 
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Background="Transparent" CornerRadius="12" Margin="0,0,0,8" Padding="12" BorderThickness="0">
+                                        <Border Background="Transparent" CornerRadius="0" Margin="0" Padding="12" BorderThickness="0">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="120"/>
+                                                    <ColumnDefinition Width="100"/>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Border Width="120" Height="68" CornerRadius="8" ClipToBounds="True">
+                                                <Border Width="100" Height="56" CornerRadius="0" ClipToBounds="True">
                                                     <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
                                                 </Border>
                                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0">
@@ -475,21 +517,16 @@
                             </StackPanel>
                             <StackPanel Grid.Row="2">
                                 <TextBlock Text="2. Choose Wallpaper" Style="{StaticResource MetadataText}" FontWeight="Bold" Margin="0,0,0,12"/>
-                                <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="10" Height="280">
+                                <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="0" Height="280">
                                     <ListBox x:Name="RuleWallpaperGallery" 
                                              Style="{StaticResource SmoothListBox}"
                                              Padding="8">
 
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
-                                                <Border Width="110" Height="70" CornerRadius="6" Margin="4" BorderThickness="2" x:Name="GalleryBorder" BorderBrush="Transparent" ClipToBounds="True">
+                                                <Border Width="110" Height="70" CornerRadius="0" Margin="4" ClipToBounds="True">
                                                     <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
                                                 </Border>
-                                                <DataTemplate.Triggers>
-                                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
-                                                        <Setter TargetName="GalleryBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
-                                                    </DataTrigger>
-                                                </DataTemplate.Triggers>
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>
                                         <ListBox.ItemsPanel>
@@ -520,15 +557,20 @@
 
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Background="Transparent" CornerRadius="12" Margin="0,0,0,12" Padding="12" Height="90" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                                        <Border Background="Transparent" CornerRadius="0" Margin="0" Padding="12" Height="80" BorderThickness="0" Opacity="{Binding Opacity}">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="120"/>
+                                                    <ColumnDefinition Width="100"/>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Border Grid.Column="0" Width="120" Height="68" CornerRadius="8" ClipToBounds="True">
-                                                    <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                <Border Grid.Column="0" Width="100" Height="56" CornerRadius="0" ClipToBounds="True">
+                                                    <Grid>
+                                                        <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                        <Border Background="#99000000" Visibility="{Binding MissingVisibility}">
+                                                            <TextBlock Text="MISSING" Foreground="#FF6666" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        </Border>
+                                                    </Grid>
                                                 </Border>
                                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0">
                                                     <TextBlock Text="{Binding FileName}" Style="{StaticResource BodyText}" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
@@ -543,7 +585,17 @@
 
                                                 </StackPanel>
                                                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                                    <Button Content="Preview" Click="PreviewRule_Click" Style="{StaticResource SecondaryButton}" Padding="14,8" Margin="0,0,10,0" FontSize="11"/>
+                                                    <Button Content="Preview" Click="PreviewRule_Click" Padding="14,8" Margin="0,0,10,0" FontSize="11">
+                                                        <Button.Style>
+                                                            <Style TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsMissing}" Value="True">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Style>
+                                                    </Button>
                                                     <Button Content="Delete" Click="DeleteRule_Click" Style="{StaticResource DangerButton}" Padding="14,8" FontSize="11"/>
                                                 </StackPanel>
                                             </Grid>
@@ -564,7 +616,7 @@
             <TabItem Header="About">
                 <Border Style="{StaticResource ModernCard}">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="500">
-                        <Border Width="100" Height="100" CornerRadius="24" Background="Transparent" Margin="0,0,0,24" HorizontalAlignment="Center">
+                        <Border Width="100" Height="100" CornerRadius="0" Background="Transparent" Margin="0,0,0,24" HorizontalAlignment="Center">
                             <Image Source="logo.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
                         </Border>
                         <TextBlock Text="WeatherWall" Style="{StaticResource TitleText}" HorizontalAlignment="Center" FontSize="32"/>
@@ -572,7 +624,7 @@
                         <TextBlock Text="A premium Windows utility that automatically synchronizes your desktop wallpaper with real-time weather conditions. Designed for minimal intrusion and maximum workspace comfort." 
                                    TextAlignment="Center" TextWrapping="Wrap" Style="{StaticResource BodyText}" Margin="0,0,0,32" Opacity="0.8"/>
                         
-                        <Border Background="{DynamicResource WindowBackgroundBrush}" CornerRadius="12" Padding="20" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                        <Border Background="{DynamicResource WindowBackgroundBrush}" CornerRadius="0" Padding="20" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
                             <StackPanel>
                                 <TextBlock Text="System Status" Style="{StaticResource MetadataText}" FontWeight="Bold" Margin="0,0,0,12"/>
                                 <Grid>
@@ -609,10 +661,10 @@
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,24,0" VerticalAlignment="Center">
                     <TextBlock x:Name="StatusConditionText" Text="CLEAR + MORNING" Style="{StaticResource MetadataText}" FontWeight="Bold" Margin="0,0,12,0" VerticalAlignment="Center"/>
-                    <Ellipse Width="8" Height="8" Fill="#10B981" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                    <TextBlock x:Name="AutoSyncLabel" Text="ACTIVE" Style="{StaticResource MetadataText}" FontWeight="Bold" Foreground="#10B981" VerticalAlignment="Center"/>
+                    <Ellipse Width="8" Height="8" Fill="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBlock x:Name="AutoSyncLabel" Text="ACTIVE" Style="{StaticResource MetadataText}" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center"/>
                 </StackPanel>
-                <Border Grid.Column="2" Background="{DynamicResource AccentBrush}" Opacity="0.1" CornerRadius="6" Padding="12,4">
+                <Border Grid.Column="2" Background="{DynamicResource AccentBrush}" Opacity="0.1" CornerRadius="0" Padding="12,4">
                     <TextBlock x:Name="StatusModeText" Text="RUNNING" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center"/>
                 </Border>
             </Grid>

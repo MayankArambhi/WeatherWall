@@ -50,12 +50,16 @@ namespace WeatherWall
         public string TimePeriod => OriginalRule.TimePeriod;
         public string? FullPath { get; set; }
 
+        public bool IsMissing => string.IsNullOrEmpty(FullPath) || !File.Exists(FullPath);
+        public Visibility MissingVisibility => IsMissing ? Visibility.Visible : Visibility.Collapsed;
+        public double Opacity => IsMissing ? 0.4 : 1.0;
+
         private BitmapSource? _thumbnail;
         public BitmapSource? Thumbnail 
         { 
             get 
             {
-                if (_thumbnail == null && !string.IsNullOrEmpty(FullPath)) 
+                if (_thumbnail == null && !string.IsNullOrEmpty(FullPath) && File.Exists(FullPath)) 
                     _thumbnail = ThumbnailProvider.GetThumbnail(FullPath);
                 return _thumbnail;
             }
@@ -101,6 +105,8 @@ namespace WeatherWall
         private DateTime? _sunrise;
         private DateTime? _sunset;
         private string _currentTimeZone = "UTC";
+        private FileSystemWatcher? _watcher;
+        private readonly DispatcherTimer _watcherTimer = new();
 
         [ComImport]
         [Guid("C2CF3110-468E-4474-8350-59A9D0AB82BD")]
@@ -148,6 +154,13 @@ namespace WeatherWall
             _syncTimer.Interval = TimeSpan.FromMinutes(1);
             _syncTimer.Tick += async (s, e) => await AutoSyncAsync();
             _syncTimer.Start();
+
+            _watcherTimer.Interval = TimeSpan.FromSeconds(2);
+            _watcherTimer.Tick += (s, e) => {
+                _watcherTimer.Stop();
+                if (!string.IsNullOrEmpty(_config.WallpaperFolderPath))
+                    _ = Task.Run(() => ScanFolder(_config.WallpaperFolderPath));
+            };
 
             _ = InitialSyncAsync();
             
@@ -209,17 +222,17 @@ namespace WeatherWall
 
         private void ApplyTheme()
         {
-            // PROFESSIONAL: Hardcoded Dark Theme for brand consistency (matches HD logo)
+            // PROFESSIONAL: Neutral Dark Theme for minimal premium utility aesthetic
             var res = this.Resources;
-            res["WindowBackgroundBrush"] = new SolidColorBrush(System.Windows.Media.Color.FromRgb(17, 24, 39));
-            res["CardBackgroundBrush"] = new SolidColorBrush(System.Windows.Media.Color.FromRgb(31, 41, 55));
-            res["PrimaryTextBrush"] = new SolidColorBrush(System.Windows.Media.Color.FromRgb(249, 250, 251));
-            res["SecondaryTextBrush"] = new SolidColorBrush(System.Windows.Media.Color.FromRgb(156, 163, 175));
-            res["BorderBrush"] = new SolidColorBrush(System.Windows.Media.Color.FromRgb(55, 65, 81));
-            res["WeatherChipBackground"] = new SolidColorBrush(System.Windows.Media.Color.FromRgb(30, 41, 59));
-            res["WeatherChipForeground"] = new SolidColorBrush(System.Windows.Media.Color.FromRgb(148, 163, 184));
-            res["TimeChipBackground"] = new SolidColorBrush(System.Windows.Media.Color.FromRgb(45, 30, 20));
-            res["TimeChipForeground"] = new SolidColorBrush(System.Windows.Media.Color.FromRgb(210, 150, 100));
+            res["WindowBackgroundBrush"] = new SolidColorBrush(System.Windows.Media.Color.FromRgb(11, 11, 11));
+            res["CardBackgroundBrush"] = new SolidColorBrush(System.Windows.Media.Color.FromRgb(18, 18, 18));
+            res["PrimaryTextBrush"] = new SolidColorBrush(System.Windows.Media.Color.FromRgb(248, 248, 248));
+            res["SecondaryTextBrush"] = new SolidColorBrush(System.Windows.Media.Color.FromRgb(128, 128, 128));
+            res["BorderBrush"] = new SolidColorBrush(System.Windows.Media.Color.FromRgb(34, 34, 34));
+            res["WeatherChipBackground"] = new SolidColorBrush(System.Windows.Media.Color.FromRgb(21, 32, 26));
+            res["WeatherChipForeground"] = new SolidColorBrush(System.Windows.Media.Color.FromRgb(74, 222, 128));
+            res["TimeChipBackground"] = new SolidColorBrush(System.Windows.Media.Color.FromRgb(29, 29, 29));
+            res["TimeChipForeground"] = new SolidColorBrush(System.Windows.Media.Color.FromRgb(170, 170, 170));
             
             UpdateTitleBarTheme();
         }
@@ -242,7 +255,7 @@ namespace WeatherWall
                 DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, ref darkMode, sizeof(int));
 
                 // On Windows 11, set the caption and text color explicitly
-                int captionColor = 0x271811; // BGR format for #111827
+                int captionColor = 0x0B0B0B; // BGR format for #0B0B0B
                 DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, ref captionColor, sizeof(int));
 
                 int textColor = 0xFFFFFF;
@@ -258,7 +271,7 @@ namespace WeatherWall
                 _notifyIcon = new Forms.NotifyIcon();
                 
                 // Load from Small_NoBG.ico resource for maximum compatibility
-                var iconUri = new Uri("pack://application:,,,/icon.ico");
+                var iconUri = new Uri("pack://application:,,,/icon_.ico");
                 var streamInfo = System.Windows.Application.GetResourceStream(iconUri);
                 if (streamInfo != null)
                 {
@@ -298,7 +311,7 @@ namespace WeatherWall
         {
             _isPaused = !_isPaused;
             StatusModeText.Text = _isPaused ? "PAUSED" : "RUNNING";
-            AutoSyncLabel.Foreground = _isPaused ? new SolidColorBrush(System.Windows.Media.Color.FromRgb(128, 128, 128)) : new SolidColorBrush(System.Windows.Media.Color.FromRgb(40, 167, 69));
+            AutoSyncLabel.Foreground = _isPaused ? new SolidColorBrush(System.Windows.Media.Color.FromRgb(128, 128, 128)) : new SolidColorBrush(System.Windows.Media.Color.FromRgb(74, 222, 128));
             _config.IsPaused = _isPaused;
             SaveConfig();
         }
@@ -630,28 +643,60 @@ namespace WeatherWall
 
         private void ScanFolder(string path)
         {
-            if (!Directory.Exists(path)) return;
+            if (string.IsNullOrEmpty(path) || !Directory.Exists(path)) 
+            {
+                Dispatcher.Invoke(() => {
+                    FileListBox.ItemsSource = null;
+                    RuleWallpaperGallery.ItemsSource = null;
+                    NoWallpapersState.Visibility = Visibility.Visible;
+                });
+                return;
+            }
+
+            // Setup watcher if path changed or not yet initialized
+            if (_watcher == null || _watcher.Path != path)
+            {
+                try
+                {
+                    _watcher?.Dispose();
+                    _watcher = new FileSystemWatcher(path);
+                    _watcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.DirectoryName;
+                    _watcher.Filter = "*.*";
+                    
+                    // Use debounce timer to avoid flickering during batch operations
+                    FileSystemEventHandler handler = (s, e) => Dispatcher.Invoke(() => { _watcherTimer.Stop(); _watcherTimer.Start(); });
+                    RenamedEventHandler renamedHandler = (s, e) => Dispatcher.Invoke(() => { _watcherTimer.Stop(); _watcherTimer.Start(); });
+                    
+                    _watcher.Created += handler;
+                    _watcher.Deleted += handler;
+                    _watcher.Changed += handler;
+                    _watcher.Renamed += renamedHandler;
+                    _watcher.EnableRaisingEvents = true;
+                }
+                catch (Exception ex) { Log($"Watcher Error: {ex.Message}"); }
+            }
+
             string[] extensions = { ".jpg", ".jpeg", ".png", ".bmp", ".webp" };
             try
             {
                 var files = Directory.EnumerateFiles(path)
                     .Where(file => extensions.Contains(Path.GetExtension(file).ToLower()))
+                    .OrderBy(f => Path.GetFileName(f))
                     .ToList();
                 
-                var items = new List<WallpaperItem>();
-                foreach (var file in files)
-                {
-                    // MEMORY: Only store path, do NOT create thumbnail yet
-                    items.Add(new WallpaperItem { FullPath = file });
-                }
+                var items = files.Select(file => new WallpaperItem { FullPath = file }).ToList();
                 
                 Dispatcher.Invoke(() => {
+                    // Update main list
                     FileListBox.ItemsSource = items;
+                    
+                    // Update rule selection gallery
                     RuleWallpaperGallery.ItemsSource = items.ToList();
+                    
                     NoWallpapersState.Visibility = items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+                    
                     RefreshRulesList();
                 });
-                GC.Collect();
             }
             catch (Exception ex) { Log($"Scan Error: {ex.Message}"); }
         }

@@ -15,6 +15,15 @@ Pre-built releases are available on the [Releases](../../releases) page.
 - **Lightweight**: Minimal system resources, runs quietly in system tray
 - **Auto-Start**: Optional background launching on startup
 
+---
+
+## Interface:
+
+![Main UI](Screenshots4Demo/Screenshot1.png)
+![Main UI](Screenshots4Demo/Screenshot2.png)
+
+---
+
 ### System Requirements
 - Windows 10 or later
 - .NET Runtime 8.0 (included in release downloads)
