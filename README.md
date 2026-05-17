@@ -48,9 +48,9 @@ Built for desktop customization enthusiasts who want their setup to feel dynamic
 
 # 📸 Interface
 
-![Main UI](Screenshots4Demo/Home page.png)
+![Main UI](Screenshots4Demo/Home-page.png)
 
-![Automation Rules](Screenshots4Demo/Tagging page.png)
+![Automation Rules](Screenshots4Demo/Tagging-page.png)
 
 ---
 
