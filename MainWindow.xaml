@@ -608,8 +608,14 @@
                             <!-- AI AUTO TAGGING PANEL -->
                             <StackPanel x:Name="AITaggingPanel" Grid.Row="1" Grid.RowSpan="3" Visibility="Collapsed">
                                 <StackPanel Margin="0,0,0,24">
-                                    <TextBlock Text="Experimental / Mock Analysis" Style="{StaticResource MetadataText}" FontWeight="Bold" Margin="0,0,0,12"/>
-                                    <TextBlock Text="Automatically scan your library to find the best wallpaper for each condition based on basic visual cues. This happens entirely locally." Style="{StaticResource BodyText}" Foreground="{DynamicResource SecondaryTextBrush}" TextWrapping="Wrap" Margin="0,0,0,16"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                        <TextBlock Text="Experimental / Mock Analysis" Style="{StaticResource MetadataText}" FontWeight="Bold" VerticalAlignment="Center"/>
+                                        <Border Background="{DynamicResource AccentBrush}" Margin="8,0,0,0" Padding="6,2" CornerRadius="0" VerticalAlignment="Center">
+                                            <TextBlock Text="BETA" FontSize="10" FontWeight="Bold" Foreground="#000000" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </StackPanel>
+                                    <TextBlock Text="Automatically scan your library to find the best wallpaper for each condition based on basic visual cues. This happens entirely locally." Style="{StaticResource BodyText}" Foreground="{DynamicResource SecondaryTextBrush}" TextWrapping="Wrap" Margin="0,0,0,8"/>
+                                    <TextBlock Text="AI tagging is currently experimental and may not always assign perfectly accurate conditions. Results may require manual review." Style="{StaticResource MetadataText}" Foreground="{DynamicResource AccentBrush}" TextWrapping="Wrap" Margin="0,0,0,16" FontStyle="Italic" Opacity="0.8"/>
                                     
                                     <Button x:Name="GenerateTagsBtn" Content="Analyze Library" Click="GenerateTags_Click" Height="48" FontWeight="Bold"/>
                                 </StackPanel>
@@ -705,7 +711,7 @@
                             <Image Source="logo.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
                         </Border>
                         <TextBlock Text="WeatherWall" Style="{StaticResource TitleText}" HorizontalAlignment="Center" FontSize="32"/>
-                        <TextBlock Text="Version 1.0.0" Style="{StaticResource MetadataText}" HorizontalAlignment="Center" Margin="0,8,0,24"/>
+                        <TextBlock Text="Version 1.1.0" Style="{StaticResource MetadataText}" HorizontalAlignment="Center" Margin="0,8,0,24"/>
                         <TextBlock Text="A premium Windows utility that automatically synchronizes your desktop wallpaper with real-time weather conditions. Designed for minimal intrusion and maximum workspace comfort." 
                                    TextAlignment="Center" TextWrapping="Wrap" Style="{StaticResource BodyText}" Margin="0,0,0,32" Opacity="0.8"/>
                         

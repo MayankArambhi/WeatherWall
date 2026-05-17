@@ -1,86 +1,89 @@
-# WeatherWall
+# WeatherWall v1.1.0
 
-WeatherWall is a sophisticated Windows utility that automatically synchronizes your desktop wallpaper with real-time weather conditions and the time of day.
+WeatherWall is a lightweight native Windows utility that automatically synchronizes your desktop wallpaper with real-time weather conditions and local time.
 
-## 🎯 For End Users
-
-### Download
-Pre-built releases are available on the [Releases](../../releases) page.
-
-### Features
-- **Adaptive Environments**: Auto-switches wallpapers based on weather (clear, cloudy, rainy, foggy, stormy)
-- **Time-Aware**: Morning, afternoon, evening, and night themes
-- **Smooth Transitions**: Flicker-free fullscreen fade transitions
-- **Modern UI**: Windows 11-inspired interface with Light/Dark mode
-- **Lightweight**: Minimal system resources, runs quietly in system tray
-- **Auto-Start**: Optional background launching on startup
+Built for desktop customization enthusiasts who want their setup to feel dynamic, atmospheric, and alive.
 
 ---
 
-## Interface:
+## ✨ Features
 
-![Main UI](Screenshots4Demo/Screenshot1.png)
-![Main UI](Screenshots4Demo/Screenshot2.png)
+- 🌦️ **Weather-Adaptive Wallpapers**  
+  Automatically switches wallpapers based on:
+  - clear
+  - cloudy
+  - rainy
+  - foggy
+  - stormy
+  - overcast
+  - snowy *(experimental)*
+
+- 🕒 **Time-Aware Environments**  
+  Supports:
+  - morning
+  - afternoon
+  - evening
+  - night
+
+- 📍 **Location-Based Synchronization**  
+  Uses local weather and sunrise/sunset timing to improve atmosphere matching.
+
+- ⚡ **Lightweight Background Utility**  
+  Optimized for extremely low RAM and CPU usage while running in the system tray.
+
+- 🖥️ **Minimal Native UI**  
+  Sharp black/green desktop-native interface with a clean minimal design language.
+
+- 🎞️ **Smooth Wallpaper Transitions**  
+  Improved fullscreen fade transitions without aggressive desktop flashing.
+
+- 🤖 **Experimental AI Auto Tagging (BETA)**  
+  Local experimental AI-assisted wallpaper analysis and tagging system.  
+  *(Still under development and may require manual review.)*
+
+- 🚀 **Standalone Windows Build**  
+  No complicated installation process required.
 
 ---
 
-### System Requirements
+# 📸 Interface
+
+![Main UI](Screenshots4Demo/Home page.png)
+
+![Automation Rules](Screenshots4Demo/Tagging page.png)
+
+---
+
+## 📦 Download
+
+Pre-built standalone releases are available on the [Releases](../../releases) page.
+
+---
+
+## ⚙️ System Requirements
+
 - Windows 10 or later
-- .NET Runtime 8.0 (included in release downloads)
-- Active internet connection for weather updates
+- .NET Runtime 8.0 *(included in release builds)*
+- Internet connection for weather synchronization
 
 ---
 
-## 💻 For Developers
+# 💻 Building From Source
 
-### Building From Source
+## Prerequisites
 
-**Prerequisites:**
-- Visual Studio 2022 or Visual Studio Code with C# extension
+- Visual Studio 2022  
+or
+- Visual Studio Code with C# extension
+
+Required:
 - .NET 8.0 SDK
 - Windows 10/11
 
-**Build Steps:**
+---
+
+## Clone Repository
+
 ```bash
 git clone https://github.com/MayankArambhi/WeatherWall.git
 cd WeatherWall
-dotnet build -c Release
-```
-
-**Output:** Built executable will be in `bin/Release/net8.0-windows/win-x64/`
-
-### Project Structure
-```
-WeatherWall/
-├── App.xaml                 # Application configuration
-├── MainWindow.xaml          # Main UI
-├── SplashWindow.xaml        # Splash screen
-├── config.json              # User configuration
-├── WeatherWall.csproj       # Project file
-├── WeatherWall.sln          # Solution file
-└── WW/                      # Resources (icons, images)
-```
-
-### Technologies
-- **WPF** (Windows Presentation Foundation) for UI
-- **.NET 8** (Windows Desktop Targeted)
-- **Windows Forms** for system tray integration
-
-### Creating a Release Build
-```bash
-dotnet publish -c Release -r win-x64 --self-contained
-```
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 👤 Author
-
-**Mayank Arambhi**
-
----
-
-*For feature requests and bug reports, please use the [Issues](../../issues) tab.*
