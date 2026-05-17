@@ -61,3 +61,7 @@ Thumbs.db
 
 ## VS Code extensions
 *.code-workspace
+
+# AI / Models
+models/
+*.onnx
