@@ -175,8 +175,17 @@ namespace WeatherWall
             ApplyTheme();
 
             if (_config.AutoLocation) _ = DetectLocationAsync();
+            else PopulateCoordinateInputs();
 
             _ = CheckFirstLaunchAsync();
+        }
+
+        private void PopulateCoordinateInputs()
+        {
+            Dispatcher.Invoke(() => {
+                LatInput.Text = _config.Latitude.ToString("F4");
+                LonInput.Text = _config.Longitude.ToString("F4");
+            });
         }
 
         private async Task CheckFirstLaunchAsync()
@@ -205,6 +214,19 @@ namespace WeatherWall
         {
             try
             {
+                Log("Detecting location...");
+                
+                // 1. Try Windows Location Services first (High Precision)
+                bool windowsSuccess = await GetWindowsLocationAsync();
+                if (windowsSuccess) 
+                {
+                    Log("Location detected via Windows Services.");
+                    await SyncLocationUIAndWeatherAsync();
+                    return;
+                }
+
+                // 2. Fallback to IP-based Geolocation (Low Precision)
+                Log("Falling back to IP-based geolocation.");
                 var response = await _httpClient.GetStringAsync("http://ip-api.com/json/");
                 using var doc = JsonDocument.Parse(response);
                 var root = doc.RootElement;
@@ -213,11 +235,64 @@ namespace WeatherWall
                     _config.Latitude = root.GetProperty("lat").GetDouble();
                     _config.Longitude = root.GetProperty("lon").GetDouble();
                     _config.LocationName = root.GetProperty("city").GetString() ?? "Unknown";
-                    SaveConfig();
-                    await UpdateWeatherAsync();
+                    await SyncLocationUIAndWeatherAsync();
                 }
             }
-            catch (Exception ex) { Log($"Location Detection Error: {ex.Message}"); }
+            catch (Exception ex) { 
+                Log($"Location Detection Error: {ex.Message}");
+                Dispatcher.Invoke(() => {
+                    StatusMatchedText.Text = "Location Error: Fallback to manual";
+                });
+            }
+        }
+
+        private async Task<bool> GetWindowsLocationAsync()
+        {
+            try
+            {
+                var accessStatus = await Windows.Devices.Geolocation.Geolocator.RequestAccessAsync();
+                if (accessStatus == Windows.Devices.Geolocation.GeolocationAccessStatus.Allowed)
+                {
+                    var geolocator = new Windows.Devices.Geolocation.Geolocator { 
+                        DesiredAccuracyInMeters = 100,
+                        ReportInterval = 0
+                    };
+                    
+                    var pos = await geolocator.GetGeopositionAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
+                    _config.Latitude = pos.Coordinate.Point.Position.Latitude;
+                    _config.Longitude = pos.Coordinate.Point.Position.Longitude;
+                    
+                    // Attempt to get a better name via reverse geocoding
+                    _config.LocationName = await GetLocationNameAsync(_config.Latitude, _config.Longitude);
+                    return true;
+                }
+            }
+            catch (Exception ex) { Log($"Windows Location API Error: {ex.Message}"); }
+            return false;
+        }
+
+        private async Task<string> GetLocationNameAsync(double lat, double lon)
+        {
+            try
+            {
+                string url = $"https://geocoding-api.open-meteo.com/v1/reverse?latitude={lat}&longitude={lon}";
+                var response = await _httpClient.GetStringAsync(url);
+                using var doc = JsonDocument.Parse(response);
+                if (doc.RootElement.TryGetProperty("results", out var results) && results.GetArrayLength() > 0)
+                {
+                    return results.EnumerateArray().First().GetProperty("name").GetString() ?? "My Location";
+                }
+            }
+            catch { }
+            return "My Location";
+        }
+
+        private async Task SyncLocationUIAndWeatherAsync()
+        {
+            SaveConfig();
+            PopulateCoordinateInputs();
+            Dispatcher.Invoke(() => LocationInput.Text = _config.LocationName);
+            await UpdateWeatherAsync();
         }
 
         private void ApplyTheme()
@@ -328,19 +403,17 @@ namespace WeatherWall
         private void RefreshUI()
         {
             Dispatcher.Invoke(() => {
-                // Reload thumbnails when window is shown
-                var files = FileListBox.ItemsSource;
-                FileListBox.ItemsSource = null;
-                FileListBox.ItemsSource = files;
-
-                var gallery = RuleWallpaperGallery.ItemsSource;
-                RuleWallpaperGallery.ItemsSource = null;
-                RuleWallpaperGallery.ItemsSource = gallery;
-
-                RefreshRulesList();
-
-                // Ensure empty states are correctly shown
-                NoWallpapersState.Visibility = (FileListBox.ItemsSource == null || !((IEnumerable<WallpaperItem>)FileListBox.ItemsSource).Any()) ? Visibility.Visible : Visibility.Collapsed;
+                // Rebuild UI lazily when window is shown
+                if (!string.IsNullOrEmpty(_config.WallpaperFolderPath) && Directory.Exists(_config.WallpaperFolderPath))
+                {
+                    // ScanFolder will automatically update FileListBox, RuleWallpaperGallery, and call RefreshRulesList()
+                    _ = Task.Run(() => ScanFolder(_config.WallpaperFolderPath));
+                }
+                else
+                {
+                    RefreshRulesList();
+                    NoWallpapersState.Visibility = Visibility.Visible;
+                }
             });
         }
 
@@ -380,20 +453,18 @@ namespace WeatherWall
         {
             try
             {
-                // Clear thumbnails from objects to allow GC to reclaim them
-                if (FileListBox.ItemsSource is IEnumerable<WallpaperItem> items)
-                    foreach (var item in items) item.ClearThumbnail();
-                
-                if (RuleWallpaperGallery.ItemsSource is IEnumerable<WallpaperItem> gItems)
-                    foreach (var item in gItems) item.ClearThumbnail();
+                // Unload heavy visual trees and image references completely
+                Dispatcher.Invoke(() => {
+                    FileListBox.ItemsSource = null;
+                    RuleWallpaperGallery.ItemsSource = null;
+                    ActiveRulesListBox.ItemsSource = null;
+                });
 
-                if (ActiveRulesListBox.ItemsSource is IEnumerable<RuleItem> rItems)
-                    foreach (var item in rItems) item.ClearThumbnail();
-
+                // Run garbage collection
                 GC.Collect(2, GCCollectionMode.Forced, true);
                 GC.WaitForPendingFinalizers();
                 
-                // Clear working set to release memory back to OS
+                // Clear working set to release memory back to OS immediately
                 SetProcessWorkingSetSize(GetCurrentProcess(), -1, -1);
             }
             catch { }
@@ -435,8 +506,9 @@ namespace WeatherWall
         {
             try
             {
-                string url = $"https://api.open-meteo.com/v1/forecast?latitude={_config.Latitude}&longitude={_config.Longitude}&current=weather_code,temperature_2m&daily=sunrise,sunset&timezone=auto";
-
+                // Ensure we use 4 decimal places for precision as requested
+                string url = $"https://api.open-meteo.com/v1/forecast?latitude={_config.Latitude:F4}&longitude={_config.Longitude:F4}&current=weather_code,temperature_2m,is_day&daily=sunrise,sunset&timezone=auto";
+                
                 var response = await _httpClient.GetStringAsync(url);
                 using var doc = JsonDocument.Parse(response);
                 var root = doc.RootElement;
@@ -444,6 +516,8 @@ namespace WeatherWall
                 var current = root.GetProperty("current");
                 int code = current.GetProperty("weather_code").GetInt32();
                 double temp = current.GetProperty("temperature_2m").GetDouble();
+                int isDay = current.TryGetProperty("is_day", out var dayProp) ? dayProp.GetInt32() : 1;
+                string apiTime = current.TryGetProperty("time", out var timeProp) ? timeProp.GetString() ?? "Unknown" : "Unknown";
                 
                 var daily = root.GetProperty("daily");
                 string sunriseStr = daily.GetProperty("sunrise").EnumerateArray().First().GetString() ?? "";
@@ -454,8 +528,13 @@ namespace WeatherWall
                 _currentTimeZone = root.GetProperty("timezone").GetString() ?? "UTC";
 
                 var (status, icon, category) = MapWeatherCode(code);
+                
+                // RELIABILITY: If it's night but the code suggests clear sun, or vice versa, we could adjust,
+                // but MapWeatherCode handles categories generically.
                 _currentWeatherCategory = category;
                 
+                Log($"Weather Sync: Code={code}, Status={status}, Temp={temp}°C, Lat={_config.Latitude:F4}, Lon={_config.Longitude:F4}, APITime={apiTime}");
+
                 Dispatcher.Invoke(() => {
                     WeatherStatusText.Text = $"{status} ({temp:0}°C)";
                     WeatherIconText.Text = icon;
@@ -463,15 +542,32 @@ namespace WeatherWall
                     string timePeriod = GetCurrentTimePeriod();
                     StatusConditionText.Text = $"{_config.LocationName.ToUpper()} · {status.ToUpper()} · {timePeriod.ToUpper()}";
                     
-                    // Update the detailed status bar context
-                    StatusMatchedText.Text = $"{_config.LocationName} · {status} · {timePeriod} · Sunset {_sunset?.ToString("h:mm tt")}";
+                    // DEBUG VISIBILITY: Update the detailed status bar context with raw data
+                    StatusMatchedText.Text = $"{_config.LocationName} · {status} (Code {code}) · {timePeriod} · Last Sync: {DateTime.Now:HH:mm:ss}";
+                    
+                    // Add Tooltip for deep debugging
+                    StatusMatchedText.ToolTip = new System.Windows.Controls.ToolTip {
+                        Content = $"Raw API Data:\n" +
+                                  $"• Weather Code: {code}\n" +
+                                  $"• Condition: {status}\n" +
+                                  $"• Temperature: {temp}°C\n" +
+                                  $"• Day/Night: {(isDay == 1 ? "Day" : "Night")}\n" +
+                                  $"• API Time: {apiTime}\n" +
+                                  $"• Location: {_config.Latitude:F4}, {_config.Longitude:F4}\n" +
+                                  $"• Timezone: {_currentTimeZone}"
+                    };
                 });
             }
             catch (Exception ex)
             {
+                // PREVENT STALE STATE: Reset category on repeated failure
+                _currentWeatherCategory = "unknown";
+                
                 Dispatcher.Invoke(() => {
                     WeatherStatusText.Text = "Offline";
                     WeatherIconText.Text = "⚠️";
+                    StatusMatchedText.Text = $"Sync Error: {DateTime.Now:HH:mm:ss}";
+                    StatusMatchedText.ToolTip = $"Error: {ex.Message}";
                 });
                 Log($"Weather Fetch Error: {ex.Message}");
             }
@@ -511,17 +607,23 @@ namespace WeatherWall
 
         private (string status, string icon, string category) MapWeatherCode(int code)
         {
+            // WMO Weather interpretation codes (WW)
+            // https://open-meteo.com/en/docs
             return code switch
             {
                 0 => ("Clear", "☀️", "clear"),
                 1 or 2 => ("Partly Cloudy", "⛅", "partly_cloudy"),
                 3 => ("Overcast", "☁️", "overcast"),
                 45 or 48 => ("Foggy", "🌫️", "foggy"),
-                51 or 53 or 55 => ("Drizzle", "🌦️", "drizzle"),
-                61 or 63 or 65 or 80 or 81 or 82 => ("Rainy", "🌧️", "rainy"),
+                51 or 53 or 55 or 56 or 57 => ("Drizzle", "🌦️", "drizzle"),
+                61 or 63 or 65 or 66 or 67 => ("Rainy", "🌧️", "rainy"),
+                80 or 81 or 82 => ("Rain Showers", "🌧️", "rainy"),
                 71 or 73 or 75 or 77 or 85 or 86 => ("Snowy", "❄️", "snowy"),
                 95 or 96 or 99 => ("Thunderstorm", "⛈️", "thunderstorm"),
-                _ => ("Unknown", "❓", "unknown")
+                
+                // FALLBACK: If code is unknown, default to a neutral "Cloudy" state 
+                // instead of keeping a potentially extreme previous state like Thunderstorm.
+                _ => ("Cloudy", "☁️", "overcast")
             };
         }
 
@@ -535,6 +637,8 @@ namespace WeatherWall
                     string json = File.ReadAllText(fullConfigPath);
                     var loadedConfig = JsonSerializer.Deserialize<AppConfig>(json);
                     if (loadedConfig != null) _config = loadedConfig;
+                    
+                    CleanupDuplicateRules();
                 }
                 else
                 {
@@ -558,6 +662,33 @@ namespace WeatherWall
                 }
                 RefreshRulesList();
             });
+        }
+
+        private void CleanupDuplicateRules()
+        {
+            if (_config.Rules == null || _config.Rules.Count == 0) return;
+
+            var uniqueRules = new List<WallpaperRule>();
+            bool duplicatesFound = false;
+
+            // Keep only the most recently added rule (last in the list) for each condition
+            foreach (var rule in _config.Rules)
+            {
+                var existing = uniqueRules.FirstOrDefault(r => r.Weather == rule.Weather && r.TimePeriod == rule.TimePeriod);
+                if (existing != null)
+                {
+                    uniqueRules.Remove(existing);
+                    duplicatesFound = true;
+                }
+                uniqueRules.Add(rule);
+            }
+
+            if (duplicatesFound)
+            {
+                _config.Rules = uniqueRules;
+                SaveConfig();
+                Log("Cleaned up duplicate rules from configuration.");
+            }
         }
 
         private void SaveConfig()
@@ -586,12 +717,12 @@ namespace WeatherWall
 
             try
             {
+                Log($"Searching for location: {query}");
                 // Use Open-Meteo Geocoding API
                 string url = $"https://geocoding-api.open-meteo.com/v1/search?name={Uri.EscapeDataString(query)}&count=1&language=en&format=json";
                 var response = await _httpClient.GetStringAsync(url);
                 using var doc = JsonDocument.Parse(response);
-                var results = doc.RootElement.GetProperty("results");
-                if (results.GetArrayLength() > 0)
+                if (doc.RootElement.TryGetProperty("results", out var results) && results.GetArrayLength() > 0)
                 {
                     var first = results.EnumerateArray().First();
                     _config.Latitude = first.GetProperty("latitude").GetDouble();
@@ -600,8 +731,7 @@ namespace WeatherWall
                     _config.AutoLocation = false;
                     AutoLocationCheck.IsChecked = false;
                     
-                    SaveConfig();
-                    await UpdateWeatherAsync();
+                    await SyncLocationUIAndWeatherAsync();
                     System.Windows.MessageBox.Show($"Location updated to {_config.LocationName}.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
@@ -613,6 +743,27 @@ namespace WeatherWall
             {
                 Log($"Geocoding Error: {ex.Message}");
                 System.Windows.MessageBox.Show("Error searching for location. Please check your connection.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async void SetCoordinates_Click(object sender, RoutedEventArgs e)
+        {
+            if (double.TryParse(LatInput.Text, out double lat) && double.TryParse(LonInput.Text, out double lon))
+            {
+                _config.Latitude = lat;
+                _config.Longitude = lon;
+                _config.AutoLocation = false;
+                AutoLocationCheck.IsChecked = false;
+                
+                // Get location name for these coordinates
+                _config.LocationName = await GetLocationNameAsync(lat, lon);
+                
+                await SyncLocationUIAndWeatherAsync();
+                System.Windows.MessageBox.Show($"Coordinates applied: {lat}, {lon}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Invalid coordinates. Please enter numeric values.", "Input Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -769,6 +920,111 @@ namespace WeatherWall
             }
         }
 
+        private void TaggingMode_Changed(object sender, RoutedEventArgs e)
+        {
+            if (ManualTaggingPanel == null || AITaggingPanel == null) return;
+
+            if (ManualModeRadio.IsChecked == true)
+            {
+                ManualTaggingPanel.Visibility = Visibility.Visible;
+                AITaggingPanel.Visibility = Visibility.Collapsed;
+            }
+            else if (AIModeRadio.IsChecked == true)
+            {
+                ManualTaggingPanel.Visibility = Visibility.Collapsed;
+                AITaggingPanel.Visibility = Visibility.Visible;
+            }
+        }
+
+        private List<SuggestedRule> _suggestedMatches = new();
+        private readonly AITaggingService _aiTaggingService = new();
+
+        private async void GenerateTags_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(_config.WallpaperFolderPath) || !Directory.Exists(_config.WallpaperFolderPath))
+            {
+                System.Windows.MessageBox.Show("Please select a wallpaper folder in the Library tab first.", "Folder Required", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            GenerateTagsBtn.IsEnabled = false;
+            AITagResultsPanel.Children.Clear();
+            AITagResultsPanel.Children.Add(new TextBlock { Text = "Extracting semantic descriptors and evaluating conditions matrix...", Foreground = new SolidColorBrush(Colors.Gray), Margin = new Thickness(0,0,0,8) });
+            
+            _suggestedMatches.Clear();
+            CreateSuggestedRulesBtn.IsEnabled = false;
+
+            await Task.Run(async () => 
+            {
+                await Task.Delay(500); // Simulate init delay
+                
+                var results = _aiTaggingService.AnalyzeLibrary(_config.WallpaperFolderPath);
+                _suggestedMatches = results;
+
+                foreach (var match in results)
+                {
+                    Dispatcher.Invoke(() => {
+                        var container = new StackPanel { Margin = new Thickness(0,0,0,16) };
+                        container.Children.Add(new TextBlock { Text = $"Condition: {match.Weather.ToUpper()} + {match.TimePeriod.ToUpper()}", FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(220,220,220)) });
+                        
+                        var bestTb = new TextBlock { Margin = new Thickness(8,4,0,0) };
+                        if (match.Confidence.NeedsReview)
+                        {
+                            bestTb.Text = $"Best match: {match.BestFileName} (Confidence: {match.Confidence.Score}% - Needs Review)";
+                            bestTb.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(234, 179, 8)); // Yellow for low conf
+                        }
+                        else
+                        {
+                            bestTb.Text = $"Best match: {match.BestFileName} (Confidence: {match.Confidence.Score}%)";
+                            bestTb.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(74, 222, 128)); // Green
+                        }
+                        container.Children.Add(bestTb);
+
+                        if (match.Alternatives.Any())
+                        {
+                            container.Children.Add(new TextBlock { Text = $"Alternatives: {string.Join(", ", match.Alternatives.Take(2))}" + (match.Alternatives.Count > 2 ? "..." : ""), Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(150,150,150)), Margin = new Thickness(8,2,0,0), FontSize = 11 });
+                        }
+                        
+                        AITagResultsPanel.Children.Add(container);
+                    });
+                    await Task.Delay(50); 
+                }
+            });
+
+            AITagResultsPanel.Children.Add(new TextBlock { Text = "Analysis Complete.", Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(74, 222, 128)), FontWeight = FontWeights.Bold, Margin = new Thickness(0,8,0,0) });
+            CreateSuggestedRulesBtn.IsEnabled = _suggestedMatches.Count > 0;
+            GenerateTagsBtn.IsEnabled = true;
+        }
+
+        private void CreateSuggestedRules_Click(object sender, RoutedEventArgs e)
+        {
+            int addedCount = 0;
+            int replacedCount = 0;
+
+            foreach (var match in _suggestedMatches)
+            {
+                // Remove existing rule for this exact condition to avoid duplicates
+                int removed = _config.Rules.RemoveAll(r => r.Weather == match.Weather && r.TimePeriod == match.TimePeriod);
+                if (removed > 0) replacedCount++;
+                
+                _config.Rules.Add(new WallpaperRule { FileName = match.BestFileName, Weather = match.Weather, TimePeriod = match.TimePeriod });
+                addedCount++;
+            }
+
+            if (addedCount > 0)
+            {
+                SaveConfig();
+                RefreshRulesList();
+                _ = ApplyRuleBasedWallpaperAsync();
+                System.Windows.MessageBox.Show($"Successfully applied {addedCount} rules.\n{replacedCount} existing overlapping rules were replaced to prevent duplicates.", "Suggestions Accepted", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            
+            _suggestedMatches.Clear();
+            CreateSuggestedRulesBtn.IsEnabled = false;
+            AITagResultsPanel.Children.Clear();
+            AITagResultsPanel.Children.Add(new TextBlock { Text = "Rules updated. Ready for next analysis.", Foreground = new SolidColorBrush(Colors.Gray), HorizontalAlignment = System.Windows.HorizontalAlignment.Center, Margin = new Thickness(0,100,0,0) });
+        }
+
         private void TestRules_Click(object sender, RoutedEventArgs e)
         {
             _ = ApplyRuleBasedWallpaperAsync();
@@ -857,4 +1113,6 @@ namespace WeatherWall
         public string LocationName { get; set; } = "Unknown";
         public bool AutoLocation { get; set; } = true;
     }
+
+
 }
