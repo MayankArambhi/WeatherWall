@@ -855,6 +855,11 @@ namespace WeatherWall
 
                 _isUpdatingUI = true;
 
+                if (ConsensusLocationText != null)
+                {
+                    ConsensusLocationText.Text = !string.IsNullOrEmpty(_config.LocationName) ? _config.LocationName : "Unknown Location";
+                }
+
                 ConsensusConditionText.Text = WeatherMapper.GetFriendlyName(_consensusWeatherCategory);
                 ConsensusConfidenceText.Text = _consensusConfidenceText;
                 LastSuccessfulSyncText.Text = _lastSuccessfulSyncTime.HasValue 
@@ -1207,6 +1212,25 @@ namespace WeatherWall
             
             System.Windows.MessageBox.Show("API Keys saved successfully. Refreshing weather...", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             _ = UpdateWeatherAsync(true);
+        }
+
+        private void RefreshWeather_Click(object sender, RoutedEventArgs e)
+        {
+            Log("User requested manual weather refresh.");
+            _ = AutoSyncAsync(true);
+        }
+
+        private void CopyDiagnostics_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                System.Windows.Clipboard.SetText(DiagnosticsLogsText.Text);
+                System.Windows.MessageBox.Show("Diagnostics logs copied to clipboard.", "Diagnostics Copy", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Failed to copy diagnostics: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void ManualOverride_Checked(object sender, RoutedEventArgs e)
