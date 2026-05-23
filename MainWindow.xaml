@@ -356,7 +356,7 @@
         </Grid.RowDefinitions>
 
         <Border Grid.Row="0" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Padding="28,16">
-            <Grid>
+            <Grid MaxWidth="1400" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -382,7 +382,7 @@
             </Grid>
         </Border>
 
-        <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="32,24" SelectionChanged="TabControl_SelectionChanged">
+        <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="32,24" SelectionChanged="TabControl_SelectionChanged" MaxWidth="1400" HorizontalAlignment="Stretch">
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
@@ -704,6 +704,148 @@
                 </Grid>
             </TabItem>
 
+            <TabItem Header="Diagnostics &amp; Keys">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="420"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <StackPanel Grid.Column="0" Margin="0,0,24,0">
+                        <!-- CONSENSUS STATUS CARD -->
+                        <Border Style="{StaticResource ModernCard}" Margin="0,0,0,24">
+                            <StackPanel>
+                                <TextBlock Text="Consensus Status" Style="{StaticResource SectionHeader}"/>
+                                <Grid Margin="0,4,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Condition" Style="{StaticResource MetadataText}"/>
+                                        <TextBlock x:Name="ConsensusConditionText" Text="Clear" Style="{StaticResource BodyText}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                        <TextBlock Text="Confidence" Style="{StaticResource MetadataText}" HorizontalAlignment="Right"/>
+                                        <TextBlock x:Name="ConsensusConfidenceText" Text="100%" Style="{StaticResource BodyText}" FontSize="18" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                    </StackPanel>
+                                </Grid>
+                                
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Last Success" Style="{StaticResource MetadataText}"/>
+                                        <TextBlock x:Name="LastSuccessfulSyncText" Text="Never" Style="{StaticResource BodyText}" FontSize="13" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Cache Status" Style="{StaticResource MetadataText}"/>
+                                        <TextBlock x:Name="CacheStatusText" Text="Stale" Style="{StaticResource BodyText}" FontSize="13" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- MANUAL OVERRIDE CARD -->
+                        <Border Style="{StaticResource ModernCard}" Margin="0,0,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Manual Weather Override" Style="{StaticResource SectionHeader}"/>
+                                <TextBlock Text="Current weather looks wrong?" Style="{StaticResource MetadataText}" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" Margin="0,0,0,4"/>
+                                <TextBlock Text="Override automatic weather if it is inaccurate. This override will expire in 4 hours." Style="{StaticResource MetadataText}" TextWrapping="Wrap" Margin="0,0,0,12"/>
+                                
+                                <CheckBox x:Name="ManualOverrideCheckBox" Content="Enable Manual Override" Checked="ManualOverride_Checked" Unchecked="ManualOverride_Unchecked" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                                
+                                <TextBlock Text="Select Weather" Style="{StaticResource MetadataText}" Margin="0,0,0,4"/>
+                                <ComboBox x:Name="OverrideWeatherCombo" Height="36" SelectionChanged="OverrideWeatherCombo_SelectionChanged">
+                                    <ComboBoxItem Content="Clear" IsSelected="True"/>
+                                    <ComboBoxItem Content="Partly Cloudy"/>
+                                    <ComboBoxItem Content="Cloudy"/>
+                                    <ComboBoxItem Content="Overcast"/>
+                                    <ComboBoxItem Content="Rainy"/>
+                                    <ComboBoxItem Content="Thunderstorm"/>
+                                    <ComboBoxItem Content="Foggy"/>
+                                    <ComboBoxItem Content="Snowy"/>
+                                </ComboBox>
+                                
+                                <TextBlock x:Name="OverrideExpiresText" Text="" Foreground="{DynamicResource AccentBrush}" FontWeight="SemiBold" FontSize="12" Margin="0,12,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- PROVIDERS AND API KEYS CARD -->
+                    <Border Grid.Column="1" Style="{StaticResource ModernCard}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <StackPanel Grid.Row="0" Margin="0,0,0,24">
+                                <TextBlock Text="Weather Provider API Keys" Style="{StaticResource SectionHeader}"/>
+                                <TextBlock Text="Open-Meteo and MET Norway are free and active by default. Optional providers require API keys below." Style="{StaticResource MetadataText}" Margin="0,0,0,16"/>
+                                
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    
+                                    <StackPanel Margin="0,0,12,12">
+                                        <TextBlock Text="OpenWeatherMap API Key" Style="{StaticResource MetadataText}" Margin="0,0,0,4"/>
+                                        <PasswordBox x:Name="OpenWeatherMapKeyInput" Height="34" VerticalContentAlignment="Center" Background="{DynamicResource WindowBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" Foreground="{DynamicResource PrimaryTextBrush}"/>
+                                    </StackPanel>
+                                    
+                                    <StackPanel Grid.Column="1" Margin="0,0,0,12">
+                                        <TextBlock Text="WeatherAPI Key" Style="{StaticResource MetadataText}" Margin="0,0,0,4"/>
+                                        <PasswordBox x:Name="WeatherApiKeyInput" Height="34" VerticalContentAlignment="Center" Background="{DynamicResource WindowBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" Foreground="{DynamicResource PrimaryTextBrush}"/>
+                                    </StackPanel>
+                                    
+                                    <StackPanel Grid.Row="1" Margin="0,0,12,0">
+                                        <TextBlock Text="Tomorrow.io API Key" Style="{StaticResource MetadataText}" Margin="0,0,0,4"/>
+                                        <PasswordBox x:Name="TomorrowIoKeyInput" Height="34" VerticalContentAlignment="Center" Background="{DynamicResource WindowBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" Foreground="{DynamicResource PrimaryTextBrush}"/>
+                                    </StackPanel>
+                                    
+                                    <StackPanel Grid.Row="1" Grid.Column="1">
+                                        <TextBlock Text="AccuWeather API Key" Style="{StaticResource MetadataText}" Margin="0,0,0,4"/>
+                                        <PasswordBox x:Name="AccuWeatherKeyInput" Height="34" VerticalContentAlignment="Center" Background="{DynamicResource WindowBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" Foreground="{DynamicResource PrimaryTextBrush}"/>
+                                    </StackPanel>
+                                </Grid>
+                                
+                                <Button Content="Save API Keys" Click="SaveApiKeys_Click" HorizontalAlignment="Right" Margin="0,16,0,0" Padding="16,8" FontSize="13"/>
+                            </StackPanel>
+
+                            <Separator Grid.Row="1" Background="{DynamicResource BorderBrush}" Margin="0,0,0,20"/>
+
+                            <Grid Grid.Row="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="Consensus Diagnostics Logs" Style="{StaticResource SectionHeader}" Margin="0,0,0,8"/>
+                                <TextBox Grid.Row="1" x:Name="DiagnosticsLogsText" 
+                                         Background="{DynamicResource WindowBackgroundBrush}" 
+                                         BorderBrush="{DynamicResource BorderBrush}" 
+                                         Foreground="{DynamicResource SecondaryTextBrush}" 
+                                         IsReadOnly="True" 
+                                         TextWrapping="Wrap" 
+                                         AcceptsReturn="True" 
+                                         VerticalScrollBarVisibility="Auto" 
+                                         FontFamily="Consolas, Courier New, monospace" 
+                                         FontSize="12" 
+                                         Padding="12"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
             <TabItem Header="About">
                 <Border Style="{StaticResource ModernCard}">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="500">
@@ -740,7 +882,7 @@
         </TabControl>
 
         <Border Grid.Row="2" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0" Padding="32,16">
-            <Grid>
+            <Grid MaxWidth="1400" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>

@@ -108,6 +108,24 @@ namespace WeatherWall
         private FileSystemWatcher? _watcher;
         private readonly DispatcherTimer _watcherTimer = new();
 
+        private readonly List<IWeatherProvider> _weatherProviders = new()
+        {
+            new OpenMeteoProvider(),
+            new MetNorwayProvider(),
+            new OpenWeatherMapProvider(),
+            new WeatherApiProvider(),
+            new TomorrowIoProvider(),
+            new AccuWeatherProvider()
+        };
+
+        private List<ProviderWeatherResult> _latestResults = new();
+        private DateTime? _lastSuccessfulSyncTime;
+        private string _consensusDiagnosticsLog = "";
+        private string _consensusConfidenceText = "0%";
+        private string _consensusWeatherCategory = "unknown";
+        private bool _isUpdatingUI = false;
+
+
         [ComImport]
         [Guid("C2CF3110-468E-4474-8350-59A9D0AB82BD")]
         public class DesktopWallpaper { }
@@ -292,7 +310,7 @@ namespace WeatherWall
             SaveConfig();
             PopulateCoordinateInputs();
             Dispatcher.Invoke(() => LocationInput.Text = _config.LocationName);
-            await UpdateWeatherAsync();
+            await UpdateWeatherAsync(true);
         }
 
         private void ApplyTheme()
@@ -363,7 +381,7 @@ namespace WeatherWall
 
                 var contextMenu = new Forms.ContextMenuStrip();
                 contextMenu.Items.Add("Open WeatherWall", null, (s, e) => ShowWindow());
-                contextMenu.Items.Add("Sync Now", null, async (s, e) => await AutoSyncAsync());
+                contextMenu.Items.Add("Sync Now", null, async (s, e) => await AutoSyncAsync(true));
                 contextMenu.Items.Add(new Forms.ToolStripSeparator());
                 contextMenu.Items.Add("Exit", null, (s, e) => {
                     _notifyIcon?.Dispose();
@@ -494,84 +512,409 @@ namespace WeatherWall
             await ApplyRuleBasedWallpaperAsync();
         }
 
-        private async Task AutoSyncAsync()
+        private async Task AutoSyncAsync(bool forceRefresh = false)
         {
             if (_isPaused) return;
-            await UpdateWeatherAsync();
+            await UpdateWeatherAsync(forceRefresh);
             await ApplyRuleBasedWallpaperAsync();
-            Dispatcher.Invoke(() => StatusLastUpdateText.Text = $"Last Sync: {DateTime.Now:HH:mm:ss}");
+            
+            string timeStr = _lastSuccessfulSyncTime.HasValue ? _lastSuccessfulSyncTime.Value.ToString("HH:mm:ss") : "Never";
+            Dispatcher.Invoke(() => StatusLastUpdateText.Text = $"Last Sync: {timeStr}");
         }
 
-        private async Task UpdateWeatherAsync()
+        private async Task UpdateWeatherAsync(bool forceRefresh = false)
+        {
+            // Caching check
+            if (!forceRefresh && _lastSuccessfulSyncTime.HasValue &&
+                DateTime.Now - _lastSuccessfulSyncTime.Value < TimeSpan.FromMinutes(15) &&
+                _latestResults.Count > 0)
+            {
+                Log("Using cached weather data (fetched <15m ago).");
+                ApplyConsensusAndOverride();
+                return;
+            }
+
+            Log($"Refreshing weather data (force={forceRefresh}, Lat={_config.Latitude:F4}, Lon={_config.Longitude:F4})...");
+
+            var fetchTasks = new List<Task<ProviderWeatherResult>>();
+            foreach (var provider in _weatherProviders)
+            {
+                string key = provider.Name switch
+                {
+                    "OpenWeatherMap" => _config.OpenWeatherMapKey,
+                    "WeatherAPI" => _config.WeatherApiKey,
+                    "Tomorrow.io" => _config.TomorrowIoKey,
+                    "AccuWeather" => _config.AccuWeatherKey,
+                    _ => ""
+                };
+
+                if (provider.RequiresApiKey && string.IsNullOrWhiteSpace(key))
+                {
+                    continue;
+                }
+
+                fetchTasks.Add(Task.Run(async () => {
+                    try
+                    {
+                        return await provider.GetWeatherAsync(_httpClient, _config.Latitude, _config.Longitude, key);
+                    }
+                    catch (Exception ex)
+                    {
+                        return new ProviderWeatherResult
+                        {
+                            ProviderName = provider.Name,
+                            Success = false,
+                            ErrorMessage = ex.Message
+                        };
+                    }
+                }));
+            }
+
+            if (fetchTasks.Count == 0)
+            {
+                fetchTasks.Add(new OpenMeteoProvider().GetWeatherAsync(_httpClient, _config.Latitude, _config.Longitude));
+            }
+
+            var results = await Task.WhenAll(fetchTasks);
+            _latestResults = results.ToList();
+
+            var successfulResults = _latestResults.Where(r => r.Success).ToList();
+            if (successfulResults.Count > 0)
+            {
+                _lastSuccessfulSyncTime = DateTime.Now;
+
+                // 1. Filter out stale results (older than 2 hours compared to the latest available observation)
+                var latestObsTime = successfulResults.Max(r => r.ObservationTime ?? DateTime.Now);
+                var freshResults = successfulResults.Where(r => r.ObservationTime == null || 
+                    (latestObsTime - r.ObservationTime.Value).Duration() <= TimeSpan.FromHours(2)).ToList();
+                if (freshResults.Count == 0) freshResults = successfulResults;
+
+                // 2. Aggregate metrics for consensus comparison
+                double avgCloudCover = 0;
+                int ccCount = 0;
+                double avgPrecip = 0;
+                int precipCount = 0;
+
+                int thunderVotes = 0;
+                int snowVotes = 0;
+                int fogVotes = 0;
+                int rainyVotes = 0;
+
+                foreach (var r in freshResults)
+                {
+                    if (r.CloudCover.HasValue) { avgCloudCover += r.CloudCover.Value; ccCount++; }
+                    if (r.Precipitation.HasValue) { avgPrecip += r.Precipitation.Value; precipCount++; }
+                    
+                    if (r.InterpretedCondition == "thunderstorm") thunderVotes++;
+                    else if (r.InterpretedCondition == "snowy") snowVotes++;
+                    else if (r.InterpretedCondition == "foggy") fogVotes++;
+                    else if (r.InterpretedCondition == "rainy") rainyVotes++;
+                }
+
+                if (ccCount > 0) avgCloudCover /= ccCount;
+                if (precipCount > 0) avgPrecip /= precipCount;
+
+                // 3. Robust, Conservative consensus logic to avoid aggressive or extreme weather classifications
+                bool isThunderstorm = false;
+                bool isSnowy = false;
+                bool isFoggy = false;
+                bool isRainy = false;
+
+                // A. Thunderstorm: Require strong confirmation
+                // Must have at least 2 independent providers voting thunderstorm OR if only 1 provider is available, it must be highly confirmed with precip > 0
+                if (thunderVotes > 0)
+                {
+                    if (freshResults.Count >= 2)
+                    {
+                        if (thunderVotes >= 2) isThunderstorm = true;
+                    }
+                    else
+                    {
+                        var r = freshResults[0];
+                        if (r.Precipitation.HasValue && r.Precipitation.Value > 0)
+                        {
+                            isThunderstorm = true;
+                        }
+                    }
+                }
+
+                // B. Snowy: Require snow votes (at least 2 if multiple, or 1 if single)
+                if (snowVotes > 0)
+                {
+                    if (freshResults.Count >= 2)
+                    {
+                        if (snowVotes >= 2 || (double)snowVotes / freshResults.Count >= 0.5) isSnowy = true;
+                    }
+                    else
+                    {
+                        isSnowy = true;
+                    }
+                }
+
+                // C. Foggy: Require fog votes (at least 2 if multiple, or 1 if single)
+                if (fogVotes > 0)
+                {
+                    if (freshResults.Count >= 2)
+                    {
+                        if (fogVotes >= 2 || (double)fogVotes / freshResults.Count >= 0.5) isFoggy = true;
+                    }
+                    else
+                    {
+                        isFoggy = true;
+                    }
+                }
+
+                // D. Rainy: Do not classify rainy unless actual current precipitation exists (> 0 mm)
+                // and is supported by at least one provider voting rainy/thunderstorm.
+                if (avgPrecip > 0 && (rainyVotes > 0 || thunderVotes > 0))
+                {
+                    if (freshResults.Count >= 2)
+                    {
+                        int positivePrecipCount = freshResults.Count(r => r.Precipitation.HasValue && r.Precipitation.Value > 0);
+                        // At least half of the fresh providers must see some precipitation, or average precip must be measurable (>0.2mm)
+                        if ((double)positivePrecipCount / freshResults.Count >= 0.5 || avgPrecip > 0.2)
+                        {
+                            isRainy = true;
+                        }
+                    }
+                    else
+                    {
+                        isRainy = true;
+                    }
+                }
+
+                string finalCondition = "clear";
+                if (isThunderstorm)
+                {
+                    finalCondition = "thunderstorm";
+                }
+                else if (isSnowy)
+                {
+                    finalCondition = "snowy";
+                }
+                else if (isRainy)
+                {
+                    finalCondition = "rainy";
+                }
+                else if (isFoggy)
+                {
+                    finalCondition = "foggy";
+                }
+                else
+                {
+                    // Conservative cloud-cover mapping:
+                    // 0-25% -> clear
+                    // 25-60% -> partly_cloudy
+                    // 60-85% -> cloudy
+                    // 85%+ -> overcast
+                    if (avgCloudCover <= 25) finalCondition = "clear";
+                    else if (avgCloudCover <= 60) finalCondition = "partly_cloudy";
+                    else if (avgCloudCover <= 85) finalCondition = "cloudy";
+                    else finalCondition = "overcast";
+                }
+
+                // Prefer safer conditions when confidence is low
+                int agreementCount = freshResults.Count(r => r.InterpretedCondition == finalCondition);
+                double agreementRatio = (double)agreementCount / freshResults.Count;
+
+                if (agreementRatio < 0.5 && finalCondition == "overcast")
+                {
+                    // Downgrade overcast to cloudy if confidence is low
+                    finalCondition = "cloudy";
+                }
+                else if (agreementRatio < 0.33 && finalCondition == "cloudy")
+                {
+                    // Downgrade cloudy to partly_cloudy if confidence is extremely low
+                    finalCondition = "partly_cloudy";
+                }
+
+                _consensusWeatherCategory = finalCondition;
+                _consensusConfidenceText = $"{(int)(agreementRatio * 100)}%";
+
+                var openMeteoRes = successfulResults.FirstOrDefault(r => r.ProviderName == "Open-Meteo");
+                if (openMeteoRes != null)
+                {
+                    if (openMeteoRes.Sunrise.HasValue) _sunrise = openMeteoRes.Sunrise;
+                    if (openMeteoRes.Sunset.HasValue) _sunset = openMeteoRes.Sunset;
+                    _currentTimeZone = openMeteoRes.Timezone;
+                }
+            }
+            else
+            {
+                _consensusWeatherCategory = "unknown";
+                _consensusConfidenceText = "0%";
+                Log("All weather providers failed to fetch data.");
+            }
+
+            ApplyConsensusAndOverride();
+
+            // Build beautifully detailed, formatted diagnostics log
+            _consensusDiagnosticsLog = $"=== WEATHER DIAGNOSTIC SYSTEM ===\r\n" +
+                                      $"Timestamp: {DateTime.Now:yyyy-MM-dd HH:mm:ss}\r\n" +
+                                      $"Consensus Weather: {WeatherMapper.GetFriendlyName(_consensusWeatherCategory)} ({_consensusWeatherCategory})\r\n" +
+                                      $"Confidence Level: {_consensusConfidenceText}\r\n" +
+                                      $"=================================\r\n\r\n" +
+                                      $"Provider Performance & Metrics:\r\n\r\n";
+
+            foreach (var r in _latestResults)
+            {
+                _consensusDiagnosticsLog += $"[ {r.ProviderName} ]\r\n" +
+                                           $"  - Status: {(r.Success ? "ONLINE" : "OFFLINE")}\r\n";
+                if (r.Success)
+                {
+                    _consensusDiagnosticsLog += $"  - Raw Code: {r.RawCode}\r\n" +
+                                               $"  - Raw Description: {r.RawDescription}\r\n" +
+                                               $"  - Temperature: {(r.Temperature.HasValue ? $"{r.Temperature.Value:F1}°C" : "N/A")}\r\n" +
+                                               $"  - Cloud Cover: {(r.CloudCover.HasValue ? $"{r.CloudCover.Value:F0}%" : "N/A")}\r\n" +
+                                               $"  - Precipitation: {(r.Precipitation.HasValue ? $"{r.Precipitation.Value:F2} mm" : "N/A")}\r\n" +
+                                               $"  - Rain Probability: {(r.RainProbability.HasValue ? $"{r.RainProbability.Value:F0}%" : "N/A")}\r\n" +
+                                               $"  - Observation/Update Time: {(r.ObservationTime.HasValue ? r.ObservationTime.Value.ToString("yyyy-MM-dd HH:mm:ss") : "N/A")}\r\n" +
+                                               $"  - Interpreted WeatherWall Condition: {WeatherMapper.GetFriendlyName(r.InterpretedCondition)} ({r.InterpretedCondition})\r\n";
+                }
+                else
+                {
+                    _consensusDiagnosticsLog += $"  - Error: {r.ErrorMessage}\r\n";
+                }
+                _consensusDiagnosticsLog += "\r\n";
+            }
+            Log(_consensusDiagnosticsLog);
+        }
+
+        private void ApplyConsensusAndOverride()
+        {
+            string activeCondition = _consensusWeatherCategory;
+            bool isOverrideActive = false;
+
+            if (_config.ManualOverrideExpires.HasValue && 
+                _config.ManualOverrideExpires.Value > DateTime.Now && 
+                !string.IsNullOrEmpty(_config.ManualOverrideWeather))
+            {
+                activeCondition = _config.ManualOverrideWeather;
+                isOverrideActive = true;
+            }
+
+            _currentWeatherCategory = activeCondition;
+
+            string friendlyName = WeatherMapper.GetFriendlyName(activeCondition);
+            string icon = WeatherMapper.GetIcon(activeCondition);
+
+            Dispatcher.Invoke(() => {
+                string mainStatus = isOverrideActive ? $"{friendlyName} (Manual Override)" : friendlyName;
+                
+                double? consensusTemp = _latestResults.Where(r => r.Success).Select(r => r.Temperature).FirstOrDefault();
+                if (consensusTemp.HasValue)
+                {
+                    WeatherStatusText.Text = $"{mainStatus} ({consensusTemp.Value:0}°C)";
+                }
+                else
+                {
+                    WeatherStatusText.Text = mainStatus;
+                }
+                WeatherIconText.Text = icon;
+
+                string timePeriod = GetCurrentTimePeriod();
+                StatusConditionText.Text = $"{_config.LocationName.ToUpper()} · {activeCondition.Replace("_", " ").ToUpper()} · {timePeriod.ToUpper()}";
+
+                string overrideStatusText = isOverrideActive 
+                    ? $"[OVERRIDE ACTIVE] Expires: {_config.ManualOverrideExpires:HH:mm:ss}" 
+                    : $"Consensus: {friendlyName} (Confidence: {_consensusConfidenceText})";
+                
+                StatusMatchedText.Text = $"{_config.LocationName} · {friendlyName} · {timePeriod} · {overrideStatusText}";
+                
+                var tooltipContent = $"Location: {_config.LocationName} ({_config.Latitude:F4}, {_config.Longitude:F4})\n" +
+                                     $"Current Time Period: {timePeriod}\n" +
+                                     $"Manual Override: {(isOverrideActive ? $"Yes ({friendlyName}, expires at {_config.ManualOverrideExpires:HH:mm:ss})" : "No")}\n" +
+                                     $"Consensus Condition: {WeatherMapper.GetFriendlyName(_consensusWeatherCategory)}\n" +
+                                     $"Consensus Confidence: {_consensusConfidenceText}\n" +
+                                     $"Last API Fetch: {(_lastSuccessfulSyncTime.HasValue ? _lastSuccessfulSyncTime.Value.ToString("HH:mm:ss") : "Never")}\n\n" +
+                                     $"Provider Statuses:\n";
+
+                foreach (var r in _latestResults)
+                {
+                    if (r.Success)
+                    {
+                        tooltipContent += $"• {r.ProviderName}: {WeatherMapper.GetFriendlyName(r.InterpretedCondition)} | Temp: {r.Temperature:0}°C | Cloud: {r.CloudCover:0}% | Precip: {r.Precipitation:0.##}mm\n";
+                    }
+                    else
+                    {
+                        tooltipContent += $"• {r.ProviderName}: Offline ({r.ErrorMessage})\n";
+                    }
+                }
+                
+                StatusMatchedText.ToolTip = new System.Windows.Controls.ToolTip { Content = tooltipContent };
+
+                UpdateDiagnosticsTabUI();
+            });
+        }
+
+        private void UpdateDiagnosticsTabUI()
         {
             try
             {
-                // Ensure we use 4 decimal places for precision as requested
-                string url = $"https://api.open-meteo.com/v1/forecast?latitude={_config.Latitude:F4}&longitude={_config.Longitude:F4}&current=weather_code,temperature_2m,is_day&daily=sunrise,sunset&timezone=auto";
-                
-                var response = await _httpClient.GetStringAsync(url);
-                using var doc = JsonDocument.Parse(response);
-                var root = doc.RootElement;
-                
-                var current = root.GetProperty("current");
-                int code = current.GetProperty("weather_code").GetInt32();
-                double temp = current.GetProperty("temperature_2m").GetDouble();
-                int isDay = current.TryGetProperty("is_day", out var dayProp) ? dayProp.GetInt32() : 1;
-                string apiTime = current.TryGetProperty("time", out var timeProp) ? timeProp.GetString() ?? "Unknown" : "Unknown";
-                
-                var daily = root.GetProperty("daily");
-                string sunriseStr = daily.GetProperty("sunrise").EnumerateArray().First().GetString() ?? "";
-                string sunsetStr = daily.GetProperty("sunset").EnumerateArray().First().GetString() ?? "";
-                
-                _sunrise = DateTime.Parse(sunriseStr);
-                _sunset = DateTime.Parse(sunsetStr);
-                _currentTimeZone = root.GetProperty("timezone").GetString() ?? "UTC";
+                if (ConsensusConditionText == null) return;
 
-                var (status, icon, category) = MapWeatherCode(code);
-                
-                // RELIABILITY: If it's night but the code suggests clear sun, or vice versa, we could adjust,
-                // but MapWeatherCode handles categories generically.
-                _currentWeatherCategory = category;
-                
-                Log($"Weather Sync: Code={code}, Status={status}, Temp={temp}°C, Lat={_config.Latitude:F4}, Lon={_config.Longitude:F4}, APITime={apiTime}");
+                _isUpdatingUI = true;
 
-                Dispatcher.Invoke(() => {
-                    WeatherStatusText.Text = $"{status} ({temp:0}°C)";
-                    WeatherIconText.Text = icon;
-                    
-                    string timePeriod = GetCurrentTimePeriod();
-                    StatusConditionText.Text = $"{_config.LocationName.ToUpper()} · {status.ToUpper()} · {timePeriod.ToUpper()}";
-                    
-                    // DEBUG VISIBILITY: Update the detailed status bar context with raw data
-                    StatusMatchedText.Text = $"{_config.LocationName} · {status} (Code {code}) · {timePeriod} · Last Sync: {DateTime.Now:HH:mm:ss}";
-                    
-                    // Add Tooltip for deep debugging
-                    StatusMatchedText.ToolTip = new System.Windows.Controls.ToolTip {
-                        Content = $"Raw API Data:\n" +
-                                  $"• Weather Code: {code}\n" +
-                                  $"• Condition: {status}\n" +
-                                  $"• Temperature: {temp}°C\n" +
-                                  $"• Day/Night: {(isDay == 1 ? "Day" : "Night")}\n" +
-                                  $"• API Time: {apiTime}\n" +
-                                  $"• Location: {_config.Latitude:F4}, {_config.Longitude:F4}\n" +
-                                  $"• Timezone: {_currentTimeZone}"
-                    };
-                });
+                ConsensusConditionText.Text = WeatherMapper.GetFriendlyName(_consensusWeatherCategory);
+                ConsensusConfidenceText.Text = _consensusConfidenceText;
+                LastSuccessfulSyncText.Text = _lastSuccessfulSyncTime.HasValue 
+                    ? _lastSuccessfulSyncTime.Value.ToString("HH:mm:ss") 
+                    : "Never";
+
+                if (_lastSuccessfulSyncTime.HasValue && DateTime.Now - _lastSuccessfulSyncTime.Value < TimeSpan.FromMinutes(15))
+                {
+                    CacheStatusText.Text = $"Cached (Expires in {TimeSpan.FromMinutes(15) - (DateTime.Now - _lastSuccessfulSyncTime.Value):mm\\:ss})";
+                    CacheStatusText.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(150, 150, 150));
+                }
+                else
+                {
+                    CacheStatusText.Text = "Stale / Refresh Needed";
+                    CacheStatusText.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(239, 68, 68));
+                }
+
+                bool isOverrideActive = _config.ManualOverrideExpires.HasValue && 
+                                       _config.ManualOverrideExpires.Value > DateTime.Now && 
+                                       !string.IsNullOrEmpty(_config.ManualOverrideWeather);
+
+                ManualOverrideCheckBox.IsChecked = isOverrideActive;
+                if (isOverrideActive && _config.ManualOverrideExpires.HasValue)
+                {
+                    DateTime expires = _config.ManualOverrideExpires.Value;
+                    OverrideExpiresText.Text = $"Expires at {expires:HH:mm:ss} ({(expires - DateTime.Now):hh\\:mm\\:ss} left)";
+                    OverrideExpiresText.Visibility = Visibility.Visible;
+                    foreach (ComboBoxItem item in OverrideWeatherCombo.Items)
+                    {
+                        if (item.Content?.ToString()?.ToLower()?.Replace(" ", "_") == _config.ManualOverrideWeather)
+                        {
+                            OverrideWeatherCombo.SelectedItem = item;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    OverrideExpiresText.Text = "";
+                    OverrideExpiresText.Visibility = Visibility.Collapsed;
+                }
+
+                DiagnosticsLogsText.Text = _consensusDiagnosticsLog;
+
+                if (string.IsNullOrEmpty(OpenWeatherMapKeyInput.Password) && !string.IsNullOrEmpty(_config.OpenWeatherMapKey))
+                    OpenWeatherMapKeyInput.Password = _config.OpenWeatherMapKey;
+                if (string.IsNullOrEmpty(WeatherApiKeyInput.Password) && !string.IsNullOrEmpty(_config.WeatherApiKey))
+                    WeatherApiKeyInput.Password = _config.WeatherApiKey;
+                if (string.IsNullOrEmpty(TomorrowIoKeyInput.Password) && !string.IsNullOrEmpty(_config.TomorrowIoKey))
+                    TomorrowIoKeyInput.Password = _config.TomorrowIoKey;
+                if (string.IsNullOrEmpty(AccuWeatherKeyInput.Password) && !string.IsNullOrEmpty(_config.AccuWeatherKey))
+                    AccuWeatherKeyInput.Password = _config.AccuWeatherKey;
             }
-            catch (Exception ex)
+            catch { }
+            finally
             {
-                // PREVENT STALE STATE: Reset category on repeated failure
-                _currentWeatherCategory = "unknown";
-                
-                Dispatcher.Invoke(() => {
-                    WeatherStatusText.Text = "Offline";
-                    WeatherIconText.Text = "⚠️";
-                    StatusMatchedText.Text = $"Sync Error: {DateTime.Now:HH:mm:ss}";
-                    StatusMatchedText.ToolTip = $"Error: {ex.Message}";
-                });
-                Log($"Weather Fetch Error: {ex.Message}");
+                _isUpdatingUI = false;
             }
         }
+
 
         private string GetCurrentTimePeriod()
         {
@@ -854,6 +1197,59 @@ namespace WeatherWall
 
         private void FileListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
 
+        private void SaveApiKeys_Click(object sender, RoutedEventArgs e)
+        {
+            _config.OpenWeatherMapKey = OpenWeatherMapKeyInput.Password.Trim();
+            _config.WeatherApiKey = WeatherApiKeyInput.Password.Trim();
+            _config.TomorrowIoKey = TomorrowIoKeyInput.Password.Trim();
+            _config.AccuWeatherKey = AccuWeatherKeyInput.Password.Trim();
+            SaveConfig();
+            
+            System.Windows.MessageBox.Show("API Keys saved successfully. Refreshing weather...", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            _ = UpdateWeatherAsync(true);
+        }
+
+        private void ManualOverride_Checked(object sender, RoutedEventArgs e)
+        {
+            if (_isUpdatingUI) return;
+
+            if (OverrideWeatherCombo.SelectedItem is ComboBoxItem item)
+            {
+                string targetWeather = item.Content.ToString() ?? "Clear";
+                _config.ManualOverrideWeather = targetWeather.ToLower().Replace(" ", "_");
+                _config.ManualOverrideExpires = DateTime.Now.AddHours(4); // Expiry in 4 hours
+                SaveConfig();
+                ApplyConsensusAndOverride();
+                _ = ApplyRuleBasedWallpaperAsync();
+            }
+        }
+
+        private void ManualOverride_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (_isUpdatingUI) return;
+
+            _config.ManualOverrideWeather = "";
+            _config.ManualOverrideExpires = null;
+            SaveConfig();
+            ApplyConsensusAndOverride();
+            _ = ApplyRuleBasedWallpaperAsync();
+        }
+
+        private void OverrideWeatherCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_isUpdatingUI) return;
+
+            if (ManualOverrideCheckBox != null && ManualOverrideCheckBox.IsChecked == true && OverrideWeatherCombo.SelectedItem is ComboBoxItem item)
+            {
+                string targetWeather = item.Content.ToString() ?? "Clear";
+                _config.ManualOverrideWeather = targetWeather.ToLower().Replace(" ", "_");
+                _config.ManualOverrideExpires = DateTime.Now.AddHours(4);
+                SaveConfig();
+                ApplyConsensusAndOverride();
+                _ = ApplyRuleBasedWallpaperAsync();
+            }
+        }
+
         private async void SetWallpaper_Click(object sender, RoutedEventArgs e)
         {
             if (sender is System.Windows.Controls.Button btn && btn.DataContext is WallpaperItem item)
@@ -1112,7 +1508,13 @@ namespace WeatherWall
         public double Longitude { get; set; } = 0;
         public string LocationName { get; set; } = "Unknown";
         public bool AutoLocation { get; set; } = true;
+
+        public string OpenWeatherMapKey { get; set; } = "";
+        public string WeatherApiKey { get; set; } = "";
+        public string TomorrowIoKey { get; set; } = "";
+        public string AccuWeatherKey { get; set; } = "";
+
+        public string ManualOverrideWeather { get; set; } = "";
+        public DateTime? ManualOverrideExpires { get; set; }
     }
-
-
 }
