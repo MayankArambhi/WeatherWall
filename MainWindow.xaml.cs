@@ -1451,7 +1451,7 @@ namespace WeatherWall
             }
         }
 
-        private List<SuggestedRule> _suggestedMatches = new();
+        private List<OptimizedRule> _suggestedMatches = new();
         private readonly AITaggingService _aiTaggingService = new();
 
         private async void GenerateTags_Click(object sender, RoutedEventArgs e)
@@ -1464,7 +1464,7 @@ namespace WeatherWall
 
             GenerateTagsBtn.IsEnabled = false;
             AITagResultsPanel.Children.Clear();
-            AITagResultsPanel.Children.Add(new TextBlock { Text = "Extracting semantic descriptors and evaluating conditions matrix...", Foreground = new SolidColorBrush(Colors.Gray), Margin = new Thickness(0,0,0,8) });
+            AITagResultsPanel.Children.Add(new TextBlock { Text = "Running CLIP analysis on wallpapers...", Foreground = new SolidColorBrush(Colors.Gray), Margin = new Thickness(0,0,0,8) });
             
             _suggestedMatches.Clear();
             CreateSuggestedRulesBtn.IsEnabled = false;
@@ -1483,14 +1483,14 @@ namespace WeatherWall
                         container.Children.Add(new TextBlock { Text = $"Condition: {match.Weather.ToUpper()} + {match.TimePeriod.ToUpper()}", FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(220,220,220)) });
                         
                         var bestTb = new TextBlock { Margin = new Thickness(8,4,0,0) };
-                        if (match.Confidence.NeedsReview)
+                        if (match.NeedsReview)
                         {
-                            bestTb.Text = $"Best match: {match.BestFileName} (Confidence: {match.Confidence.Score}% - Needs Review)";
+                            bestTb.Text = $"Best match: {match.SelectedFileName} (Confidence: {match.Confidence:F1}% - Needs Review)";
                             bestTb.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(234, 179, 8)); // Yellow for low conf
                         }
                         else
                         {
-                            bestTb.Text = $"Best match: {match.BestFileName} (Confidence: {match.Confidence.Score}%)";
+                            bestTb.Text = $"Best match: {match.SelectedFileName} (Confidence: {match.Confidence:F1}%)";
                             bestTb.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(74, 222, 128)); // Green
                         }
                         container.Children.Add(bestTb);
@@ -1506,7 +1506,7 @@ namespace WeatherWall
                 }
             });
 
-            AITagResultsPanel.Children.Add(new TextBlock { Text = "Analysis Complete.", Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(74, 222, 128)), FontWeight = FontWeights.Bold, Margin = new Thickness(0,8,0,0) });
+            AITagResultsPanel.Children.Add(new TextBlock { Text = "CLIP Analysis Complete.", Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(74, 222, 128)), FontWeight = FontWeights.Bold, Margin = new Thickness(0,8,0,0) });
             CreateSuggestedRulesBtn.IsEnabled = _suggestedMatches.Count > 0;
             GenerateTagsBtn.IsEnabled = true;
         }
@@ -1522,7 +1522,7 @@ namespace WeatherWall
                 int removed = _config.Rules.RemoveAll(r => r.Weather == match.Weather && r.TimePeriod == match.TimePeriod);
                 if (removed > 0) replacedCount++;
                 
-                _config.Rules.Add(new WallpaperRule { FileName = match.BestFileName, Weather = match.Weather, TimePeriod = match.TimePeriod });
+                _config.Rules.Add(new WallpaperRule { FileName = match.SelectedFileName, Weather = match.Weather, TimePeriod = match.TimePeriod });
                 addedCount++;
             }
 
@@ -1531,7 +1531,7 @@ namespace WeatherWall
                 SaveConfig();
                 RefreshRulesList();
                 _ = ApplyRuleBasedWallpaperAsync();
-                System.Windows.MessageBox.Show($"Successfully applied {addedCount} rules.\n{replacedCount} existing overlapping rules were replaced to prevent duplicates.", "Suggestions Accepted", MessageBoxButton.OK, MessageBoxImage.Information);
+                System.Windows.MessageBox.Show($"Successfully applied {addedCount} AI-generated rules.\n{replacedCount} existing overlapping rules were replaced.", "AI Rules Accepted", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             
             _suggestedMatches.Clear();

@@ -1,0 +1,1411 @@
+{
+  "model": "clip-ViT-B-32",
+  "version": 2,
+  "algorithm": "condition-based-assignment",
+  "total_images": 15,
+  "successfully_encoded": 15,
+  "failed_images": 0,
+  "total_conditions": 40,
+  "analysis": {
+    "clear_morning": {
+      "best_image": "michael-held-6fRHGqbp1_4-unsplash.jpg",
+      "best_confidence": 63.9,
+      "top_3": [
+        [
+          "michael-held-6fRHGqbp1_4-unsplash.jpg",
+          63.9
+        ],
+        [
+          "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg",
+          63.3
+        ],
+        [
+          "941898.jpg",
+          62.8
+        ]
+      ],
+      "all_scores": {
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 63.9,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 63.3,
+        "941898.jpg": 62.8,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 62.5,
+        "Clear-Night.png": 62.3,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 62.2,
+        "Clear-AN.png": 62.2,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 62.1,
+        "Vice_City_08.jpg": 60.1,
+        "Vice_City_01.jpg": 60.1,
+        "Leonida_Keys_01.jpg": 59.9,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 59.5,
+        "Leonida_Keys_04.jpg": 59.1,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 58.6,
+        "Ambrosia_02.jpg": 58.2
+      }
+    },
+    "clear_afternoon": {
+      "best_image": "941898.jpg",
+      "best_confidence": 63.7,
+      "top_3": [
+        [
+          "941898.jpg",
+          63.7
+        ],
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          63.4
+        ],
+        [
+          "Clear-AN.png",
+          62.2
+        ]
+      ],
+      "all_scores": {
+        "941898.jpg": 63.7,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 63.4,
+        "Clear-AN.png": 62.2,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 62.0,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 61.8,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 61.8,
+        "Leonida_Keys_01.jpg": 61.1,
+        "Clear-Night.png": 60.6,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 60.5,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 60.5,
+        "Leonida_Keys_04.jpg": 59.9,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 59.5,
+        "Vice_City_01.jpg": 59.4,
+        "Vice_City_08.jpg": 59.4,
+        "Ambrosia_02.jpg": 58.3
+      }
+    },
+    "clear_evening": {
+      "best_image": "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg",
+      "best_confidence": 63.6,
+      "top_3": [
+        [
+          "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg",
+          63.6
+        ],
+        [
+          "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg",
+          62.4
+        ],
+        [
+          "Clear-Night.png",
+          62.2
+        ]
+      ],
+      "all_scores": {
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 63.6,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 62.4,
+        "Clear-Night.png": 62.2,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 61.4,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 60.5,
+        "Vice_City_01.jpg": 60.5,
+        "Vice_City_08.jpg": 59.6,
+        "941898.jpg": 59.6,
+        "Clear-AN.png": 59.1,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 58.9,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 58.7,
+        "Ambrosia_02.jpg": 57.3,
+        "Leonida_Keys_01.jpg": 57.0,
+        "Leonida_Keys_04.jpg": 56.5,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 56.3
+      }
+    },
+    "clear_night": {
+      "best_image": "johannes-plenio-DKix6Un55mw-unsplash.jpg",
+      "best_confidence": 62.8,
+      "top_3": [
+        [
+          "johannes-plenio-DKix6Un55mw-unsplash.jpg",
+          62.8
+        ],
+        [
+          "Clear-Night.png",
+          61.7
+        ],
+        [
+          "Vice_City_08.jpg",
+          61.6
+        ]
+      ],
+      "all_scores": {
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 62.8,
+        "Clear-Night.png": 61.7,
+        "Vice_City_08.jpg": 61.6,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 60.8,
+        "Ambrosia_02.jpg": 60.3,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 60.3,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 60.2,
+        "941898.jpg": 60.2,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 60.1,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 59.3,
+        "Vice_City_01.jpg": 59.0,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 58.9,
+        "Clear-AN.png": 58.9,
+        "Leonida_Keys_04.jpg": 58.4,
+        "Leonida_Keys_01.jpg": 57.7
+      }
+    },
+    "partly_cloudy_morning": {
+      "best_image": "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+      "best_confidence": 63.3,
+      "top_3": [
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          63.3
+        ],
+        [
+          "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+          61.8
+        ],
+        [
+          "941898.jpg",
+          61.7
+        ]
+      ],
+      "all_scores": {
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 63.3,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 61.8,
+        "941898.jpg": 61.7,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 61.1,
+        "Clear-AN.png": 61.0,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 60.9,
+        "Clear-Night.png": 60.8,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 60.2,
+        "Vice_City_01.jpg": 59.6,
+        "Vice_City_08.jpg": 59.6,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 59.5,
+        "Leonida_Keys_01.jpg": 59.5,
+        "Ambrosia_02.jpg": 59.3,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 58.7,
+        "Leonida_Keys_04.jpg": 57.2
+      }
+    },
+    "partly_cloudy_afternoon": {
+      "best_image": "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+      "best_confidence": 63.7,
+      "top_3": [
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          63.7
+        ],
+        [
+          "michael-held-6fRHGqbp1_4-unsplash.jpg",
+          62.0
+        ],
+        [
+          "941898.jpg",
+          61.3
+        ]
+      ],
+      "all_scores": {
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 63.7,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 62.0,
+        "941898.jpg": 61.3,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 61.2,
+        "Clear-AN.png": 61.2,
+        "Clear-Night.png": 60.2,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 60.2,
+        "Vice_City_01.jpg": 60.1,
+        "Vice_City_08.jpg": 59.6,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 59.5,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 59.2,
+        "Ambrosia_02.jpg": 59.2,
+        "Leonida_Keys_01.jpg": 59.1,
+        "Leonida_Keys_04.jpg": 57.9,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 57.7
+      }
+    },
+    "partly_cloudy_evening": {
+      "best_image": "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+      "best_confidence": 61.7,
+      "top_3": [
+        [
+          "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+          61.7
+        ],
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          61.5
+        ],
+        [
+          "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg",
+          61.1
+        ]
+      ],
+      "all_scores": {
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 61.7,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 61.5,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 61.1,
+        "Clear-Night.png": 61.0,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 60.6,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 60.4,
+        "Vice_City_01.jpg": 60.3,
+        "941898.jpg": 59.7,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 59.1,
+        "Clear-AN.png": 59.1,
+        "Ambrosia_02.jpg": 59.1,
+        "Vice_City_08.jpg": 58.4,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 57.9,
+        "Leonida_Keys_01.jpg": 56.8,
+        "Leonida_Keys_04.jpg": 55.5
+      }
+    },
+    "partly_cloudy_night": {
+      "best_image": "johannes-plenio-DKix6Un55mw-unsplash.jpg",
+      "best_confidence": 62.6,
+      "top_3": [
+        [
+          "johannes-plenio-DKix6Un55mw-unsplash.jpg",
+          62.6
+        ],
+        [
+          "Ambrosia_02.jpg",
+          61.8
+        ],
+        [
+          "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+          61.7
+        ]
+      ],
+      "all_scores": {
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 62.6,
+        "Ambrosia_02.jpg": 61.8,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 61.7,
+        "Clear-Night.png": 61.6,
+        "Vice_City_08.jpg": 60.8,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 60.3,
+        "Vice_City_01.jpg": 60.3,
+        "941898.jpg": 60.1,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 59.9,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 59.6,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 59.6,
+        "Clear-AN.png": 59.1,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 58.7,
+        "Leonida_Keys_01.jpg": 58.0,
+        "Leonida_Keys_04.jpg": 56.9
+      }
+    },
+    "cloudy_morning": {
+      "best_image": "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+      "best_confidence": 62.0,
+      "top_3": [
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          62.0
+        ],
+        [
+          "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+          61.1
+        ],
+        [
+          "Clear-Night.png",
+          61.1
+        ]
+      ],
+      "all_scores": {
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 62.0,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 61.1,
+        "Clear-Night.png": 61.1,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 60.9,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 60.3,
+        "Vice_City_08.jpg": 60.2,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 60.1,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 59.9,
+        "941898.jpg": 59.8,
+        "Clear-AN.png": 59.8,
+        "Vice_City_01.jpg": 59.4,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 58.8,
+        "Ambrosia_02.jpg": 58.8,
+        "Leonida_Keys_01.jpg": 56.5,
+        "Leonida_Keys_04.jpg": 56.2
+      }
+    },
+    "cloudy_afternoon": {
+      "best_image": "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+      "best_confidence": 61.7,
+      "top_3": [
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          61.7
+        ],
+        [
+          "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+          60.3
+        ],
+        [
+          "Clear-Night.png",
+          60.2
+        ]
+      ],
+      "all_scores": {
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 61.7,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 60.3,
+        "Clear-Night.png": 60.2,
+        "Vice_City_08.jpg": 60.0,
+        "941898.jpg": 60.0,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 59.6,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 59.6,
+        "Ambrosia_02.jpg": 59.6,
+        "Vice_City_01.jpg": 59.4,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 59.2,
+        "Clear-AN.png": 59.2,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 58.4,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 58.2,
+        "Leonida_Keys_01.jpg": 57.2,
+        "Leonida_Keys_04.jpg": 55.8
+      }
+    },
+    "cloudy_evening": {
+      "best_image": "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+      "best_confidence": 61.9,
+      "top_3": [
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          61.9
+        ],
+        [
+          "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+          60.9
+        ],
+        [
+          "Vice_City_08.jpg",
+          60.9
+        ]
+      ],
+      "all_scores": {
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 61.9,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 60.9,
+        "Vice_City_08.jpg": 60.9,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 60.6,
+        "Clear-Night.png": 60.5,
+        "Ambrosia_02.jpg": 60.4,
+        "Vice_City_01.jpg": 60.3,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 60.3,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 60.1,
+        "941898.jpg": 59.9,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 59.5,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 59.5,
+        "Clear-AN.png": 58.6,
+        "Leonida_Keys_01.jpg": 57.0,
+        "Leonida_Keys_04.jpg": 56.0
+      }
+    },
+    "cloudy_night": {
+      "best_image": "johannes-plenio-DKix6Un55mw-unsplash.jpg",
+      "best_confidence": 62.8,
+      "top_3": [
+        [
+          "johannes-plenio-DKix6Un55mw-unsplash.jpg",
+          62.8
+        ],
+        [
+          "Vice_City_08.jpg",
+          61.7
+        ],
+        [
+          "Ambrosia_02.jpg",
+          61.5
+        ]
+      ],
+      "all_scores": {
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 62.8,
+        "Vice_City_08.jpg": 61.7,
+        "Ambrosia_02.jpg": 61.5,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 61.1,
+        "Clear-Night.png": 61.1,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 60.3,
+        "Vice_City_01.jpg": 60.2,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 60.2,
+        "941898.jpg": 59.8,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 59.7,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 59.7,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 58.1,
+        "Clear-AN.png": 57.9,
+        "Leonida_Keys_01.jpg": 56.6,
+        "Leonida_Keys_04.jpg": 55.7
+      }
+    },
+    "overcast_morning": {
+      "best_image": "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+      "best_confidence": 60.7,
+      "top_3": [
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          60.7
+        ],
+        [
+          "Vice_City_08.jpg",
+          60.2
+        ],
+        [
+          "Ambrosia_02.jpg",
+          59.7
+        ]
+      ],
+      "all_scores": {
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 60.7,
+        "Vice_City_08.jpg": 60.2,
+        "Ambrosia_02.jpg": 59.7,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 59.5,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 59.4,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 59.4,
+        "Vice_City_01.jpg": 58.7,
+        "Clear-Night.png": 58.6,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 58.6,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 58.3,
+        "941898.jpg": 58.2,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 58.1,
+        "Clear-AN.png": 57.2,
+        "Leonida_Keys_04.jpg": 56.3,
+        "Leonida_Keys_01.jpg": 56.3
+      }
+    },
+    "overcast_afternoon": {
+      "best_image": "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+      "best_confidence": 61.4,
+      "top_3": [
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          61.4
+        ],
+        [
+          "Vice_City_08.jpg",
+          60.5
+        ],
+        [
+          "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+          59.9
+        ]
+      ],
+      "all_scores": {
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 61.4,
+        "Vice_City_08.jpg": 60.5,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 59.9,
+        "Ambrosia_02.jpg": 59.8,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 59.7,
+        "Clear-Night.png": 59.6,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 59.4,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 59.3,
+        "941898.jpg": 59.1,
+        "Vice_City_01.jpg": 58.9,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 58.7,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 58.5,
+        "Clear-AN.png": 58.4,
+        "Leonida_Keys_01.jpg": 57.0,
+        "Leonida_Keys_04.jpg": 56.8
+      }
+    },
+    "overcast_evening": {
+      "best_image": "Clear-Night.png",
+      "best_confidence": 62.1,
+      "top_3": [
+        [
+          "Clear-Night.png",
+          62.1
+        ],
+        [
+          "johannes-plenio-DKix6Un55mw-unsplash.jpg",
+          61.8
+        ],
+        [
+          "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg",
+          61.7
+        ]
+      ],
+      "all_scores": {
+        "Clear-Night.png": 62.1,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 61.8,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 61.7,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 61.1,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 61.1,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 61.1,
+        "Vice_City_01.jpg": 61.1,
+        "Ambrosia_02.jpg": 60.9,
+        "Vice_City_08.jpg": 60.7,
+        "941898.jpg": 60.6,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 60.0,
+        "Clear-AN.png": 59.4,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 59.0,
+        "Leonida_Keys_01.jpg": 57.7,
+        "Leonida_Keys_04.jpg": 56.3
+      }
+    },
+    "overcast_night": {
+      "best_image": "Ambrosia_02.jpg",
+      "best_confidence": 61.7,
+      "top_3": [
+        [
+          "Ambrosia_02.jpg",
+          61.7
+        ],
+        [
+          "Vice_City_08.jpg",
+          61.1
+        ],
+        [
+          "johannes-plenio-DKix6Un55mw-unsplash.jpg",
+          61.1
+        ]
+      ],
+      "all_scores": {
+        "Ambrosia_02.jpg": 61.7,
+        "Vice_City_08.jpg": 61.1,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 61.1,
+        "Clear-Night.png": 60.6,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 60.5,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 60.0,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 59.6,
+        "Vice_City_01.jpg": 59.5,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 59.2,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 59.1,
+        "941898.jpg": 58.6,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 58.4,
+        "Clear-AN.png": 57.6,
+        "Leonida_Keys_04.jpg": 57.3,
+        "Leonida_Keys_01.jpg": 57.2
+      }
+    },
+    "rainy_morning": {
+      "best_image": "Ambrosia_02.jpg",
+      "best_confidence": 61.0,
+      "top_3": [
+        [
+          "Ambrosia_02.jpg",
+          61.0
+        ],
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          61.0
+        ],
+        [
+          "Vice_City_08.jpg",
+          60.5
+        ]
+      ],
+      "all_scores": {
+        "Ambrosia_02.jpg": 61.0,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 61.0,
+        "Vice_City_08.jpg": 60.5,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 60.0,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 59.9,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 59.8,
+        "Clear-Night.png": 59.2,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 59.1,
+        "Vice_City_01.jpg": 59.0,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 58.8,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 58.6,
+        "941898.jpg": 58.4,
+        "Leonida_Keys_04.jpg": 58.2,
+        "Clear-AN.png": 58.0,
+        "Leonida_Keys_01.jpg": 56.8
+      }
+    },
+    "rainy_afternoon": {
+      "best_image": "Ambrosia_02.jpg",
+      "best_confidence": 61.4,
+      "top_3": [
+        [
+          "Ambrosia_02.jpg",
+          61.4
+        ],
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          61.2
+        ],
+        [
+          "Vice_City_08.jpg",
+          60.8
+        ]
+      ],
+      "all_scores": {
+        "Ambrosia_02.jpg": 61.4,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 61.2,
+        "Vice_City_08.jpg": 60.8,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 59.9,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 59.8,
+        "Vice_City_01.jpg": 59.4,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 59.3,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 59.1,
+        "941898.jpg": 58.7,
+        "Clear-Night.png": 58.6,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 58.5,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 58.0,
+        "Clear-AN.png": 58.0,
+        "Leonida_Keys_01.jpg": 57.7,
+        "Leonida_Keys_04.jpg": 57.2
+      }
+    },
+    "rainy_evening": {
+      "best_image": "Ambrosia_02.jpg",
+      "best_confidence": 61.9,
+      "top_3": [
+        [
+          "Ambrosia_02.jpg",
+          61.9
+        ],
+        [
+          "Vice_City_08.jpg",
+          61.2
+        ],
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          61.0
+        ]
+      ],
+      "all_scores": {
+        "Ambrosia_02.jpg": 61.9,
+        "Vice_City_08.jpg": 61.2,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 61.0,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 60.8,
+        "Clear-Night.png": 60.8,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 60.6,
+        "Vice_City_01.jpg": 60.5,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 60.0,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 59.9,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 59.7,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 59.6,
+        "Leonida_Keys_04.jpg": 59.2,
+        "941898.jpg": 59.0,
+        "Clear-AN.png": 58.6,
+        "Leonida_Keys_01.jpg": 57.4
+      }
+    },
+    "rainy_night": {
+      "best_image": "Ambrosia_02.jpg",
+      "best_confidence": 62.9,
+      "top_3": [
+        [
+          "Ambrosia_02.jpg",
+          62.9
+        ],
+        [
+          "johannes-plenio-DKix6Un55mw-unsplash.jpg",
+          62.0
+        ],
+        [
+          "Vice_City_08.jpg",
+          61.5
+        ]
+      ],
+      "all_scores": {
+        "Ambrosia_02.jpg": 62.9,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 62.0,
+        "Vice_City_08.jpg": 61.5,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 60.7,
+        "Vice_City_01.jpg": 60.2,
+        "Clear-Night.png": 59.8,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 59.6,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 59.4,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 59.3,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 59.1,
+        "Leonida_Keys_04.jpg": 58.8,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 58.6,
+        "941898.jpg": 57.8,
+        "Clear-AN.png": 56.9,
+        "Leonida_Keys_01.jpg": 56.8
+      }
+    },
+    "drizzle_morning": {
+      "best_image": "michael-held-6fRHGqbp1_4-unsplash.jpg",
+      "best_confidence": 61.7,
+      "top_3": [
+        [
+          "michael-held-6fRHGqbp1_4-unsplash.jpg",
+          61.7
+        ],
+        [
+          "Vice_City_08.jpg",
+          61.5
+        ],
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          61.3
+        ]
+      ],
+      "all_scores": {
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 61.7,
+        "Vice_City_08.jpg": 61.5,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 61.3,
+        "Ambrosia_02.jpg": 61.0,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 61.0,
+        "Clear-Night.png": 60.7,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 60.6,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 60.3,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 60.3,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 60.1,
+        "Clear-AN.png": 59.7,
+        "941898.jpg": 59.3,
+        "Vice_City_01.jpg": 59.2,
+        "Leonida_Keys_04.jpg": 58.3,
+        "Leonida_Keys_01.jpg": 57.5
+      }
+    },
+    "drizzle_afternoon": {
+      "best_image": "Vice_City_08.jpg",
+      "best_confidence": 62.2,
+      "top_3": [
+        [
+          "Vice_City_08.jpg",
+          62.2
+        ],
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          62.1
+        ],
+        [
+          "michael-held-6fRHGqbp1_4-unsplash.jpg",
+          61.5
+        ]
+      ],
+      "all_scores": {
+        "Vice_City_08.jpg": 62.2,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 62.1,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 61.5,
+        "Ambrosia_02.jpg": 61.4,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 60.8,
+        "Clear-Night.png": 60.5,
+        "Clear-AN.png": 60.4,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 60.1,
+        "941898.jpg": 60.0,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 60.0,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 59.9,
+        "Vice_City_01.jpg": 59.7,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 59.5,
+        "Leonida_Keys_01.jpg": 58.9,
+        "Leonida_Keys_04.jpg": 58.8
+      }
+    },
+    "drizzle_evening": {
+      "best_image": "Vice_City_08.jpg",
+      "best_confidence": 62.7,
+      "top_3": [
+        [
+          "Vice_City_08.jpg",
+          62.7
+        ],
+        [
+          "Ambrosia_02.jpg",
+          62.4
+        ],
+        [
+          "johannes-plenio-DKix6Un55mw-unsplash.jpg",
+          61.8
+        ]
+      ],
+      "all_scores": {
+        "Vice_City_08.jpg": 62.7,
+        "Ambrosia_02.jpg": 62.4,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 61.8,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 61.8,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 61.7,
+        "Clear-Night.png": 61.5,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 60.8,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 60.7,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 60.7,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 60.4,
+        "Vice_City_01.jpg": 60.4,
+        "Clear-AN.png": 60.0,
+        "941898.jpg": 59.7,
+        "Leonida_Keys_04.jpg": 58.7,
+        "Leonida_Keys_01.jpg": 58.6
+      }
+    },
+    "drizzle_night": {
+      "best_image": "Vice_City_08.jpg",
+      "best_confidence": 62.7,
+      "top_3": [
+        [
+          "Vice_City_08.jpg",
+          62.7
+        ],
+        [
+          "Ambrosia_02.jpg",
+          62.2
+        ],
+        [
+          "johannes-plenio-DKix6Un55mw-unsplash.jpg",
+          61.9
+        ]
+      ],
+      "all_scores": {
+        "Vice_City_08.jpg": 62.7,
+        "Ambrosia_02.jpg": 62.2,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 61.9,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 61.3,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 61.1,
+        "Clear-Night.png": 60.9,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 60.7,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 60.1,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 60.1,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 59.7,
+        "Vice_City_01.jpg": 59.7,
+        "Clear-AN.png": 59.2,
+        "941898.jpg": 59.0,
+        "Leonida_Keys_04.jpg": 58.4,
+        "Leonida_Keys_01.jpg": 57.7
+      }
+    },
+    "thunderstorm_morning": {
+      "best_image": "Ambrosia_02.jpg",
+      "best_confidence": 61.2,
+      "top_3": [
+        [
+          "Ambrosia_02.jpg",
+          61.2
+        ],
+        [
+          "cool-lightning-1osaou7bh36rwvk9.jpg",
+          60.2
+        ],
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          59.7
+        ]
+      ],
+      "all_scores": {
+        "Ambrosia_02.jpg": 61.2,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 60.2,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 59.7,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 59.7,
+        "Vice_City_08.jpg": 59.6,
+        "Vice_City_01.jpg": 59.4,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 59.0,
+        "Clear-Night.png": 58.9,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 58.8,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 58.7,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 57.9,
+        "Leonida_Keys_04.jpg": 57.1,
+        "941898.jpg": 56.9,
+        "Clear-AN.png": 56.2,
+        "Leonida_Keys_01.jpg": 55.4
+      }
+    },
+    "thunderstorm_afternoon": {
+      "best_image": "cool-lightning-1osaou7bh36rwvk9.jpg",
+      "best_confidence": 60.8,
+      "top_3": [
+        [
+          "cool-lightning-1osaou7bh36rwvk9.jpg",
+          60.8
+        ],
+        [
+          "Ambrosia_02.jpg",
+          60.7
+        ],
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          60.1
+        ]
+      ],
+      "all_scores": {
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 60.8,
+        "Ambrosia_02.jpg": 60.7,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 60.1,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 59.3,
+        "Vice_City_01.jpg": 59.2,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 58.8,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 58.5,
+        "Vice_City_08.jpg": 58.4,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 58.0,
+        "Clear-Night.png": 57.9,
+        "941898.jpg": 57.2,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 57.2,
+        "Clear-AN.png": 56.6,
+        "Leonida_Keys_04.jpg": 56.5,
+        "Leonida_Keys_01.jpg": 55.5
+      }
+    },
+    "thunderstorm_evening": {
+      "best_image": "Ambrosia_02.jpg",
+      "best_confidence": 61.7,
+      "top_3": [
+        [
+          "Ambrosia_02.jpg",
+          61.7
+        ],
+        [
+          "cool-lightning-1osaou7bh36rwvk9.jpg",
+          60.9
+        ],
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          60.3
+        ]
+      ],
+      "all_scores": {
+        "Ambrosia_02.jpg": 61.7,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 60.9,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 60.3,
+        "Vice_City_08.jpg": 60.2,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 60.1,
+        "Vice_City_01.jpg": 59.8,
+        "Clear-Night.png": 59.3,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 59.0,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 58.9,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 58.7,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 58.6,
+        "941898.jpg": 57.7,
+        "Leonida_Keys_04.jpg": 57.2,
+        "Clear-AN.png": 56.7,
+        "Leonida_Keys_01.jpg": 56.0
+      }
+    },
+    "thunderstorm_night": {
+      "best_image": "Ambrosia_02.jpg",
+      "best_confidence": 62.6,
+      "top_3": [
+        [
+          "Ambrosia_02.jpg",
+          62.6
+        ],
+        [
+          "cool-lightning-1osaou7bh36rwvk9.jpg",
+          61.8
+        ],
+        [
+          "johannes-plenio-DKix6Un55mw-unsplash.jpg",
+          61.1
+        ]
+      ],
+      "all_scores": {
+        "Ambrosia_02.jpg": 62.6,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 61.8,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 61.1,
+        "Vice_City_08.jpg": 60.4,
+        "Vice_City_01.jpg": 60.3,
+        "Clear-Night.png": 59.3,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 59.2,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 58.9,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 58.9,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 58.7,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 58.5,
+        "Leonida_Keys_04.jpg": 57.7,
+        "941898.jpg": 57.2,
+        "Clear-AN.png": 56.2,
+        "Leonida_Keys_01.jpg": 56.1
+      }
+    },
+    "foggy_morning": {
+      "best_image": "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg",
+      "best_confidence": 61.9,
+      "top_3": [
+        [
+          "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg",
+          61.9
+        ],
+        [
+          "Clear-Night.png",
+          61.5
+        ],
+        [
+          "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+          61.2
+        ]
+      ],
+      "all_scores": {
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 61.9,
+        "Clear-Night.png": 61.5,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 61.2,
+        "Vice_City_08.jpg": 60.8,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 60.5,
+        "Ambrosia_02.jpg": 60.4,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 60.2,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 60.2,
+        "Clear-AN.png": 59.5,
+        "941898.jpg": 59.3,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 59.2,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 58.6,
+        "Vice_City_01.jpg": 58.1,
+        "Leonida_Keys_04.jpg": 57.5,
+        "Leonida_Keys_01.jpg": 56.6
+      }
+    },
+    "foggy_afternoon": {
+      "best_image": "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg",
+      "best_confidence": 61.8,
+      "top_3": [
+        [
+          "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg",
+          61.8
+        ],
+        [
+          "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+          61.3
+        ],
+        [
+          "Ambrosia_02.jpg",
+          61.3
+        ]
+      ],
+      "all_scores": {
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 61.8,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 61.3,
+        "Ambrosia_02.jpg": 61.3,
+        "Vice_City_08.jpg": 61.2,
+        "Clear-Night.png": 61.1,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 60.6,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 60.2,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 60.2,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 59.7,
+        "941898.jpg": 59.5,
+        "Clear-AN.png": 59.4,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 58.9,
+        "Vice_City_01.jpg": 58.6,
+        "Leonida_Keys_01.jpg": 58.3,
+        "Leonida_Keys_04.jpg": 58.0
+      }
+    },
+    "foggy_evening": {
+      "best_image": "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg",
+      "best_confidence": 63.2,
+      "top_3": [
+        [
+          "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg",
+          63.2
+        ],
+        [
+          "Clear-Night.png",
+          62.6
+        ],
+        [
+          "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+          62.1
+        ]
+      ],
+      "all_scores": {
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 63.2,
+        "Clear-Night.png": 62.6,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 62.1,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 61.9,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 61.6,
+        "Ambrosia_02.jpg": 61.4,
+        "Vice_City_08.jpg": 60.9,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 60.8,
+        "Vice_City_01.jpg": 59.7,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 59.4,
+        "Clear-AN.png": 59.3,
+        "941898.jpg": 59.1,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 58.7,
+        "Leonida_Keys_04.jpg": 57.8,
+        "Leonida_Keys_01.jpg": 57.1
+      }
+    },
+    "foggy_night": {
+      "best_image": "Ambrosia_02.jpg",
+      "best_confidence": 62.7,
+      "top_3": [
+        [
+          "Ambrosia_02.jpg",
+          62.7
+        ],
+        [
+          "johannes-plenio-DKix6Un55mw-unsplash.jpg",
+          61.8
+        ],
+        [
+          "Vice_City_08.jpg",
+          61.7
+        ]
+      ],
+      "all_scores": {
+        "Ambrosia_02.jpg": 62.7,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 61.8,
+        "Vice_City_08.jpg": 61.7,
+        "Clear-Night.png": 61.3,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 61.0,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 60.8,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 60.4,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 59.5,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 59.4,
+        "Vice_City_01.jpg": 59.2,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 58.6,
+        "Leonida_Keys_04.jpg": 58.0,
+        "941898.jpg": 57.9,
+        "Clear-AN.png": 57.7,
+        "Leonida_Keys_01.jpg": 57.0
+      }
+    },
+    "snowy_morning": {
+      "best_image": "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+      "best_confidence": 63.9,
+      "top_3": [
+        [
+          "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+          63.9
+        ],
+        [
+          "Ambrosia_02.jpg",
+          59.9
+        ],
+        [
+          "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg",
+          59.9
+        ]
+      ],
+      "all_scores": {
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 63.9,
+        "Ambrosia_02.jpg": 59.9,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 59.9,
+        "941898.jpg": 59.6,
+        "Clear-Night.png": 59.6,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 59.3,
+        "Clear-AN.png": 59.2,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 58.9,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 58.8,
+        "Vice_City_08.jpg": 58.6,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 58.4,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 58.0,
+        "Vice_City_01.jpg": 57.2,
+        "Leonida_Keys_01.jpg": 57.2,
+        "Leonida_Keys_04.jpg": 55.9
+      }
+    },
+    "snowy_afternoon": {
+      "best_image": "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+      "best_confidence": 64.0,
+      "top_3": [
+        [
+          "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+          64.0
+        ],
+        [
+          "Ambrosia_02.jpg",
+          59.7
+        ],
+        [
+          "941898.jpg",
+          59.6
+        ]
+      ],
+      "all_scores": {
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 64.0,
+        "Ambrosia_02.jpg": 59.7,
+        "941898.jpg": 59.6,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 59.5,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 59.3,
+        "Clear-Night.png": 59.2,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 58.9,
+        "Clear-AN.png": 58.8,
+        "Vice_City_08.jpg": 58.6,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 58.6,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 58.0,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 58.0,
+        "Leonida_Keys_01.jpg": 57.2,
+        "Vice_City_01.jpg": 57.0,
+        "Leonida_Keys_04.jpg": 56.0
+      }
+    },
+    "snowy_evening": {
+      "best_image": "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+      "best_confidence": 65.1,
+      "top_3": [
+        [
+          "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+          65.1
+        ],
+        [
+          "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg",
+          62.1
+        ],
+        [
+          "Clear-Night.png",
+          61.5
+        ]
+      ],
+      "all_scores": {
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 65.1,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 62.1,
+        "Clear-Night.png": 61.5,
+        "Ambrosia_02.jpg": 60.8,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 60.7,
+        "Vice_City_01.jpg": 59.2,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 59.2,
+        "941898.jpg": 59.1,
+        "Vice_City_08.jpg": 59.0,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 58.6,
+        "Clear-AN.png": 58.2,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 57.8,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 57.3,
+        "Leonida_Keys_01.jpg": 56.6,
+        "Leonida_Keys_04.jpg": 55.9
+      }
+    },
+    "snowy_night": {
+      "best_image": "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+      "best_confidence": 63.7,
+      "top_3": [
+        [
+          "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg",
+          63.7
+        ],
+        [
+          "Ambrosia_02.jpg",
+          61.9
+        ],
+        [
+          "cool-lightning-1osaou7bh36rwvk9.jpg",
+          61.6
+        ]
+      ],
+      "all_scores": {
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 63.7,
+        "Ambrosia_02.jpg": 61.9,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 61.6,
+        "Vice_City_08.jpg": 61.4,
+        "Clear-Night.png": 61.2,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 61.2,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 60.9,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 60.0,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 59.9,
+        "941898.jpg": 59.8,
+        "Vice_City_01.jpg": 59.1,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 59.1,
+        "Clear-AN.png": 58.9,
+        "Leonida_Keys_01.jpg": 57.5,
+        "Leonida_Keys_04.jpg": 57.3
+      }
+    },
+    "windy_morning": {
+      "best_image": "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+      "best_confidence": 63.3,
+      "top_3": [
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          63.3
+        ],
+        [
+          "Vice_City_01.jpg",
+          61.8
+        ],
+        [
+          "michael-held-6fRHGqbp1_4-unsplash.jpg",
+          61.7
+        ]
+      ],
+      "all_scores": {
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 63.3,
+        "Vice_City_01.jpg": 61.8,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 61.7,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 61.6,
+        "941898.jpg": 61.5,
+        "Clear-Night.png": 61.4,
+        "Clear-AN.png": 61.1,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 61.0,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 60.7,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 60.1,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 59.8,
+        "Vice_City_08.jpg": 59.0,
+        "Leonida_Keys_01.jpg": 58.9,
+        "Ambrosia_02.jpg": 58.8,
+        "Leonida_Keys_04.jpg": 57.3
+      }
+    },
+    "windy_afternoon": {
+      "best_image": "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+      "best_confidence": 63.4,
+      "top_3": [
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          63.4
+        ],
+        [
+          "cool-lightning-1osaou7bh36rwvk9.jpg",
+          61.4
+        ],
+        [
+          "941898.jpg",
+          60.4
+        ]
+      ],
+      "all_scores": {
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 63.4,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 61.4,
+        "941898.jpg": 60.4,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 60.4,
+        "Vice_City_01.jpg": 60.3,
+        "Clear-AN.png": 59.9,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 59.8,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 59.6,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 59.6,
+        "Clear-Night.png": 59.4,
+        "Ambrosia_02.jpg": 59.0,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 58.9,
+        "Leonida_Keys_01.jpg": 58.8,
+        "Vice_City_08.jpg": 58.7,
+        "Leonida_Keys_04.jpg": 56.6
+      }
+    },
+    "windy_evening": {
+      "best_image": "Clear-Night.png",
+      "best_confidence": 63.0,
+      "top_3": [
+        [
+          "Clear-Night.png",
+          63.0
+        ],
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          62.6
+        ],
+        [
+          "941898.jpg",
+          62.3
+        ]
+      ],
+      "all_scores": {
+        "Clear-Night.png": 63.0,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 62.6,
+        "941898.jpg": 62.3,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 61.6,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 61.5,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 61.5,
+        "Clear-AN.png": 61.4,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 60.8,
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 60.8,
+        "Vice_City_01.jpg": 60.6,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 60.0,
+        "Ambrosia_02.jpg": 59.5,
+        "Vice_City_08.jpg": 59.2,
+        "Leonida_Keys_01.jpg": 58.5,
+        "Leonida_Keys_04.jpg": 56.7
+      }
+    },
+    "windy_night": {
+      "best_image": "cool-lightning-1osaou7bh36rwvk9.jpg",
+      "best_confidence": 63.8,
+      "top_3": [
+        [
+          "cool-lightning-1osaou7bh36rwvk9.jpg",
+          63.8
+        ],
+        [
+          "waleed-derhem-S_gm8VueKUA-unsplash.jpg",
+          62.3
+        ],
+        [
+          "Vice_City_01.jpg",
+          61.6
+        ]
+      ],
+      "all_scores": {
+        "cool-lightning-1osaou7bh36rwvk9.jpg": 63.8,
+        "waleed-derhem-S_gm8VueKUA-unsplash.jpg": 62.3,
+        "Vice_City_01.jpg": 61.6,
+        "Clear-Night.png": 61.6,
+        "johannes-plenio-DKix6Un55mw-unsplash.jpg": 61.3,
+        "Vice_City_08.jpg": 61.1,
+        "Ambrosia_02.jpg": 60.9,
+        "winter-scene-mountain-of-snow-ef15enxn77nhtm4z.jpg": 60.6,
+        "4k-firewatch-deer-at-sunset-1gr260likxa5eoze.jpg": 60.2,
+        "michael-held-6fRHGqbp1_4-unsplash.jpg": 60.0,
+        "941898.jpg": 60.0,
+        "igor-kasalovic-tNDvFkxkBHo-unsplash.jpg": 59.9,
+        "Clear-AN.png": 58.8,
+        "Leonida_Keys_01.jpg": 57.3,
+        "Leonida_Keys_04.jpg": 56.8
+      }
+    }
+  }
+}
