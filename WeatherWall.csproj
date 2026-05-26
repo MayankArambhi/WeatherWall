@@ -25,4 +25,10 @@
     <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.26.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="weather_embeddings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

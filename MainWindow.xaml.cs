@@ -1454,6 +1454,23 @@ namespace WeatherWall
         private List<OptimizedRule> _suggestedMatches = new();
         private readonly AITaggingService _aiTaggingService = new();
 
+        private double ParsePercent(string text)
+        {
+            try
+            {
+                int colonIdx = text.LastIndexOf(':');
+                int percentIdx = text.IndexOf('%');
+                if (colonIdx != -1 && percentIdx != -1 && percentIdx > colonIdx)
+                {
+                    string numStr = text.Substring(colonIdx + 1, percentIdx - colonIdx - 1).Trim();
+                    if (double.TryParse(numStr, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double val)) 
+                        return val;
+                }
+            }
+            catch { }
+            return 0;
+        }
+
         private async void GenerateTags_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(_config.WallpaperFolderPath) || !Directory.Exists(_config.WallpaperFolderPath))
@@ -1464,17 +1481,62 @@ namespace WeatherWall
 
             GenerateTagsBtn.IsEnabled = false;
             AITagResultsPanel.Children.Clear();
-            AITagResultsPanel.Children.Add(new TextBlock { Text = "Running CLIP analysis on wallpapers...", Foreground = new SolidColorBrush(Colors.Gray), Margin = new Thickness(0,0,0,8) });
             
+            var progressTitle = new TextBlock { 
+                Text = "Local AI Wallpaper Analyzer", 
+                FontSize = 14, 
+                FontWeight = FontWeights.Bold, 
+                Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(220, 220, 220)), 
+                Margin = new Thickness(0, 0, 0, 8) 
+            };
+            
+            var progressBar = new System.Windows.Controls.ProgressBar {
+                Height = 6,
+                IsIndeterminate = true,
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(30, 30, 30)),
+                Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(74, 222, 128)),
+                BorderThickness = new Thickness(0),
+                Margin = new Thickness(0, 0, 0, 12)
+            };
+
+            var progressText = new TextBlock { 
+                Text = "Initializing analysis...", 
+                Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(150, 150, 150)), 
+                TextWrapping = TextWrapping.Wrap 
+            };
+
+            AITagResultsPanel.Children.Add(progressTitle);
+            AITagResultsPanel.Children.Add(progressBar);
+            AITagResultsPanel.Children.Add(progressText);
+
             _suggestedMatches.Clear();
             CreateSuggestedRulesBtn.IsEnabled = false;
 
             await Task.Run(async () => 
             {
-                await Task.Delay(500); // Simulate init delay
+                var results = _aiTaggingService.AnalyzeLibrary(_config.WallpaperFolderPath, (progressMsg) => 
+                {
+                    Dispatcher.Invoke(() => {
+                        progressText.Text = progressMsg;
+                        
+                        bool isDownloading = progressMsg.Contains("Downloading") && progressMsg.Contains("%");
+                        if (isDownloading)
+                        {
+                            progressBar.IsIndeterminate = false;
+                            progressBar.Value = ParsePercent(progressMsg);
+                        }
+                        else
+                        {
+                            progressBar.IsIndeterminate = true;
+                        }
+                    });
+                });
                 
-                var results = _aiTaggingService.AnalyzeLibrary(_config.WallpaperFolderPath);
                 _suggestedMatches = results;
+
+                Dispatcher.Invoke(() => {
+                    AITagResultsPanel.Children.Clear();
+                });
 
                 foreach (var match in results)
                 {
