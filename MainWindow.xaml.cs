@@ -239,6 +239,8 @@ namespace WeatherWall
                 if (windowsSuccess) 
                 {
                     Log("Location detected via Windows Services.");
+                    // Detect timezone for the found location
+                    _config.TimeZoneId = await DetectTimeZoneAsync(_config.Latitude, _config.Longitude);
                     await SyncLocationUIAndWeatherAsync();
                     return;
                 }
@@ -253,6 +255,8 @@ namespace WeatherWall
                     _config.Latitude = root.GetProperty("lat").GetDouble();
                     _config.Longitude = root.GetProperty("lon").GetDouble();
                     _config.LocationName = root.GetProperty("city").GetString() ?? "Unknown";
+                    // Detect timezone for the found location
+                    _config.TimeZoneId = await DetectTimeZoneAsync(_config.Latitude, _config.Longitude);
                     await SyncLocationUIAndWeatherAsync();
                 }
             }
@@ -857,7 +861,10 @@ namespace WeatherWall
 
                 if (ConsensusLocationText != null)
                 {
-                    ConsensusLocationText.Text = !string.IsNullOrEmpty(_config.LocationName) ? _config.LocationName : "Unknown Location";
+                    string tzDisplay = _config.TimeZoneId == TimeZoneInfo.Local.Id ? "(System TZ)" : $"({_config.TimeZoneId})";
+                    ConsensusLocationText.Text = !string.IsNullOrEmpty(_config.LocationName) ? 
+                        $"{_config.LocationName} {tzDisplay}" : 
+                        $"Unknown Location {tzDisplay}";
                 }
 
                 ConsensusConditionText.Text = WeatherMapper.GetFriendlyName(_consensusWeatherCategory);
@@ -921,16 +928,47 @@ namespace WeatherWall
         }
 
 
-        private string GetCurrentTimePeriod()
+        private string GetCurrentTimePeriod(string? timeZoneId = null)
         {
-            DateTime now = DateTime.Now;
+            // Use specified timezone or fall back to config timezone
+            string tzId = timeZoneId ?? _config.TimeZoneId ?? "UTC";
+            
+            // Get current time in the selected location's timezone
+            DateTime now;
+            try
+            {
+                TimeZoneInfo tzi = TimeZoneInfo.FindSystemTimeZoneById(tzId);
+                now = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.Utc, tzi);
+            }
+            catch
+            {
+                // Fallback to system timezone if specified timezone is invalid
+                Log($"Invalid timezone '{tzId}', using system timezone");
+                now = DateTime.Now;
+            }
             
             if (_sunrise.HasValue && _sunset.HasValue)
             {
+                // Convert sunrise/sunset to the location's timezone for comparison
+                DateTime sunriseLocal = _sunrise.Value;
+                DateTime sunsetLocal = _sunset.Value;
+                
+                // If sunrise/sunset are in UTC, convert them
+                if (_sunrise.Value.Kind == DateTimeKind.Utc || _sunset.Value.Kind == DateTimeKind.Utc)
+                {
+                    try
+                    {
+                        TimeZoneInfo tzi = TimeZoneInfo.FindSystemTimeZoneById(tzId);
+                        sunriseLocal = TimeZoneInfo.ConvertTime(_sunrise.Value, TimeZoneInfo.Utc, tzi);
+                        sunsetLocal = TimeZoneInfo.ConvertTime(_sunset.Value, TimeZoneInfo.Utc, tzi);
+                    }
+                    catch { }
+                }
+                
                 // PROFESSIONAL: Use TimeOfDay to avoid date-drift issues (e.g. 12 AM transitions)
                 TimeSpan currentTime = now.TimeOfDay;
-                TimeSpan sunriseTime = _sunrise.Value.TimeOfDay;
-                TimeSpan sunsetTime = _sunset.Value.TimeOfDay;
+                TimeSpan sunriseTime = sunriseLocal.TimeOfDay;
+                TimeSpan sunsetTime = sunsetLocal.TimeOfDay;
 
                 TimeSpan morningStart = sunriseTime;
                 TimeSpan afternoonStart = new TimeSpan(11, 0, 0);
@@ -945,12 +983,63 @@ namespace WeatherWall
                 return "night";
             }
 
-            // Fallback (Fixed ranges)
+            // Fallback (Fixed ranges based on location timezone)
             int hour = now.Hour;
             if (hour >= 6 && hour < 12) return "morning";
             if (hour >= 12 && hour < 17) return "afternoon";
             if (hour >= 17 && hour < 21) return "evening";
             return "night";
+        }
+
+        // Detect timezone from coordinates using reverse geocoding
+        private async Task<string> DetectTimeZoneAsync(double latitude, double longitude)
+        {
+            try
+            {
+                // Use Google Timezone API as a reliable source
+                string url = $"https://maps.googleapis.com/maps/api/timezone/json?location={latitude},{longitude}&timestamp={DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
+                
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                var response = await _httpClient.SendAsync(request);
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    // Parse timezone ID from response (e.g., "America/New_York")
+                    if (json.Contains("\"timeZoneId\":"))
+                    {
+                        var start = json.IndexOf("\"timeZoneId\":") + 14;
+                        var end = json.IndexOf("\"", start);
+                        string tzId = json.Substring(start, end - start);
+                        Log($"Detected timezone for ({latitude}, {longitude}): {tzId}");
+                        return tzId;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log($"Timezone detection failed: {ex.Message}");
+            }
+            
+            // Fallback: Estimate based on longitude
+            // Rough approximation: each 15 degrees longitude = 1 hour offset
+            int estimatedOffset = (int)Math.Round(longitude / 15.0);
+            string[] timeZones = TimeZoneInfo.GetSystemTimeZones().Select(tz => tz.Id).ToArray();
+            
+            foreach (var tz in timeZones)
+            {
+                try
+                {
+                    var tzInfo = TimeZoneInfo.FindSystemTimeZoneById(tz);
+                    if ((int)tzInfo.GetUtcOffset(DateTime.UtcNow).TotalHours == estimatedOffset)
+                    {
+                        Log($"Using estimated timezone fallback: {tz}");
+                        return tz;
+                    }
+                }
+                catch { }
+            }
+            
+            return "UTC"; // Last resort fallback
         }
 
         private (string status, string icon, string category) MapWeatherCode(int code)
@@ -1079,8 +1168,11 @@ namespace WeatherWall
                     _config.AutoLocation = false;
                     AutoLocationCheck.IsChecked = false;
                     
+                    // Detect timezone for the found location
+                    _config.TimeZoneId = await DetectTimeZoneAsync(_config.Latitude, _config.Longitude);
+                    
                     await SyncLocationUIAndWeatherAsync();
-                    System.Windows.MessageBox.Show($"Location updated to {_config.LocationName}.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    System.Windows.MessageBox.Show($"Location updated to {_config.LocationName}.\nTimezone: {_config.TimeZoneId}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
@@ -1106,8 +1198,11 @@ namespace WeatherWall
                 // Get location name for these coordinates
                 _config.LocationName = await GetLocationNameAsync(lat, lon);
                 
+                // Detect timezone for these coordinates
+                _config.TimeZoneId = await DetectTimeZoneAsync(lat, lon);
+                
                 await SyncLocationUIAndWeatherAsync();
-                System.Windows.MessageBox.Show($"Coordinates applied: {lat}, {lon}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                System.Windows.MessageBox.Show($"Coordinates applied: {lat}, {lon}\nTimezone: {_config.TimeZoneId}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
@@ -1453,7 +1548,9 @@ namespace WeatherWall
         private async Task ApplyRuleBasedWallpaperAsync(bool silent = false)
         {
             if (_isPaused) return;
-            string timePeriod = GetCurrentTimePeriod();
+            
+            // Use selected location's timezone for time period detection
+            string timePeriod = GetCurrentTimePeriod(_config.TimeZoneId);
             var rule = _config.Rules.FirstOrDefault(r => r.Weather == _currentWeatherCategory && r.TimePeriod == timePeriod);
 
             if (rule != null && rule.FileName != _currentAppliedWallpaper && !string.IsNullOrEmpty(_config.WallpaperFolderPath))
@@ -1462,7 +1559,11 @@ namespace WeatherWall
             }
             
             Dispatcher.Invoke(() => {
-                StatusMatchedText.Text = rule != null ? $"Rule Match: {rule.FileName}" : "Rule Match: None";
+                // Show timezone context in status
+                string tzDisplay = _config.TimeZoneId == TimeZoneInfo.Local.Id ? "(System)" : $"({_config.LocationName})";
+                StatusMatchedText.Text = rule != null ? 
+                    $"Rule Match: {rule.FileName} · {timePeriod} {tzDisplay}" : 
+                    $"Rule Match: None · {timePeriod} {tzDisplay}";
             });
         }
 
@@ -1532,6 +1633,9 @@ namespace WeatherWall
         public double Longitude { get; set; } = 0;
         public string LocationName { get; set; } = "Unknown";
         public bool AutoLocation { get; set; } = true;
+        
+        // Timezone for location-based time calculations (IANA timezone ID)
+        public string TimeZoneId { get; set; } = "UTC";
 
         public string OpenWeatherMapKey { get; set; } = "";
         public string WeatherApiKey { get; set; } = "";
