@@ -31,9 +31,25 @@
             <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
             <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
 
+            <!-- Glassmorphic System: Green-tinted translucent surfaces -->
             <LinearGradientBrush x:Key="SubtleGlassBrush" StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Color="#180C140E" Offset="0.0"/>
-                <GradientStop Color="#12060A08" Offset="1.0"/>
+                <GradientStop Color="#0A0E0B" Offset="0.0"/>
+                <GradientStop Color="#080A08" Offset="1.0"/>
+            </LinearGradientBrush>
+
+            <!-- Consistent Green-Tinted Glass Colors -->
+            <Color x:Key="GlassBorderColor">#1A3A2D40</Color>
+            <Color x:Key="GlassAccentBorderColor">#224ADE80</Color>
+            <Color x:Key="GlassElevationTopColor">#0A1A1015</Color>
+            <Color x:Key="GlassElevationBottomColor">#06101010</Color>
+
+            <SolidColorBrush x:Key="GlassBorderBrush" Color="{StaticResource GlassBorderColor}"/>
+            <SolidColorBrush x:Key="GlassAccentBorderBrush" Color="{StaticResource GlassAccentBorderColor}"/>
+
+            <!-- Subtle elevation effect: barely perceptible green-gray gradient -->
+            <LinearGradientBrush x:Key="GlassElevationBrush" StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="{StaticResource GlassElevationTopColor}" Offset="0.0"/>
+                <GradientStop Color="{StaticResource GlassElevationBottomColor}" Offset="1.0"/>
             </LinearGradientBrush>
 
             <SolidColorBrush x:Key="WeatherChipBackground" Color="#12251A"/>
@@ -107,7 +123,7 @@
                 <Setter Property="Background" Value="{DynamicResource SubtleGlassBrush}"/>
                 <Setter Property="CornerRadius" Value="0"/>
                 <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource GlassAccentBorderBrush}"/>
                 <Setter Property="Padding" Value="24"/>
             </Style>
 
@@ -546,8 +562,14 @@
                             </Grid>
 
                             <!-- MANUAL TAGGING PANEL -->
-                            <StackPanel x:Name="ManualTaggingPanel" Grid.Row="1" Grid.RowSpan="3">
-                                <StackPanel Margin="0,0,0,24">
+                            <Grid x:Name="ManualTaggingPanel" Grid.Row="1" Grid.RowSpan="3">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <StackPanel Grid.Row="0" Margin="0,0,0,24">
                                     <TextBlock Text="1. Select Condition" Style="{StaticResource MetadataText}" FontWeight="Bold" Margin="0,0,0,12"/>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -580,29 +602,27 @@
                                         </StackPanel>
                                     </Grid>
                                 </StackPanel>
-                                <StackPanel>
-                                    <TextBlock Text="2. Choose Wallpaper" Style="{StaticResource MetadataText}" FontWeight="Bold" Margin="0,0,0,12"/>
-                                    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="0" Height="280">
-                                        <ListBox x:Name="RuleWallpaperGallery" 
-                                                 Style="{StaticResource SmoothListBox}"
-                                                 Padding="8">
-                                            <ListBox.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Border Width="144" Height="81" CornerRadius="0" Margin="6" ClipToBounds="True" BorderThickness="1" BorderBrush="#222222">
-                                                        <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                                    </Border>
-                                                </DataTemplate>
-                                            </ListBox.ItemTemplate>
-                                            <ListBox.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <WrapPanel IsItemsHost="True" />
-                                                </ItemsPanelTemplate>
-                                            </ListBox.ItemsPanel>
-                                        </ListBox>
-                                    </Border>
-                                </StackPanel>
-                                <Button Content="Add Rule" Click="CreateRule_Click" Height="48" FontWeight="Bold" Margin="0,24,0,0"/>
-                            </StackPanel>
+                                <TextBlock Grid.Row="1" Text="2. Choose Wallpaper" Style="{StaticResource MetadataText}" FontWeight="Bold" Margin="0,0,0,12"/>
+                                <Border Grid.Row="2" Background="{DynamicResource WindowBackgroundBrush}" BorderBrush="{DynamicResource GlassBorderBrush}" BorderThickness="1" CornerRadius="0" Margin="0,0,0,16">
+                                    <ListBox x:Name="RuleWallpaperGallery" 
+                                             Style="{StaticResource SmoothListBox}"
+                                             Padding="8">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Width="144" Height="81" CornerRadius="0" Margin="6" ClipToBounds="True" BorderThickness="1" BorderBrush="#222222">
+                                                    <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                        <ListBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel IsItemsHost="True" />
+                                            </ItemsPanelTemplate>
+                                        </ListBox.ItemsPanel>
+                                    </ListBox>
+                                </Border>
+                                <Button Grid.Row="3" Content="Add Rule" Click="CreateRule_Click" Height="48" FontWeight="Bold"/>
+                            </Grid>
 
                             <!-- AI AUTO TAGGING PANEL -->
                             <StackPanel x:Name="AITaggingPanel" Grid.Row="1" Grid.RowSpan="3" Visibility="Collapsed">
@@ -647,7 +667,7 @@
 
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Background="Transparent" CornerRadius="0" Margin="0" Padding="16" Height="110" BorderThickness="0" Opacity="{Binding Opacity}">
+                                        <Border Background="{DynamicResource GlassElevationBrush}" CornerRadius="0" Margin="0,0,0,8" Padding="16" Height="110" BorderThickness="1" BorderBrush="{DynamicResource GlassBorderBrush}" Opacity="{Binding Opacity}">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="144"/>
