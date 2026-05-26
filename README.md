@@ -1,4 +1,4 @@
-# WeatherWall v1.1.0
+# WeatherWall v1.2.0
 
 WeatherWall is a lightweight native Windows utility that automatically synchronizes your desktop wallpaper with real-time weather conditions and local time.
 

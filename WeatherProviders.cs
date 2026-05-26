@@ -224,7 +224,7 @@ namespace WeatherWall
             try
             {
                 var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={latitude:F4}&lon={longitude:F4}");
-                request.Headers.UserAgent.ParseAdd("WeatherWall/1.1.0 (contact: info@weatherwall.com)");
+                request.Headers.UserAgent.ParseAdd("WeatherWall/1.2.0 (contact: info@weatherwall.com)");
 
                 var responseMessage = await httpClient.SendAsync(request);
                 responseMessage.EnsureSuccessStatusCode();
