@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
 
 namespace WeatherWall
@@ -11,6 +13,28 @@ namespace WeatherWall
 
         protected override async void OnStartup(StartupEventArgs e)
         {
+            // Global exception logging for diagnostics
+            AppDomain.CurrentDomain.UnhandledException += (s, ev) =>
+            {
+                try { LogException(ev.ExceptionObject as Exception, "AppDomain"); } catch { }
+            };
+
+            this.DispatcherUnhandledException += (s, ev) =>
+            {
+                try { LogException(ev.Exception, "Dispatcher"); } catch { }
+                // let default behavior continue
+            };
+
+            void LogException(Exception? ex, string source)
+            {
+                try
+                {
+                    var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "crash_log.txt");
+                    var text = $"[{DateTime.Now:O}] {source}: {ex?.ToString() ?? "(null)"}\r\n";
+                    File.AppendAllText(path, text);
+                }
+                catch { }
+            }
             const string appName = "WeatherWall_SingleInstance_Mutex";
             _mutex = new Mutex(true, appName, out bool createdNew);
 
