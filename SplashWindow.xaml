@@ -24,25 +24,15 @@
                            FontSize="24" 
                            FontWeight="SemiBold" 
                            HorizontalAlignment="Center" 
-                           Margin="0,15,0,0">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="FontFamily" Value="Segoe UI Variable Display, Segoe UI, Arial"/>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
+                           Margin="0,15,0,0" 
+                           FontFamily="{StaticResource PrimaryFontFamily}" />
                 
                 <TextBlock Text="Adaptive Desktop Environments" 
                            Foreground="#808080" 
                            FontSize="12" 
                            HorizontalAlignment="Center" 
-                           Margin="0,4,0,0">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="FontFamily" Value="Segoe UI Variable Text, Segoe UI, Arial"/>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
+                           Margin="0,4,0,0" 
+                           FontFamily="{StaticResource PrimaryFontFamily}" />
             </StackPanel>
 
             <!-- Optional: Progress Bar (Very subtle) -->

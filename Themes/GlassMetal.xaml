@@ -1,0 +1,24 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Minimal global theme: primary font and base background for glass-metal aesthetic -->
+
+    <!-- Single typography system for the entire app -->
+    <FontFamily x:Key="PrimaryFontFamily">Segoe UI Variable Text, Segoe UI, Inter, Geist, IBM Plex Sans</FontFamily>
+
+    <!-- Global app background (dark charcoal) -->
+    <Color x:Key="GlobalWindowBackgroundColor">#050505</Color>
+    <SolidColorBrush x:Key="GlobalWindowBackgroundBrush" Color="{StaticResource GlobalWindowBackgroundColor}"/>
+
+    <!-- Accent (emerald/teal) base for controls that don't provide their own accents -->
+    <Color x:Key="GlobalAccentColor">#1FDD77</Color>
+    <SolidColorBrush x:Key="GlobalAccentBrush" Color="{StaticResource GlobalAccentColor}"/>
+
+    <!-- Fallback styles to ensure the PrimaryFontFamily is applied globally -->
+    <Style TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}"/>
+    </Style>
+    <Style TargetType="Control">
+        <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}"/>
+    </Style>
+
+</ResourceDictionary>

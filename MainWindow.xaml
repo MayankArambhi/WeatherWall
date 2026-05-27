@@ -8,7 +8,6 @@
         Title="WeatherWall" Height="750" Width="1100"
         Background="{DynamicResource WindowBackgroundBrush}"
         WindowStartupLocation="CenterScreen"
-        FontFamily="Segoe UI Variable Text, Geist, Inter, IBM Plex Sans, Segoe UI"
         UseLayoutRounding="True"
         SnapsToDevicePixels="True"
         TextOptions.TextFormattingMode="Display"
@@ -17,76 +16,164 @@
     
     <Window.Resources>
         <ResourceDictionary>
-            <Color x:Key="WindowBackgroundColor">#0A0A0A</Color>
-            <Color x:Key="CardBackgroundColor">#101411</Color>
-            <Color x:Key="PrimaryTextColor">#F0FDF4</Color>
-            <Color x:Key="SecondaryTextColor">#78887F</Color>
-            <Color x:Key="AccentColor">#4ADE80</Color>
-            <Color x:Key="BorderColor">#224ADE80</Color>
+            <!-- ========================================
+                 PREMIUM GLASS-METAL AESTHETIC
+                 Emerald Green & Cyan-Blue Glazed Surfaces
+                 ======================================== -->
+
+            <!-- Ultra-dark charcoal base: polished black glass foundation -->
+            <Color x:Key="WindowBackgroundColor">#050505</Color>
+            <Color x:Key="CardBackgroundColor">#0A0A0A</Color>
+
+            <!-- Premium text colors: high contrast, sharp readability -->
+            <Color x:Key="PrimaryTextColor">#F8F8F8</Color>
+            <Color x:Key="SecondaryTextColor">#9DB5A8</Color>
+            <Color x:Key="TertiaryTextColor">#6A8580</Color>
+
+            <!-- Premium emerald-cyan accent: sharp, luminous, clean -->
+            <Color x:Key="AccentColor">#1FDD77</Color>
+            <Color x:Key="AccentColorBright">#2FED88</Color>
+            <Color x:Key="AccentColorDim">#17A850</Color>
+
+            <!-- Blue-green metallic tints for glossy reflections -->
+            <Color x:Key="GlassReflectionColorCyan">#0A4A5F</Color>
+            <Color x:Key="GlassReflectionColorGreen">#0A5A3F</Color>
+            <Color x:Key="GlassMetallicBlue">#1A5A7F</Color>
+
+            <!-- Subtle borders: minimal visual weight, rely on surfaces -->
+            <Color x:Key="BorderColor">#1A4A3F</Color>
+            <Color x:Key="BorderColorBright">#4ADE80</Color>
+            <Color x:Key="BorderColorDim">#0A2A1F</Color>
 
             <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{StaticResource WindowBackgroundColor}"/>
             <SolidColorBrush x:Key="CardBackgroundBrush" Color="{StaticResource CardBackgroundColor}"/>
             <SolidColorBrush x:Key="PrimaryTextBrush" Color="{StaticResource PrimaryTextColor}"/>
             <SolidColorBrush x:Key="SecondaryTextBrush" Color="{StaticResource SecondaryTextColor}"/>
+            <SolidColorBrush x:Key="TertiaryTextBrush" Color="{StaticResource TertiaryTextColor}"/>
             <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
+            <SolidColorBrush x:Key="AccentBrushBright" Color="{StaticResource AccentColorBright}"/>
+            <SolidColorBrush x:Key="AccentBrushDim" Color="{StaticResource AccentColorDim}"/>
             <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
+            <SolidColorBrush x:Key="BorderBrushBright" Color="{StaticResource BorderColorBright}"/>
 
-            <!-- Glassmorphic System: Green-tinted translucent surfaces -->
+            <!-- ========================================
+                 PREMIUM GLASS-METAL GRADIENT SYSTEM
+                 Polished reflections with blue-green luminosity
+                 ======================================== -->
+
+            <!-- Glossy black glass with cyan-green top reflection: polished metal look -->
             <LinearGradientBrush x:Key="SubtleGlassBrush" StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Color="#0A0E0B" Offset="0.0"/>
-                <GradientStop Color="#080A08" Offset="1.0"/>
+                <!-- Top: cyan-blue-tinted highlight for metallic sheen -->
+                <GradientStop Color="#151F22" Offset="0.0"/>
+                <!-- Mid: dark glass transition -->
+                <GradientStop Color="#0D1315" Offset="0.2"/>
+                <!-- Body: deep dark glass -->
+                <GradientStop Color="#080A0C" Offset="0.6"/>
+                <!-- Bottom: ultra-dark with subtle green undertone -->
+                <GradientStop Color="#050608" Offset="1.0"/>
             </LinearGradientBrush>
 
-            <!-- Consistent Green-Tinted Glass Colors -->
-            <Color x:Key="GlassBorderColor">#1A3A2D40</Color>
-            <Color x:Key="GlassAccentBorderColor">#224ADE80</Color>
-            <Color x:Key="GlassElevationTopColor">#0A1A1015</Color>
-            <Color x:Key="GlassElevationBottomColor">#06101010</Color>
+            <!-- Premium metallic reflection: glossy polished surface shine -->
+            <LinearGradientBrush x:Key="GlossyHighlightBrush" StartPoint="0,0" EndPoint="0,0.3">
+                <!-- Bright metallic top: cyan-tinted gloss -->
+                <GradientStop Color="#1F3A3F" Offset="0.0"/>
+                <!-- Sharp transition to dark -->
+                <GradientStop Color="#0A1315" Offset="0.08"/>
+                <!-- Fade to transparent -->
+                <GradientStop Color="#080A0C" Offset="1.0"/>
+            </LinearGradientBrush>
+
+            <!-- Blue-green metallic borders: subtle but premium, active states are bright -->
+            <Color x:Key="GlassBorderColor">#0A2A24</Color>
+            <Color x:Key="GlassAccentBorderColor">#0A2A24</Color>
+            <!-- Bright accent border ONLY for interactive/active states -->
+            <Color x:Key="GlassActiveBorderColor">#1FDD77</Color>
 
             <SolidColorBrush x:Key="GlassBorderBrush" Color="{StaticResource GlassBorderColor}"/>
             <SolidColorBrush x:Key="GlassAccentBorderBrush" Color="{StaticResource GlassAccentBorderColor}"/>
+            <SolidColorBrush x:Key="GlassActiveBorderBrush" Color="{StaticResource GlassActiveBorderColor}"/>
 
-            <!-- Subtle elevation effect: barely perceptible green-gray gradient -->
+            <!-- ========================================
+                 PREMIUM GLASS ELEVATION WITH METALLIC DEPTH
+                 Blue-green reflective surfaces
+                 ======================================== -->
+
+            <!-- Elevated card surface: darker with blue-green reflective top -->
             <LinearGradientBrush x:Key="GlassElevationBrush" StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Color="{StaticResource GlassElevationTopColor}" Offset="0.0"/>
-                <GradientStop Color="{StaticResource GlassElevationBottomColor}" Offset="1.0"/>
+                <!-- Top: cyan-blue metallic reflection -->
+                <GradientStop Color="#141A1F" Offset="0.0"/>
+                <!-- Quick transition -->
+                <GradientStop Color="#0C1015" Offset="0.15"/>
+                <!-- Body: deep polished glass -->
+                <GradientStop Color="#0A0D10" Offset="1.0"/>
             </LinearGradientBrush>
 
-            <SolidColorBrush x:Key="WeatherChipBackground" Color="#12251A"/>
-            <SolidColorBrush x:Key="WeatherChipForeground" Color="#4ADE80"/>
-            <SolidColorBrush x:Key="TimeChipBackground" Color="#181C19"/>
-            <SolidColorBrush x:Key="TimeChipForeground" Color="#809088"/>
+            <!-- Active state elevation: brighter with enhanced green-blue gloss -->
+            <LinearGradientBrush x:Key="GlassElevationActiveBrush" StartPoint="0,0" EndPoint="0,1">
+                <!-- Top: brighter cyan-green reflection -->
+                <GradientStop Color="#1A2A2F" Offset="0.0"/>
+                <!-- Green undertone in middle -->
+                <GradientStop Color="#111A1F" Offset="0.15"/>
+                <!-- Deep glass bottom -->
+                <GradientStop Color="#0D101315" Offset="1.0"/>
+            </LinearGradientBrush>
 
-            <!-- Typography System -->
+            <!-- ========================================
+                 STATUS CHIPS: SHARP GLASS-METAL STYLE
+                 Blue-green luminous accents
+                 ======================================== -->
+
+            <!-- Weather chip: emerald-green glossy indicator -->
+            <SolidColorBrush x:Key="WeatherChipBackground" Color="#0A3A28"/>
+            <SolidColorBrush x:Key="WeatherChipForeground" Color="#1FDD77"/>
+            <!-- Time chip: cyan-blue glossy indicator -->
+            <SolidColorBrush x:Key="TimeChipBackground" Color="#0A2A38"/>
+            <SolidColorBrush x:Key="TimeChipForeground" Color="#7DD5FF"/>
+
+            <!-- ========================================
+                 TYPOGRAPHY SYSTEM: Premium Futuristic
+                 Single consistent geometric sans-serif
+                 ======================================== -->
+
+            <!-- Primary font stack: Segoe UI Variable (modern, sharp, geometric) -->
+            <!-- Fallback: Inter, Geist, IBM Plex Sans (all modern, sharp, geometric) -->
+            <FontFamily x:Key="PrimaryFontFamily">Segoe UI Variable Text, Segoe UI, Geist, Inter, IBM Plex Sans</FontFamily>
+
+            <!-- Typography System: Single Premium Geometric Sans-Serif -->
+            
             <Style x:Key="TitleText" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="20"/>
                 <Setter Property="FontWeight" Value="Bold"/>
                 <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
-                <Setter Property="FontFamily" Value="Segoe UI Variable Display, Geist, Inter, IBM Plex Sans, Segoe UI"/>
+                <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}"/>
+                <Setter Property="RenderOptions.ClearTypeHint" Value="Enabled"/>
             </Style>
 
             <Style x:Key="SectionHeader" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="13"/>
-                <Setter Property="FontWeight" Value="Black"/>
+                <Setter Property="FontWeight" Value="Bold"/>
                 <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
-                <Setter Property="FontFamily" Value="Segoe UI Variable Display, Geist, Inter, IBM Plex Sans, Segoe UI"/>
+                <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}"/>
                 <Setter Property="Margin" Value="0,0,0,14"/>
+                <Setter Property="RenderOptions.ClearTypeHint" Value="Enabled"/>
             </Style>
 
             <Style x:Key="BodyText" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="14"/>
                 <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
-                <Setter Property="FontFamily" Value="Segoe UI Variable Text, Geist, Inter, IBM Plex Sans, Segoe UI"/>
+                <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}"/>
+                <Setter Property="RenderOptions.ClearTypeHint" Value="Enabled"/>
             </Style>
 
             <Style x:Key="MetadataText" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="11"/>
                 <Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}"/>
-                <Setter Property="FontFamily" Value="Segoe UI Variable Text, Geist, Inter, IBM Plex Sans, Segoe UI"/>
+                <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}"/>
                 <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="RenderOptions.ClearTypeHint" Value="Enabled"/>
             </Style>
 
-            <!-- Refined ListBox Selection -->
+            <!-- Refined ListBox Selection with SHARP borders -->
             <Style x:Key="SubtleListBoxItem" TargetType="ListBoxItem">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="BorderThickness" Value="1"/>
@@ -106,8 +193,8 @@
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
-                                    <Setter TargetName="SelectionBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
-                                    <Setter TargetName="SelectionBorder" Property="Background" Value="#0CFFFFFF"/>
+                                    <Setter TargetName="SelectionBorder" Property="BorderBrush" Value="{DynamicResource GlassActiveBorderBrush}"/>
+                                    <Setter TargetName="SelectionBorder" Property="Background" Value="#08FFFFFF"/>
                                 </Trigger>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter TargetName="SelectionBorder" Property="Background" Value="#06FFFFFF"/>
@@ -118,24 +205,46 @@
                 </Setter>
             </Style>
 
-            <!-- Modern Component Styles -->
-            <Style x:Key="ModernCard" TargetType="Border">
+            <!-- Modern Card with layered glossy surface and metallic sheen -->
+            <!-- Use ContentControl as target because Border does not support Control Template -->
+            <Style x:Key="ModernCard" TargetType="ContentControl">
                 <Setter Property="Background" Value="{DynamicResource SubtleGlassBrush}"/>
-                <Setter Property="CornerRadius" Value="0"/>
                 <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="BorderBrush" Value="{DynamicResource GlassAccentBorderBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource GlassBorderBrush}"/>
                 <Setter Property="Padding" Value="24"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ContentControl">
+                            <Grid>
+                                <!-- Base polished glass surface -->
+                                <Border x:Name="BaseSurface" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="0"/>
+
+                                <!-- Metallic sheen: thin top highlight for polished edge -->
+                                <Rectangle Height="26" VerticalAlignment="Top" Fill="{StaticResource GlossyHighlightBrush}" Opacity="0.12" IsHitTestVisible="False"/>
+
+                                <!-- Subtle central gloss (soft reflection) -->
+                                <Rectangle Fill="White" Opacity="0.02" IsHitTestVisible="False"/>
+
+                                <!-- Content hosted inside card -->
+                                <ContentPresenter Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
+            <!-- Primary Button: Sharp, Vibrant, Premium Glossy Feel -->
             <Style TargetType="Button">
                 <Setter Property="Padding" Value="20,12"/>
                 <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
-                <Setter Property="Foreground" Value="#0B0B0B"/>
+                <Setter Property="Foreground" Value="#000000"/>
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
                 <Setter Property="Cursor" Value="Hand"/>
                 <Setter Property="FontWeight" Value="SemiBold"/>
-                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}"/>
                 <Style.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="0"/>
@@ -143,33 +252,46 @@
                 </Style.Resources>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#5CDB95"/>
-                        <Setter Property="BorderBrush" Value="#5CDB95"/>
+                        <!-- Brighter green on hover with subtle glow -->
+                        <Setter Property="Background" Value="{DynamicResource AccentBrushBright}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrushBright}"/>
+                        <Setter Property="Effect">
+                            <Setter.Value>
+                                <DropShadowEffect Color="#1FDD77" BlurRadius="6" Opacity="0.3" ShadowDepth="0"/>
+                            </Setter.Value>
+                        </Setter>
                     </Trigger>
                     <Trigger Property="IsPressed" Value="True">
-                        <Setter Property="Opacity" Value="0.7"/>
+                        <!-- Slight opacity change on press for depth -->
+                        <Setter Property="Opacity" Value="0.85"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
 
+            <!-- Secondary Button: Transparent with subtle border, bright on hover -->
             <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
-                <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+                <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}"/>
+                <!-- Subtle border by default -->
+                <Setter Property="BorderBrush" Value="{DynamicResource GlassBorderBrush}"/>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#10FFFFFF"/>
-                        <Setter Property="BorderBrush" Value="{DynamicResource SecondaryTextBrush}"/>
+                        <Setter Property="Background" Value="#08FFFFFF"/>
+                        <!-- Bright accent on hover for emphasis -->
+                        <Setter Property="BorderBrush" Value="{DynamicResource GlassActiveBorderBrush}"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
 
+            <!-- Segmented Radio: Sharp selection state with premium glass effect -->
             <Style x:Key="SegmentedRadioButton" TargetType="RadioButton">
                 <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource TertiaryTextBrush}"/>
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="FontWeight" Value="SemiBold"/>
                 <Setter Property="FontSize" Value="13"/>
+                <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}"/>
                 <Setter Property="Cursor" Value="Hand"/>
                 <Setter Property="Padding" Value="16,10"/>
                 <Setter Property="Template">
@@ -181,14 +303,14 @@
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsChecked" Value="True">
                                     <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
-                                    <Setter Property="Foreground" Value="#0B0B0B"/>
+                                    <Setter Property="Foreground" Value="#000000"/>
                                 </Trigger>
                                 <MultiTrigger>
                                     <MultiTrigger.Conditions>
                                         <Condition Property="IsChecked" Value="False"/>
                                         <Condition Property="IsMouseOver" Value="True"/>
                                     </MultiTrigger.Conditions>
-                                    <Setter Property="Background" Value="#10FFFFFF"/>
+                                    <Setter Property="Background" Value="#08FFFFFF"/>
                                     <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
                                 </MultiTrigger>
                             </ControlTemplate.Triggers>
@@ -197,27 +319,32 @@
                 </Setter>
             </Style>
 
+            <!-- Danger Button: Sharp red outline with premium style -->
             <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                 <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Foreground" Value="#FF6666"/>
-                <Setter Property="BorderBrush" Value="#442222"/>
+                <Setter Property="Foreground" Value="#FF7777"/>
+                <Setter Property="BorderBrush" Value="#553333"/>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#20FF4444"/>
-                        <Setter Property="BorderBrush" Value="#FF4444"/>
+                        <Setter Property="Background" Value="#25FF5555"/>
+                        <Setter Property="BorderBrush" Value="#FF5555"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
 
+            <!-- Chips: Sharp, Vibrant Status Indicators -->
             <Style x:Key="BaseChip" TargetType="Border">
                 <Setter Property="CornerRadius" Value="0"/>
                 <Setter Property="Padding" Value="10,4"/>
                 <Setter Property="Height" Value="24"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="BorderThickness" Value="1"/>
             </Style>
 
+            <!-- Weather Chip: Bright green accent -->
             <Style x:Key="WeatherChip" TargetType="Border" BasedOn="{StaticResource BaseChip}">
                 <Setter Property="Background" Value="{DynamicResource WeatherChipBackground}"/>
+                <Setter Property="BorderBrush" Value="#1A4A35"/>
                 <Style.Resources>
                     <Style TargetType="TextBlock" BasedOn="{StaticResource MetadataText}">
                         <Setter Property="FontWeight" Value="Bold"/>
@@ -226,8 +353,10 @@
                 </Style.Resources>
             </Style>
 
+            <!-- Time Chip: Cool gray tone -->
             <Style x:Key="TimeChip" TargetType="Border" BasedOn="{StaticResource BaseChip}">
                 <Setter Property="Background" Value="{DynamicResource TimeChipBackground}"/>
+                <Setter Property="BorderBrush" Value="#2A2A2A"/>
                 <Style.Resources>
                     <Style TargetType="TextBlock" BasedOn="{StaticResource MetadataText}">
                         <Setter Property="FontWeight" Value="Bold"/>
@@ -236,6 +365,7 @@
                 </Style.Resources>
             </Style>
 
+            <!-- ScrollBar: Slim, Sharp Utility Style -->
             <Style TargetType="{x:Type ScrollBar}">
                 <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
                 <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
@@ -273,11 +403,14 @@
                 <Setter Property="ItemContainerStyle" Value="{StaticResource SubtleListBoxItem}"/>
             </Style>
 
+            <!-- ComboBox: Premium, Sharp Input Control -->
             <Style TargetType="ComboBox">
                 <Setter Property="Height" Value="40"/>
                 <Setter Property="Background" Value="{DynamicResource WindowBackgroundBrush}"/>
                 <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
-                <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+                <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}"/>
+                <!-- Use subtle border by default -->
+                <Setter Property="BorderBrush" Value="{DynamicResource GlassBorderBrush}"/>
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="Padding" Value="12,0"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -322,8 +455,9 @@
                                 <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" 
                                        AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
                                     <Grid Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                        <!-- Subtle border on dropdown to match subtle design -->
                                         <Border Name="DropDownBorder" Background="{DynamicResource CardBackgroundBrush}" 
-                                                BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" CornerRadius="0"/>
+                                                BorderThickness="1" BorderBrush="{DynamicResource GlassBorderBrush}" CornerRadius="0"/>
                                         <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
                                             <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
                                         </ScrollViewer>
@@ -335,6 +469,7 @@
                 </Setter>
             </Style>
 
+            <!-- ComboBoxItem: Premium dropdown items -->
             <Style TargetType="ComboBoxItem">
                 <Setter Property="Padding" Value="12,8"/>
                 <Setter Property="Background" Value="Transparent"/>
@@ -348,11 +483,11 @@
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter TargetName="Border" Property="Background" Value="{DynamicResource AccentBrush}"/>
-                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Foreground" Value="#0B0B0B"/>
                                 </Trigger>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter TargetName="Border" Property="Background" Value="{DynamicResource AccentBrush}"/>
-                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Foreground" Value="#0B0B0B"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -370,7 +505,7 @@
             <RowDefinition Height="Auto"/> <!-- Status Bar -->
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Padding="28,16">
+        <Border Grid.Row="0" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource GlassBorderBrush}" BorderThickness="0,0,0,1" Padding="28,16">
             <Grid MaxWidth="1400" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -387,10 +522,10 @@
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Background="{DynamicResource WeatherChipBackground}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="0" Padding="12,6">
+                    <Border Background="{DynamicResource WeatherChipBackground}" BorderBrush="{DynamicResource GlassBorderBrush}" BorderThickness="1" CornerRadius="0" Padding="12,6">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock x:Name="WeatherIconText" Text="⏳" FontSize="15" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                            <TextBlock x:Name="WeatherStatusText" Text="Syncing..." FontSize="12" FontWeight="Bold" Foreground="{DynamicResource WeatherChipForeground}" VerticalAlignment="Center" FontFamily="Segoe UI Variable Display, Geist, Inter, IBM Plex Sans, Segoe UI"/>
+                            <TextBlock x:Name="WeatherStatusText" Text="Syncing..." FontSize="12" FontWeight="Bold" Foreground="{DynamicResource WeatherChipForeground}" VerticalAlignment="Center" />
                         </StackPanel>
                     </Border>
                 </StackPanel>
@@ -399,6 +534,7 @@
 
         <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="32,24" SelectionChanged="TabControl_SelectionChanged" MaxWidth="1400" HorizontalAlignment="Stretch">
             <TabControl.Resources>
+                <!-- Tab Item: Sharp Active State with Glossy Highlight -->
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
                         <Setter.Value>
@@ -408,26 +544,26 @@
                                         <ContentPresenter.Resources>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="FontWeight" Value="SemiBold"/>
-                                                <Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource TertiaryTextBrush}"/>
                                             </Style>
                                         </ContentPresenter.Resources>
                                     </ContentPresenter>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                        <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource GlassActiveBorderBrush}"/>
                                         <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="Border" Property="Background" Value="#10FFFFFF"/>
+                                        <Setter TargetName="Border" Property="Background" Value="#08FFFFFF"/>
                                     </Trigger>
                                     <MultiTrigger>
                                         <MultiTrigger.Conditions>
                                             <Condition Property="IsSelected" Value="True"/>
                                             <Condition Property="IsMouseOver" Value="True"/>
                                         </MultiTrigger.Conditions>
-                                        <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
-                                        <Setter TargetName="Border" Property="Background" Value="#08FFFFFF"/>
+                                        <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource GlassActiveBorderBrush}"/>
+                                        <Setter TargetName="Border" Property="Background" Value="#06FFFFFF"/>
                                     </MultiTrigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -436,7 +572,7 @@
                 </Style>
 
                 <Style TargetType="CheckBox">
-                    <Setter Property="Foreground" Value="#808080"/>
+                    <Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}"/>
                     <Setter Property="VerticalContentAlignment" Value="Center"/>
                     <Setter Property="Cursor" Value="Hand"/>
                     <Style.Triggers>
@@ -453,7 +589,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Border Style="{StaticResource ModernCard}" Margin="0,0,0,24">
+                    <ContentControl Style="{StaticResource ModernCard}" Margin="0,0,0,24">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -498,8 +634,8 @@
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
-                    </Border>
-                    <Border Grid.Row="1" Style="{StaticResource ModernCard}" Padding="12">
+                    </ContentControl>
+                    <ContentControl Grid.Row="1" Style="{StaticResource ModernCard}" Padding="12">
                         <Grid>
                             <ListBox x:Name="FileListBox" 
                                      Style="{StaticResource SmoothListBox}"
@@ -515,7 +651,7 @@
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Border Width="160" Height="90" CornerRadius="0" ClipToBounds="True">
+                                                <Border Width="160" Height="90" CornerRadius="0" ClipToBounds="True" BorderThickness="1" BorderBrush="#3A5A4E">
                                                     <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
                                                 </Border>
                                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="24,0">
@@ -534,7 +670,7 @@
                                 <TextBlock Text="Select a folder to start managing your wallpapers" Style="{StaticResource MetadataText}" HorizontalAlignment="Center"/>
                             </StackPanel>
                         </Grid>
-                    </Border>
+                    </ContentControl>
                 </Grid>
             </TabItem>
 
@@ -544,7 +680,7 @@
                         <ColumnDefinition Width="420"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Border Grid.Column="0" Style="{StaticResource ModernCard}" Margin="0,0,24,0">
+                    <ContentControl Grid.Column="0" Style="{StaticResource ModernCard}" Margin="0,0,24,0">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -609,7 +745,7 @@
                                              Padding="8">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
-                                                <Border Width="144" Height="81" CornerRadius="0" Margin="6" ClipToBounds="True" BorderThickness="1" BorderBrush="#222222">
+                                                <Border Width="144" Height="81" CornerRadius="0" Margin="6" ClipToBounds="True" BorderThickness="1" BorderBrush="#3A5A4E">
                                                     <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
                                                 </Border>
                                             </DataTemplate>
@@ -625,8 +761,14 @@
                             </Grid>
 
                             <!-- AI AUTO TAGGING PANEL -->
-                            <StackPanel x:Name="AITaggingPanel" Grid.Row="1" Grid.RowSpan="3" Visibility="Collapsed">
-                                <StackPanel Margin="0,0,0,24">
+                            <Grid x:Name="AITaggingPanel" Grid.Row="1" Grid.RowSpan="3" Visibility="Collapsed">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                
+                                <StackPanel Grid.Row="0" Margin="0,0,0,24">
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                         <TextBlock Text="Experimental / Mock Analysis" Style="{StaticResource MetadataText}" FontWeight="Bold" VerticalAlignment="Center"/>
                                         <Border Background="{DynamicResource AccentBrush}" Margin="8,0,0,0" Padding="6,2" CornerRadius="0" VerticalAlignment="Center">
@@ -639,19 +781,19 @@
                                     <Button x:Name="GenerateTagsBtn" Content="Analyze Library" Click="GenerateTags_Click" Height="48" FontWeight="Bold"/>
                                 </StackPanel>
                                 
-                                <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="0" Height="280" Background="{DynamicResource WindowBackgroundBrush}">
+                                <Border Grid.Row="1" BorderBrush="{DynamicResource GlassBorderBrush}" BorderThickness="1" CornerRadius="0" Background="{DynamicResource WindowBackgroundBrush}" Margin="0,0,0,16">
                                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                                         <StackPanel x:Name="AITagResultsPanel" Margin="16">
                                             <TextBlock Text="Ready to analyze." Foreground="{DynamicResource SecondaryTextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,100,0,0"/>
                                         </StackPanel>
                                     </ScrollViewer>
                                 </Border>
-                                <Button x:Name="CreateSuggestedRulesBtn" Content="Accept Suggestions" Click="CreateSuggestedRules_Click" Height="48" FontWeight="Bold" Margin="0,24,0,0" Style="{StaticResource SecondaryButton}" IsEnabled="False"/>
-                            </StackPanel>
+                                <Button Grid.Row="2" x:Name="CreateSuggestedRulesBtn" Content="Accept Suggestions" Click="CreateSuggestedRules_Click" Height="48" FontWeight="Bold" Style="{StaticResource SecondaryButton}" IsEnabled="False"/>
+                            </Grid>
                         </Grid>
-                    </Border>
+                    </ContentControl>
 
-                    <Border Grid.Column="1" Style="{StaticResource ModernCard}">
+                    <ContentControl Grid.Column="1" Style="{StaticResource ModernCard}">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -667,14 +809,14 @@
 
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Background="{DynamicResource GlassElevationBrush}" CornerRadius="0" Margin="0,0,0,8" Padding="16" Height="110" BorderThickness="1" BorderBrush="{DynamicResource GlassBorderBrush}" Opacity="{Binding Opacity}">
+                                        <Border Background="{DynamicResource GlassElevationActiveBrush}" CornerRadius="0" Margin="0,0,0,8" Padding="16" Height="110" BorderThickness="1" BorderBrush="{DynamicResource GlassBorderBrush}" Opacity="{Binding Opacity}">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="144"/>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Border Grid.Column="0" Width="144" Height="81" CornerRadius="0" ClipToBounds="True" BorderThickness="1" BorderBrush="#222222">
+                                                <Border Grid.Column="0" Width="144" Height="81" CornerRadius="0" ClipToBounds="True" BorderThickness="1" BorderBrush="#3A5A4E">
                                                     <Grid>
                                                         <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
                                                         <Border Background="#99000000" Visibility="{Binding MissingVisibility}">
@@ -719,7 +861,7 @@
                                 <TextBlock Text="Create a rule on the left to automate your workspace" Style="{StaticResource MetadataText}" HorizontalAlignment="Center"/>
                             </StackPanel>
                         </Grid>
-                    </Border>
+                    </ContentControl>
                 </Grid>
             </TabItem>
 
@@ -732,7 +874,7 @@
                     
                     <StackPanel Grid.Column="0" Margin="0,0,24,0">
                         <!-- WEATHER ACCURACY STATUS CARD -->
-                        <Border Style="{StaticResource ModernCard}" Margin="0,0,0,24">
+                        <ContentControl Style="{StaticResource ModernCard}" Margin="0,0,0,24">
                             <StackPanel>
                                 <TextBlock Text="Weather Accuracy Status" Style="{StaticResource SectionHeader}"/>
                                 
@@ -761,20 +903,20 @@
                                     </Grid.ColumnDefinitions>
                                     <StackPanel>
                                         <TextBlock Text="Last Sync" Style="{StaticResource MetadataText}"/>
-                                        <TextBlock x:Name="LastSuccessfulSyncText" Text="Never" Style="{StaticResource BodyText}" FontSize="12" FontFamily="Consolas" FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="LastSuccessfulSyncText" Text="Never" Style="{StaticResource BodyText}" FontSize="12" FontFamily="{StaticResource PrimaryFontFamily}" FontWeight="SemiBold"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1">
                                         <TextBlock Text="Cache Status" Style="{StaticResource MetadataText}"/>
-                                        <TextBlock x:Name="CacheStatusText" Text="Stale" Style="{StaticResource BodyText}" FontSize="12" FontFamily="Consolas" FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="CacheStatusText" Text="Stale" Style="{StaticResource BodyText}" FontSize="12" FontFamily="{StaticResource PrimaryFontFamily}" FontWeight="SemiBold"/>
                                     </StackPanel>
                                 </Grid>
 
                                 <Button x:Name="RefreshWeatherBtn" Content="Refresh Weather" Click="RefreshWeather_Click" HorizontalAlignment="Stretch" Padding="20,10" FontSize="13" FontWeight="Bold"/>
                             </StackPanel>
-                        </Border>
+                        </ContentControl>
 
                         <!-- MANUAL OVERRIDE CARD -->
-                        <Border Style="{StaticResource ModernCard}" Margin="0,0,0,0">
+                        <ContentControl Style="{StaticResource ModernCard}" Margin="0,0,0,0">
                             <StackPanel>
                                 <TextBlock Text="Manual Weather Override" Style="{StaticResource SectionHeader}"/>
                                 <TextBlock Text="Current weather looks wrong?" Style="{StaticResource MetadataText}" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" Margin="0,0,0,4"/>
@@ -794,9 +936,9 @@
                                     <ComboBoxItem Content="Snowy"/>
                                 </ComboBox>
                                 
-                                <TextBlock x:Name="OverrideExpiresText" Text="" Foreground="{DynamicResource AccentBrush}" FontWeight="SemiBold" FontSize="11" Margin="0,8,0,0" TextWrapping="Wrap" FontFamily="Consolas"/>
+                                <TextBlock x:Name="OverrideExpiresText" Text="" Foreground="{DynamicResource AccentBrush}" FontWeight="SemiBold" FontSize="11" Margin="0,8,0,0" TextWrapping="Wrap" FontFamily="{StaticResource PrimaryFontFamily}"/>
                             </StackPanel>
-                        </Border>
+                        </ContentControl>
                     </StackPanel>
                     
                     <!-- RIGHT COLUMN: Advanced Settings and System Diagnostics (Collapsible expanders) -->
@@ -804,16 +946,16 @@
                         <StackPanel Margin="0,0,4,0">
                             
                             <!-- ADVANCED INFO BOX -->
-                            <Border Style="{StaticResource ModernCard}" Padding="20,16" Margin="0,0,0,24" BorderBrush="#224ADE80" Background="#0C4ADE80">
+                            <ContentControl Style="{StaticResource ModernCard}" Padding="20,16" Margin="0,0,0,24" BorderBrush="#3ADE80" Background="#0D4ADE80">
                                 <StackPanel>
-                                    <TextBlock Text="WEATHER ENGINE STATUS" Style="{StaticResource SectionHeader}" Foreground="{DynamicResource AccentBrush}" Margin="0,0,0,4"/>
+                                    <TextBlock Text="WEATHER ENGINE STATUS" Style="{StaticResource SectionHeader}" Foreground="{DynamicResource AccentBrushBright}" Margin="0,0,0,4"/>
                                     <TextBlock Text="Open-Meteo and MET Norway are active by default. Optional alternative provider APIs can be configured inside the advanced settings below." 
                                                Style="{StaticResource MetadataText}" TextWrapping="Wrap" LineHeight="16" Foreground="{DynamicResource PrimaryTextBrush}" Opacity="0.9"/>
                                 </StackPanel>
-                            </Border>
+                            </ContentControl>
 
                             <!-- COLLAPSIBLE API KEYS EXPANDER -->
-                            <Border Style="{StaticResource ModernCard}" Margin="0,0,0,24" Padding="0" BorderThickness="1">
+                            <ContentControl Style="{StaticResource ModernCard}" Margin="0,0,0,24" Padding="0" BorderThickness="1">
                                 <Expander x:Name="ApiKeysExpander" IsExpanded="False" Background="Transparent" BorderThickness="0" Padding="20">
                                     <Expander.Header>
                                         <TextBlock Text="ADVANCED PROVIDER SETTINGS (OPTIONAL)" Style="{StaticResource SectionHeader}" Margin="4,8,0,8"/>
@@ -856,10 +998,10 @@
                                         <Button Content="Save API Keys" Click="SaveApiKeys_Click" HorizontalAlignment="Right" Margin="0,20,0,0" Padding="20,10" FontSize="13" FontWeight="Bold"/>
                                     </StackPanel>
                                 </Expander>
-                            </Border>
+                            </ContentControl>
 
                             <!-- COLLAPSIBLE SYSTEM LOGS EXPANDER -->
-                            <Border Style="{StaticResource ModernCard}" Margin="0,0,0,12" Padding="0" BorderThickness="1">
+                            <ContentControl Style="{StaticResource ModernCard}" Margin="0,0,0,12" Padding="0" BorderThickness="1">
                                 <Expander x:Name="DiagnosticsExpander" IsExpanded="False" Background="Transparent" BorderThickness="0" Padding="20">
                                     <Expander.Header>
                                         <TextBlock Text="DEVELOPER DIAGNOSTICS &amp; LOGS" Style="{StaticResource SectionHeader}" Margin="4,8,0,8"/>
@@ -882,7 +1024,7 @@
                                                  TextWrapping="Wrap" 
                                                  AcceptsReturn="True" 
                                                  VerticalScrollBarVisibility="Auto" 
-                                                 FontFamily="Consolas, Courier New, monospace" 
+                                                 FontFamily="{StaticResource PrimaryFontFamily}" 
                                                  FontSize="11" 
                                                  Padding="12"
                                                  Margin="0,0,0,16"/>
@@ -890,14 +1032,14 @@
                                         <Button Grid.Row="2" Content="Copy Diagnostics to Clipboard" Click="CopyDiagnostics_Click" HorizontalAlignment="Right" Padding="16,8" FontSize="12" Style="{StaticResource SecondaryButton}"/>
                                     </Grid>
                                 </Expander>
-                            </Border>
+                            </ContentControl>
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>
             </TabItem>
 
             <TabItem Header="About">
-                <Border Style="{StaticResource ModernCard}">
+                <ContentControl Style="{StaticResource ModernCard}">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="500">
                         <Border Width="100" Height="100" CornerRadius="0" Background="Transparent" Margin="0,0,0,24" HorizontalAlignment="Center">
                             <Image Source="logo.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
@@ -907,7 +1049,7 @@
                         <TextBlock Text="A premium Windows utility that automatically synchronizes your desktop wallpaper with real-time weather conditions. Designed for minimal intrusion and maximum workspace comfort." 
                                    TextAlignment="Center" TextWrapping="Wrap" Style="{StaticResource BodyText}" Margin="0,0,0,32" Opacity="0.8"/>
                         
-                        <Border Background="{DynamicResource WindowBackgroundBrush}" CornerRadius="0" Padding="20" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                        <Border Background="{DynamicResource WindowBackgroundBrush}" CornerRadius="0" Padding="20" BorderThickness="1" BorderBrush="{DynamicResource GlassBorderBrush}">
                             <StackPanel>
                                 <TextBlock Text="System Status" Style="{StaticResource MetadataText}" FontWeight="Bold" Margin="0,0,0,12"/>
                                 <Grid>
@@ -927,11 +1069,11 @@
                             </StackPanel>
                         </Border>
                     </StackPanel>
-                </Border>
+                </ContentControl>
             </TabItem>
         </TabControl>
 
-        <Border Grid.Row="2" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0" Padding="32,12">
+        <Border Grid.Row="2" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource GlassBorderBrush}" BorderThickness="0,1,0,0" Padding="32,12">
             <Grid MaxWidth="1400" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -939,17 +1081,17 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock x:Name="StatusMatchedText" Text="Rule Match: None" Style="{StaticResource MetadataText}" FontFamily="Consolas" Margin="0,0,24,0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="StatusMatchedText" Text="Rule Match: None" Style="{StaticResource MetadataText}" FontFamily="{StaticResource PrimaryFontFamily}" Margin="0,0,24,0" VerticalAlignment="Center"/>
                     <TextBlock Text="|" Style="{StaticResource MetadataText}" Margin="0,0,24,0" VerticalAlignment="Center" Opacity="0.3"/>
-                    <TextBlock x:Name="StatusLastUpdateText" Text="Last Sync: Never" Style="{StaticResource MetadataText}" FontFamily="Consolas" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="StatusLastUpdateText" Text="Last Sync: Never" Style="{StaticResource MetadataText}" FontFamily="{StaticResource PrimaryFontFamily}" VerticalAlignment="Center"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,24,0" VerticalAlignment="Center">
-                    <TextBlock x:Name="StatusConditionText" Text="CLEAR · MORNING" Style="{StaticResource MetadataText}" FontFamily="Consolas" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" Margin="0,0,16,0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="StatusConditionText" Text="CLEAR · MORNING" Style="{StaticResource MetadataText}" FontFamily="{StaticResource PrimaryFontFamily}" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" Margin="0,0,16,0" VerticalAlignment="Center"/>
                     <TextBlock Text="|" Style="{StaticResource MetadataText}" Margin="0,0,16,0" VerticalAlignment="Center" Opacity="0.3"/>
-                    <TextBlock x:Name="AutoSyncLabel" Text="ENGINE STATUS: ACTIVE" Style="{StaticResource MetadataText}" FontFamily="Consolas" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="AutoSyncLabel" Text="ENGINE STATUS: ACTIVE" Style="{StaticResource MetadataText}" FontFamily="{StaticResource PrimaryFontFamily}" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center"/>
                 </StackPanel>
                 <Border Grid.Column="2" Background="{DynamicResource AccentBrush}" Opacity="0.08" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" Padding="14,4">
-                    <TextBlock x:Name="StatusModeText" Text="RUNNING" FontSize="11" FontFamily="Consolas" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="StatusModeText" Text="RUNNING" FontSize="11" FontFamily="{StaticResource PrimaryFontFamily}" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center"/>
                 </Border>
             </Grid>
         </Border>
