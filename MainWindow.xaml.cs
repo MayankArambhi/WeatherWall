@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Windows.Threading;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using Microsoft.Win32;
 using Forms = System.Windows.Forms;
 using System.Windows.Interop;
@@ -466,9 +467,44 @@ namespace WeatherWall
         {
             if (e.Source is System.Windows.Controls.TabControl)
             {
-                // Removed FlushMemory() call to eliminate 2-3s switching lag.
-                // GC collection is expensive and should only happen when minimized.
+                // Smooth fade transition for tab content (handled by opacity animation)
+                var tabControl = (System.Windows.Controls.TabControl)sender;
+                var selectedTab = tabControl.SelectedItem as TabItem;
+                if (selectedTab != null)
+                {
+                    // Animate content container with fade effect
+                    var fadeAnimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(150))
+                    {
+                        EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
+                    };
+                    
+                    // Create a storyboard for smooth transition
+                    var storyboard = new Storyboard();
+                    storyboard.Children.Add(fadeAnimation);
+                    
+                    // Start animation on the tab control
+                    Storyboard.SetTarget(fadeAnimation, tabControl);
+                    Storyboard.SetTargetProperty(fadeAnimation, new PropertyPath("Opacity"));
+                    storyboard.Begin(tabControl);
+                }
             }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Smooth window fade-in on launch (200ms)
+            var fadeInAnimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(200))
+            {
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
+            };
+            
+            var storyboard = new Storyboard();
+            storyboard.Children.Add(fadeInAnimation);
+            
+            Storyboard.SetTarget(fadeInAnimation, this);
+            Storyboard.SetTargetProperty(fadeInAnimation, new PropertyPath("Opacity"));
+            
+            storyboard.Begin(this);
         }
 
         private void FlushMemory()
@@ -806,15 +842,50 @@ namespace WeatherWall
                 string mainStatus = isOverrideActive ? $"{friendlyName} (Manual Override)" : friendlyName;
                 
                 double? consensusTemp = _latestResults.Where(r => r.Success).Select(r => r.Temperature).FirstOrDefault();
-                if (consensusTemp.HasValue)
+                string newText = consensusTemp.HasValue 
+                    ? $"{mainStatus} ({consensusTemp.Value:0}°C)" 
+                    : mainStatus;
+
+                // Only animate if text actually changed
+                if (WeatherStatusText.Text != newText)
                 {
-                    WeatherStatusText.Text = $"{mainStatus} ({consensusTemp.Value:0}°C)";
+                    // Fade out
+                    var fadeOutAnimation = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(100))
+                    {
+                        EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
+                    };
+                    
+                    var storyboard = new Storyboard();
+                    storyboard.Children.Add(fadeOutAnimation);
+                    Storyboard.SetTarget(fadeOutAnimation, WeatherStatusText);
+                    Storyboard.SetTargetProperty(fadeOutAnimation, new PropertyPath("Opacity"));
+                    
+                    storyboard.Completed += (s, e) =>
+                    {
+                        // Update text while faded
+                        WeatherStatusText.Text = newText;
+                        WeatherIconText.Text = icon;
+                        
+                        // Fade back in
+                        var fadeInAnimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(120))
+                        {
+                            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
+                        };
+                        
+                        var fadeInStoryboard = new Storyboard();
+                        fadeInStoryboard.Children.Add(fadeInAnimation);
+                        Storyboard.SetTarget(fadeInAnimation, WeatherStatusText);
+                        Storyboard.SetTargetProperty(fadeInAnimation, new PropertyPath("Opacity"));
+                        fadeInStoryboard.Begin(WeatherStatusText);
+                    };
+                    
+                    storyboard.Begin(WeatherStatusText);
                 }
                 else
                 {
-                    WeatherStatusText.Text = mainStatus;
+                    WeatherStatusText.Text = newText;
+                    WeatherIconText.Text = icon;
                 }
-                WeatherIconText.Text = icon;
 
                 string timePeriod = GetCurrentTimePeriod();
                 StatusConditionText.Text = $"{_config.LocationName.ToUpper()} · {activeCondition.Replace("_", " ").ToUpper()} · {timePeriod.ToUpper()}";

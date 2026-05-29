@@ -12,7 +12,9 @@
         SnapsToDevicePixels="True"
         TextOptions.TextFormattingMode="Display"
         TextOptions.TextRenderingMode="ClearType"
-        Icon="icon_.ico">
+        Icon="icon_.ico"
+        Loaded="Window_Loaded"
+        Opacity="0">
     
     <Window.Resources>
         <ResourceDictionary>
@@ -31,7 +33,7 @@
             <Color x:Key="TertiaryTextColor">#6A8580</Color>
 
             <!-- Premium emerald-cyan accent: sharp, luminous, clean -->
-            <Color x:Key="AccentColor">#1FDD77</Color>
+            <Color x:Key="AccentColor">#1D8B50</Color>
             <Color x:Key="AccentColorBright">#2FED88</Color>
             <Color x:Key="AccentColorDim">#17A850</Color>
 
@@ -84,8 +86,8 @@
             </LinearGradientBrush>
 
             <!-- Blue-green metallic borders: subtle but premium, active states are bright -->
-            <Color x:Key="GlassBorderColor">#0A2A24</Color>
-            <Color x:Key="GlassAccentBorderColor">#0A2A24</Color>
+            <Color x:Key="GlassBorderColor">#1A4A35</Color>
+            <Color x:Key="GlassAccentBorderColor">#1FDD77</Color>
             <!-- Bright accent border ONLY for interactive/active states -->
             <Color x:Key="GlassActiveBorderColor">#1FDD77</Color>
 
@@ -125,7 +127,7 @@
 
             <!-- Weather chip: emerald-green glossy indicator -->
             <SolidColorBrush x:Key="WeatherChipBackground" Color="#0A3A28"/>
-            <SolidColorBrush x:Key="WeatherChipForeground" Color="#1FDD77"/>
+            <SolidColorBrush x:Key="WeatherChipForeground" Color="#1D8B50"/>
             <!-- Time chip: cyan-blue glossy indicator -->
             <SolidColorBrush x:Key="TimeChipBackground" Color="#0A2A38"/>
             <SolidColorBrush x:Key="TimeChipForeground" Color="#7DD5FF"/>
@@ -207,15 +209,63 @@
 
             <!-- Core visual styles (ModernCard, Buttons, segmented radio) moved to Themes/GlassMetal.xaml -->
 
-            <!-- Danger Button: Sharp red outline with premium style -->
+            <!-- Danger Button: Sharp red outline with premium style and animations -->
             <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="Foreground" Value="#FF7777"/>
-                <Setter Property="BorderBrush" Value="#553333"/>
+                <Setter Property="BorderBrush" Value="#802929"/>
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="1.0" ScaleY="1.0" CenterX="0.5" CenterY="0.5"/>
+                    </Setter.Value>
+                </Setter>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background" Value="#25FF5555"/>
                         <Setter Property="BorderBrush" Value="#FF5555"/>
+                        <Setter Property="Foreground" Value="#FF5555"/>
+                    </Trigger>
+                    <Trigger Property="IsPressed" Value="True">
+                        <Trigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" Duration="0:0:0.080">
+                                        <EasingDoubleKeyFrame KeyTime="0:0:0.080" Value="0.98">
+                                            <EasingDoubleKeyFrame.EasingFunction>
+                                                <CubicEase EasingMode="EaseInOut"/>
+                                            </EasingDoubleKeyFrame.EasingFunction>
+                                        </EasingDoubleKeyFrame>
+                                    </DoubleAnimationUsingKeyFrames>
+                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" Duration="0:0:0.080">
+                                        <EasingDoubleKeyFrame KeyTime="0:0:0.080" Value="0.98">
+                                            <EasingDoubleKeyFrame.EasingFunction>
+                                                <CubicEase EasingMode="EaseInOut"/>
+                                            </EasingDoubleKeyFrame.EasingFunction>
+                                        </EasingDoubleKeyFrame>
+                                    </DoubleAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </Trigger.EnterActions>
+                        <Trigger.ExitActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" Duration="0:0:0.150">
+                                        <EasingDoubleKeyFrame KeyTime="0:0:0.150" Value="1.0">
+                                            <EasingDoubleKeyFrame.EasingFunction>
+                                                <CubicEase EasingMode="EaseInOut"/>
+                                            </EasingDoubleKeyFrame.EasingFunction>
+                                        </EasingDoubleKeyFrame>
+                                    </DoubleAnimationUsingKeyFrames>
+                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" Duration="0:0:0.150">
+                                        <EasingDoubleKeyFrame KeyTime="0:0:0.150" Value="1.0">
+                                            <EasingDoubleKeyFrame.EasingFunction>
+                                                <CubicEase EasingMode="EaseInOut"/>
+                                            </EasingDoubleKeyFrame.EasingFunction>
+                                        </EasingDoubleKeyFrame>
+                                    </DoubleAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </Trigger.ExitActions>
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -244,7 +294,7 @@
             <!-- Time Chip: Cool gray tone -->
             <Style x:Key="TimeChip" TargetType="Border" BasedOn="{StaticResource BaseChip}">
                 <Setter Property="Background" Value="{DynamicResource TimeChipBackground}"/>
-                <Setter Property="BorderBrush" Value="#2A2A2A"/>
+                <Setter Property="BorderBrush" Value="#656565"/>
                 <Style.Resources>
                     <Style TargetType="TextBlock" BasedOn="{StaticResource MetadataText}">
                         <Setter Property="FontWeight" Value="Bold"/>
@@ -289,6 +339,7 @@
                 <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
                 <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
                 <Setter Property="ItemContainerStyle" Value="{StaticResource SubtleListBoxItem}"/>
+                <Setter Property="ScrollViewer.PanningMode" Value="VerticalOnly"/>
             </Style>
 
             <!-- ComboBox: Premium, Sharp Input Control -->
@@ -341,7 +392,7 @@
                                                   ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                                                   Margin="12,0,30,0" VerticalAlignment="Center"/>
                                 <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" 
-                                       AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                       AllowsTransparency="True" Focusable="False" PopupAnimation="Fade">
                                     <Grid Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
                                         <!-- Subtle border on dropdown to match subtle design -->
                                         <Border Name="DropDownBorder" Background="{DynamicResource CardBackgroundBrush}" 
@@ -420,9 +471,9 @@
             </Grid>
         </Border>
 
-        <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="32,24" SelectionChanged="TabControl_SelectionChanged" MaxWidth="1400" HorizontalAlignment="Stretch">
+        <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="32,24" SelectionChanged="TabControl_SelectionChanged" MaxWidth="1400" HorizontalAlignment="Stretch" x:Name="MainTabControl" Opacity="0">
             <TabControl.Resources>
-                <!-- Tab Item: Sharp Active State with Glossy Highlight -->
+                <!-- Tab Item: Sharp Active State with Glossy Highlight and Smooth Transitions -->
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
                         <Setter.Value>
@@ -603,25 +654,25 @@
                                         <StackPanel Margin="0,0,12,0">
                                             <TextBlock Text="Weather" Style="{StaticResource MetadataText}" Margin="0,0,0,6"/>
                                             <ComboBox x:Name="RuleWeatherCombo" Height="38">
-                                                <ComboBoxItem Content="clear" IsSelected="True"/>
-                                                <ComboBoxItem Content="partly_cloudy"/>
-                                                <ComboBoxItem Content="cloudy"/>
-                                                <ComboBoxItem Content="overcast"/>
-                                                <ComboBoxItem Content="rainy"/>
-                                                <ComboBoxItem Content="drizzle"/>
-                                                <ComboBoxItem Content="thunderstorm"/>
-                                                <ComboBoxItem Content="foggy"/>
-                                                <ComboBoxItem Content="snowy"/>
-                                                <ComboBoxItem Content="windy"/>
+                                                <ComboBoxItem Content="Clear" IsSelected="True"/>
+                                                <ComboBoxItem Content="Partly Cloudy"/>
+                                                <ComboBoxItem Content="Cloudy"/>
+                                                <ComboBoxItem Content="Overcast"/>
+                                                <ComboBoxItem Content="Rainy"/>
+                                                <ComboBoxItem Content="Drizzle"/>
+                                                <ComboBoxItem Content="Thunderstorm"/>
+                                                <ComboBoxItem Content="Foggy"/>
+                                                <ComboBoxItem Content="Snowy"/>
+                                                <ComboBoxItem Content="Windy"/>
                                             </ComboBox>
                                         </StackPanel>
                                         <StackPanel Grid.Column="1">
                                             <TextBlock Text="Time of Day" Style="{StaticResource MetadataText}" Margin="0,0,0,6"/>
                                             <ComboBox x:Name="RuleTimeCombo" Height="38">
-                                                <ComboBoxItem Content="morning" IsSelected="True"/>
-                                                <ComboBoxItem Content="afternoon"/>
-                                                <ComboBoxItem Content="evening"/>
-                                                <ComboBoxItem Content="night"/>
+                                                <ComboBoxItem Content="Morning" IsSelected="True"/>
+                                                <ComboBoxItem Content="Afternoon"/>
+                                                <ComboBoxItem Content="Evening"/>
+                                                <ComboBoxItem Content="Night"/>
                                             </ComboBox>
                                         </StackPanel>
                                     </Grid>

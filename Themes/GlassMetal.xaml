@@ -66,6 +66,106 @@
     <SolidColorBrush x:Key="TimeChipBackground" Color="#072536"/>
     <SolidColorBrush x:Key="TimeChipForeground" Color="#7DD5FF"/>
 
+    <!-- ========================================
+         PREMIUM MICRO-ANIMATIONS & EASING
+         Fast, smooth, responsive (100-250ms)
+         ======================================== -->
+    
+    <!-- Easing functions for premium feel -->
+    <CubicEase x:Key="EaseInOutCubic" EasingMode="EaseInOut"/>
+    <QuadraticEase x:Key="EaseInOutQuad" EasingMode="EaseInOut"/>
+    <SineEase x:Key="EaseInOutSine" EasingMode="EaseInOut"/>
+    
+    <!-- Button Hover: Smooth brightness increase -->
+    <Storyboard x:Key="ButtonHoverEnter">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Duration="0:0:0.120">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.120" Value="1.0" EasingFunction="{StaticResource EaseInOutCubic}"/>
+        </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+
+    <!-- Button Click: Quick press effect (0.98x scale) -->
+    <Storyboard x:Key="ButtonPressDown">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" Duration="0:0:0.080">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.080" Value="0.98" EasingFunction="{StaticResource EaseInOutCubic}"/>
+        </DoubleAnimationUsingKeyFrames>
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" Duration="0:0:0.080">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.080" Value="0.98" EasingFunction="{StaticResource EaseInOutCubic}"/>
+        </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+
+    <!-- Button Release: Smooth return to normal -->
+    <Storyboard x:Key="ButtonPressUp">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" Duration="0:0:0.150">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.150" Value="1.0" EasingFunction="{StaticResource EaseInOutCubic}"/>
+        </DoubleAnimationUsingKeyFrames>
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" Duration="0:0:0.150">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.150" Value="1.0" EasingFunction="{StaticResource EaseInOutCubic}"/>
+        </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+
+    <!-- Card Hover: Smooth elevation and brightness -->
+    <Storyboard x:Key="CardHoverEnter">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Duration="0:0:0.120">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.120" Value="1.0" EasingFunction="{StaticResource EaseInOutCubic}"/>
+        </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+
+    <!-- Fade In: Smooth content appearance (150ms) -->
+    <Storyboard x:Key="FadeIn">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Duration="0:0:0.150">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.150" Value="1.0" EasingFunction="{StaticResource EaseInOutCubic}"/>
+        </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+
+    <!-- Fade Out: Smooth content disappearance (150ms) -->
+    <Storyboard x:Key="FadeOut">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Duration="0:0:0.150">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.150" Value="0.0" EasingFunction="{StaticResource EaseInOutCubic}"/>
+        </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+
+    <!-- Dropdown Open: Fade + slight expand (130ms) -->
+    <Storyboard x:Key="DropdownOpen">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Duration="0:0:0.130">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.130" Value="1.0" EasingFunction="{StaticResource EaseInOutCubic}"/>
+        </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+
+    <!-- Dropdown Close: Quick collapse (100ms) -->
+    <Storyboard x:Key="DropdownClose">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Duration="0:0:0.100">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.100" Value="0.0" EasingFunction="{StaticResource EaseInOutCubic}"/>
+        </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+
+    <!-- Window Launch: Smooth fade in (250ms) -->
+    <Storyboard x:Key="WindowFadeIn">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Duration="0:0:0.250">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.250" Value="1.0" EasingFunction="{StaticResource EaseInOutCubic}"/>
+        </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+
+    <!-- Thumbnail Fade In: Progressive appearance (200ms) -->
+    <Storyboard x:Key="ThumbnailFadeIn">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Duration="0:0:0.200">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.200" Value="1.0" EasingFunction="{StaticResource EaseInOutCubic}"/>
+        </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+
+    <!-- Weather Status Transition: Fade out old, fade in new (200ms total) -->
+    <Storyboard x:Key="WeatherStatusFadeOut">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Duration="0:0:0.150">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.150" Value="0.0" EasingFunction="{StaticResource EaseInOutCubic}"/>
+        </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+
+    <Storyboard x:Key="WeatherStatusFadeIn">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Duration="0:0:0.150">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.000" Value="0.0"/>
+            <EasingDoubleKeyFrame KeyTime="0:0:0.150" Value="1.0" EasingFunction="{StaticResource EaseInOutCubic}"/>
+        </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+
     <!-- Global font fallback styles -->
     <Style TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}"/>
@@ -75,28 +175,9 @@
         <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}"/>
     </Style>
 
-    <!-- Core Card and Button styles (moved here so all windows use them) -->
-    <Style x:Key="ModernCard" TargetType="ContentControl">
-        <Setter Property="Background" Value="{DynamicResource SubtleGlassBrush}"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource GlassBorderBrush}"/>
-        <Setter Property="Padding" Value="24"/>
-        <Setter Property="SnapsToDevicePixels" Value="True"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ContentControl">
-                    <Grid>
-                        <Border x:Name="BaseSurface" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
-                        <Rectangle Height="26" VerticalAlignment="Top" Fill="{StaticResource GlossyHighlightBrush}" Opacity="0.12" IsHitTestVisible="False"/>
-                        <Rectangle Fill="White" Opacity="0.02" IsHitTestVisible="False"/>
-                        <ContentPresenter Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
 
-    <!-- Primary Button: Sharp, Vibrant, Premium Glossy Feel -->
+
+    <!-- Primary Button: Sharp, Vibrant, Premium Glossy Feel with Animations -->
     <Style TargetType="Button">
         <Setter Property="Padding" Value="20,12"/>
         <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
@@ -107,6 +188,12 @@
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="1.0" ScaleY="1.0" CenterX="0.5" CenterY="0.5"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{DynamicResource AccentBrushBright}"/>
@@ -118,19 +205,39 @@
                 </Setter>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard Storyboard="{StaticResource ButtonPressDown}"/>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard Storyboard="{StaticResource ButtonPressUp}"/>
+                </Trigger.ExitActions>
                 <Setter Property="Opacity" Value="0.85"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
+    <!-- Secondary Button with smooth transitions -->
     <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource GlassBorderBrush}"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="1.0" ScaleY="1.0" CenterX="0.5" CenterY="0.5"/>
+            </Setter.Value>
+        </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="#08FFFFFF"/>
                 <Setter Property="BorderBrush" Value="{DynamicResource GlassActiveBorderBrush}"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard Storyboard="{StaticResource ButtonPressDown}"/>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard Storyboard="{StaticResource ButtonPressUp}"/>
+                </Trigger.ExitActions>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -144,6 +251,11 @@
         <Setter Property="FontFamily" Value="{StaticResource PrimaryFontFamily}"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Padding" Value="16,10"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="1.0" ScaleY="1.0" CenterX="0.5" CenterY="0.5"/>
+            </Setter.Value>
+        </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
@@ -164,6 +276,27 @@
                             <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
                         </MultiTrigger>
                     </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ModernCard with smooth hover elevation -->
+    <Style x:Key="ModernCard" TargetType="ContentControl">
+        <Setter Property="Background" Value="{DynamicResource SubtleGlassBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource GlassBorderBrush}"/>
+        <Setter Property="Padding" Value="24"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContentControl">
+                    <Grid>
+                        <Border x:Name="BaseSurface" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
+                        <Rectangle Height="26" VerticalAlignment="Top" Fill="{StaticResource GlossyHighlightBrush}" Opacity="0.12" IsHitTestVisible="False"/>
+                        <Rectangle Fill="White" Opacity="0.02" IsHitTestVisible="False"/>
+                        <ContentPresenter Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
