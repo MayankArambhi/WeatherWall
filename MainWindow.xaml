@@ -18,6 +18,9 @@
     
     <Window.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/Icons.xaml" />
+            </ResourceDictionary.MergedDictionaries>
             <!-- ========================================
                  PREMIUM GLASS-METAL AESTHETIC
                  Emerald Green & Cyan-Blue Glazed Surfaces
@@ -463,7 +466,7 @@
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                     <Border Background="{DynamicResource WeatherChipBackground}" BorderBrush="{DynamicResource GlassBorderBrush}" BorderThickness="1" CornerRadius="0" Padding="12,6">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock x:Name="WeatherIconText" Text="⏳" FontSize="15" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <Path x:Name="WeatherConditionIcon" Style="{StaticResource Icon.InteractivePathStyle}" Data="{StaticResource Icon.Sun}" Stroke="{DynamicResource IconActiveBrush}" Width="14" Height="14" Margin="0,0,12,0" VerticalAlignment="Center"/>
                             <TextBlock x:Name="WeatherStatusText" Text="Syncing..." FontSize="12" FontWeight="Bold" Foreground="{DynamicResource WeatherChipForeground}" VerticalAlignment="Center" />
                         </StackPanel>
                     </Border>
@@ -473,6 +476,32 @@
 
         <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="32,24" SelectionChanged="TabControl_SelectionChanged" MaxWidth="1400" HorizontalAlignment="Stretch" x:Name="MainTabControl" Opacity="0">
             <TabControl.Resources>
+                <!-- Custom TabControl template with animated header indicator and content host -->
+                <Style TargetType="TabControl">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabControl">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Grid x:Name="HeaderHost" Grid.Row="0">
+                                        <TabPanel x:Name="HeaderPanel" IsItemsHost="True" Panel.ZIndex="1" Background="Transparent" Margin="0,0,0,12"/>
+                                        <Border x:Name="HeaderIndicator" Height="36" Width="0" HorizontalAlignment="Left" Background="{DynamicResource GlassActiveBorderBrush}" CornerRadius="4" Opacity="0.06" VerticalAlignment="Top" Panel.ZIndex="0" RenderTransformOrigin="0,0">
+                                            <Border.RenderTransform>
+                                                <TranslateTransform X="0" Y="0"/>
+                                            </Border.RenderTransform>
+                                        </Border>
+                                    </Grid>
+
+                                    <ContentPresenter x:Name="ContentHost" Grid.Row="1" ContentSource="SelectedContent"/>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
                 <!-- Tab Item: Sharp Active State with Glossy Highlight and Smooth Transitions -->
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
@@ -508,6 +537,7 @@
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
+                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="TabItem_PreviewMouseLeftButtonDown"/>
                 </Style>
 
                 <Style TargetType="CheckBox">
@@ -522,7 +552,13 @@
                 </Style>
             </TabControl.Resources>
 
-            <TabItem Header="Library">
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Path Style="{StaticResource Icon.InteractivePathStyle}" Data="{StaticResource Icon.Image}" Stroke="{DynamicResource IconBrush}" Width="16" Height="16"/>
+                        <TextBlock Text="Library" Margin="12,0,0,0" Foreground="{DynamicResource PrimaryTextBrush}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -537,7 +573,12 @@
                             <StackPanel>
                                 <TextBlock Text="Wallpaper Source" Style="{StaticResource MetadataText}" FontWeight="Bold" Margin="0,0,0,8"/>
                                 <TextBlock x:Name="FolderPathText" Text="No folder selected" Style="{StaticResource BodyText}" FontSize="16" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                                <Button Content="Change Folder" Click="SelectFolder_Click" HorizontalAlignment="Left" Margin="0,12,0,0" Padding="12,6" FontSize="12"/>
+                                <Button Click="SelectFolder_Click" HorizontalAlignment="Left" Margin="0,12,0,0" Padding="8,6" FontSize="12">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Path Style="{StaticResource Icon.InteractivePathStyle}" Data="{StaticResource Icon.Folder}" Stroke="{DynamicResource IconBrush}" Width="16" Height="16"/>
+                                        <TextBlock Text="Change Folder" Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource PrimaryTextBrush}"/>
+                                    </StackPanel>
+                                </Button>
                             </StackPanel>
                             <StackPanel Grid.Column="1" Margin="20,0,0,0">
                                 <TextBlock Text="Location &amp; Precision" Style="{StaticResource MetadataText}" FontWeight="Bold" Margin="0,0,0,8"/>
@@ -547,7 +588,12 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBox x:Name="LocationInput" Height="34" VerticalContentAlignment="Center" Padding="8,0" Background="{DynamicResource WindowBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" Foreground="{DynamicResource PrimaryTextBrush}" Margin="0,0,8,0"/>
-                                    <Button Grid.Column="1" Content="Search" Click="UpdateLocation_Click" Padding="12,0" Height="34" FontSize="12"/>
+                                    <Button Grid.Column="1" Click="UpdateLocation_Click" Padding="12,0" Height="34" FontSize="12">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Path Style="{StaticResource Icon.InteractivePathStyle}" Data="{StaticResource Icon.Search}" Stroke="{DynamicResource IconBrush}" Width="14" Height="14"/>
+                                            <TextBlock Text="Search" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
                                 </Grid>
                                 
                                 <Grid Margin="0,8,0,0">
@@ -564,11 +610,21 @@
                                         <TextBlock Text="Long" Style="{StaticResource MetadataText}" Margin="0,0,0,2"/>
                                         <TextBox x:Name="LonInput" Height="28" VerticalContentAlignment="Center" Padding="4,0" Background="{DynamicResource WindowBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="11"/>
                                     </StackPanel>
-                                    <Button Grid.Column="2" Content="Set" Click="SetCoordinates_Click" Padding="8,0" Height="28" FontSize="11" VerticalAlignment="Bottom"/>
+                                    <Button Grid.Column="2" Click="SetCoordinates_Click" Padding="8,0" Height="28" FontSize="11" VerticalAlignment="Bottom">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Path Style="{StaticResource Icon.InteractivePathStyle}" Data="{StaticResource Icon.GPS}" Stroke="{DynamicResource IconBrush}" Width="14" Height="14"/>
+                                            <TextBlock Text="Set" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
                                 </Grid>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                                    <CheckBox x:Name="AutoLocationCheck" Content="Auto-detect (Windows/IP)" VerticalAlignment="Center" Margin="0,0,16,0" Click="AutoLocation_Click"/>
+                                    <CheckBox x:Name="AutoLocationCheck" VerticalAlignment="Center" Margin="0,0,16,0" Click="AutoLocation_Click">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Path Style="{StaticResource Icon.InteractivePathStyle}" Data="{StaticResource Icon.GPS}" Stroke="{DynamicResource IconBrush}" Width="14" Height="14"/>
+                                            <TextBlock Text="Auto-detect (Windows/IP)" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </CheckBox>
                                     <CheckBox x:Name="StartWithWindowsCheck" Content="Auto-Start" VerticalAlignment="Center" Click="StartWithWindows_Click"/>
                                 </StackPanel>
                             </StackPanel>
@@ -604,7 +660,7 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
                             <StackPanel x:Name="NoWallpapersState" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
-                                <TextBlock Text="🖼️" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                                <Path Style="{StaticResource Icon.PathStyle}" Data="{StaticResource Icon.Image}" Stroke="{DynamicResource IconBrush}" Width="48" Height="48" HorizontalAlignment="Center" Margin="0,0,0,16"/>
                                 <TextBlock Text="Your library is empty" Style="{StaticResource SectionHeader}" HorizontalAlignment="Center"/>
                                 <TextBlock Text="Select a folder to start managing your wallpapers" Style="{StaticResource MetadataText}" HorizontalAlignment="Center"/>
                             </StackPanel>
@@ -613,7 +669,13 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Automation Rules">
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Path Style="{StaticResource Icon.InteractivePathStyle}" Data="{StaticResource Icon.Gauge}" Stroke="{DynamicResource IconBrush}" Width="16" Height="16"/>
+                        <TextBlock Text="Automation Rules" Margin="12,0,0,0" Foreground="{DynamicResource PrimaryTextBrush}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="420"/>
@@ -696,7 +758,12 @@
                                         </ListBox.ItemsPanel>
                                     </ListBox>
                                 </Border>
-                                <Button Grid.Row="3" Content="Add Rule" Click="CreateRule_Click" Height="48" FontWeight="Bold"/>
+                                <Button Grid.Row="3" Click="CreateRule_Click" Height="48" FontWeight="Bold">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <Path Style="{StaticResource Icon.InteractivePathStyle}" Data="{StaticResource Icon.Plus}" Stroke="{DynamicResource IconActiveBrush}" Width="16" Height="16"/>
+                                        <TextBlock Text="Add Rule" Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource PrimaryTextBrush}" FontWeight="Bold"/>
+                                    </StackPanel>
+                                </Button>
                             </Grid>
 
                             <!-- AI AUTO TAGGING PANEL -->
@@ -717,7 +784,12 @@
                                     <TextBlock Text="Automatically scan your library to find the best wallpaper for each condition based on basic visual cues. This happens entirely locally." Style="{StaticResource BodyText}" Foreground="{DynamicResource SecondaryTextBrush}" TextWrapping="Wrap" Margin="0,0,0,8"/>
                                     <TextBlock Text="AI tagging is currently experimental and may not always assign perfectly accurate conditions. Results may require manual review." Style="{StaticResource MetadataText}" Foreground="{DynamicResource AccentBrush}" TextWrapping="Wrap" Margin="0,0,0,16" FontStyle="Italic" Opacity="0.8"/>
                                     
-                                    <Button x:Name="GenerateTagsBtn" Content="Analyze Library" Click="GenerateTags_Click" Height="48" FontWeight="Bold"/>
+                                    <Button x:Name="GenerateTagsBtn" Click="GenerateTags_Click" Height="48" FontWeight="Bold">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Path Style="{StaticResource Icon.InteractivePathStyle}" Data="{StaticResource Icon.Sparkle}" Stroke="{DynamicResource IconBrush}" Width="16" Height="16"/>
+                                            <TextBlock Text="Analyze Library" Margin="12,0,0,0" VerticalAlignment="Center" FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </Button>
                                 </StackPanel>
                                 
                                 <Border Grid.Row="1" BorderBrush="{DynamicResource GlassBorderBrush}" BorderThickness="1" CornerRadius="0" Background="{DynamicResource WindowBackgroundBrush}" Margin="0,0,0,16">
@@ -727,7 +799,12 @@
                                         </StackPanel>
                                     </ScrollViewer>
                                 </Border>
-                                <Button Grid.Row="2" x:Name="CreateSuggestedRulesBtn" Content="Accept Suggestions" Click="CreateSuggestedRules_Click" Height="48" FontWeight="Bold" Style="{StaticResource SecondaryButton}" IsEnabled="False"/>
+                                <Button Grid.Row="2" x:Name="CreateSuggestedRulesBtn" Click="CreateSuggestedRules_Click" Height="48" FontWeight="Bold" Style="{StaticResource SecondaryButton}" IsEnabled="False">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <Path Style="{StaticResource Icon.InteractivePathStyle}" Data="{StaticResource Icon.Plus}" Stroke="{DynamicResource IconBrush}" Width="16" Height="16"/>
+                                        <TextBlock Text="Accept Suggestions" Margin="12,0,0,0" VerticalAlignment="Center" FontWeight="Bold"/>
+                                    </StackPanel>
+                                </Button>
                             </Grid>
                         </Grid>
                     </ContentControl>
@@ -740,7 +817,12 @@
                             </Grid.RowDefinitions>
                             <Grid Margin="0,0,0,24">
                                 <TextBlock Text="Active Rules" Style="{StaticResource SectionHeader}"/>
-                                <Button Content="Refresh Rules" Click="TestRules_Click" HorizontalAlignment="Right" Style="{StaticResource SecondaryButton}" Padding="16,6" FontSize="12"/>
+                                <Button Click="TestRules_Click" HorizontalAlignment="Right" Style="{StaticResource SecondaryButton}" Padding="12,6" FontSize="12">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Style="{StaticResource Icon.InteractivePathStyle}" Data="{StaticResource Icon.Refresh}" Stroke="{DynamicResource IconBrush}" Width="16" Height="16"/>
+                                        <TextBlock Text="Refresh Rules" Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource PrimaryTextBrush}"/>
+                                    </StackPanel>
+                                </Button>
                             </Grid>
                             <ListBox Grid.Row="1" x:Name="ActiveRulesListBox" 
                                      Style="{StaticResource SmoothListBox}"
@@ -767,16 +849,16 @@
                                                     <TextBlock Text="{Binding FileName}" Style="{StaticResource BodyText}" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
                                                     <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
                                                         <Border Style="{StaticResource WeatherChip}" Margin="0,0,12,0">
-                                                            <TextBlock Text="{Binding Weather}"/>
+                                                            <TextBlock Text="{Binding FriendlyWeather}"/>
                                                         </Border>
                                                         <Border Style="{StaticResource TimeChip}">
-                                                            <TextBlock Text="{Binding TimePeriod}"/>
+                                                            <TextBlock Text="{Binding FriendlyTimePeriod}"/>
                                                         </Border>
                                                     </StackPanel>
 
                                                 </StackPanel>
                                                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                                    <Button Content="Preview" Click="PreviewRule_Click" Padding="16,10" Margin="0,0,12,0" FontSize="13">
+                                                    <Button Click="PreviewRule_Click" Padding="12,8" Margin="0,0,12,0" FontSize="13">
                                                         <Button.Style>
                                                             <Style TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
                                                                 <Style.Triggers>
@@ -786,8 +868,17 @@
                                                                 </Style.Triggers>
                                                             </Style>
                                                         </Button.Style>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Path Style="{StaticResource Icon.InteractivePathStyle}" Data="{StaticResource Icon.Eye}" Stroke="{DynamicResource IconBrush}" Width="16" Height="16"/>
+                                                            <TextBlock Text="Preview" Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource PrimaryTextBrush}"/>
+                                                        </StackPanel>
                                                     </Button>
-                                                    <Button Content="Delete" Click="DeleteRule_Click" Style="{StaticResource DangerButton}" Padding="16,10" FontSize="13"/>
+                                                    <Button Click="DeleteRule_Click" Style="{StaticResource DangerButton}" Padding="12,8" FontSize="13">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Path Style="{StaticResource Icon.InteractivePathStyle}" Data="{StaticResource Icon.Trash}" Stroke="{DynamicResource IconErrorBrush}" Width="16" Height="16"/>
+                                                            <TextBlock Text="Delete" Margin="12,0,0,0" VerticalAlignment="Center" Foreground="#FF7777"/>
+                                                        </StackPanel>
+                                                    </Button>
                                                 </StackPanel>
                                             </Grid>
                                         </Border>
@@ -795,7 +886,7 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
                             <StackPanel x:Name="NoRulesState" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
-                                <TextBlock Text="⚡" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                                <Path Style="{StaticResource Icon.PathStyle}" Data="{StaticResource Icon.Sparkle}" Stroke="{DynamicResource IconBrush}" Width="48" Height="48" HorizontalAlignment="Center" Margin="0,0,0,16"/>
                                 <TextBlock Text="No active rules" Style="{StaticResource SectionHeader}" HorizontalAlignment="Center"/>
                                 <TextBlock Text="Create a rule on the left to automate your workspace" Style="{StaticResource MetadataText}" HorizontalAlignment="Center"/>
                             </StackPanel>
@@ -804,7 +895,13 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Weather Settings">
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Path Style="{StaticResource Icon.InteractivePathStyle}" Data="{StaticResource Icon.Cloud}" Stroke="{DynamicResource IconBrush}" Width="16" Height="16"/>
+                        <TextBlock Text="Weather Settings" Margin="12,0,0,0" Foreground="{DynamicResource PrimaryTextBrush}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="420"/>
@@ -850,7 +947,12 @@
                                     </StackPanel>
                                 </Grid>
 
-                                <Button x:Name="RefreshWeatherBtn" Content="Refresh Weather" Click="RefreshWeather_Click" HorizontalAlignment="Stretch" Padding="20,10" FontSize="13" FontWeight="Bold"/>
+                                <Button x:Name="RefreshWeatherBtn" Click="RefreshWeather_Click" HorizontalAlignment="Stretch" Padding="20,10" FontSize="13" FontWeight="Bold">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <Path Style="{StaticResource Icon.InteractivePathStyle}" Data="{StaticResource Icon.Refresh}" Stroke="{DynamicResource IconBrush}" Width="16" Height="16"/>
+                                        <TextBlock Text="Refresh Weather" Margin="12,0,0,0" VerticalAlignment="Center" FontWeight="Bold"/>
+                                    </StackPanel>
+                                </Button>
                             </StackPanel>
                         </ContentControl>
 
@@ -977,7 +1079,13 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="About">
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Path Style="{StaticResource Icon.InteractivePathStyle}" Data="{StaticResource Icon.Globe}" Stroke="{DynamicResource IconBrush}" Width="16" Height="16"/>
+                        <TextBlock Text="About" Margin="12,0,0,0" Foreground="{DynamicResource PrimaryTextBrush}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
                 <ContentControl Style="{StaticResource ModernCard}">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="500">
                         <Border Width="100" Height="100" CornerRadius="0" Background="Transparent" Margin="0,0,0,24" HorizontalAlignment="Center">
@@ -1025,6 +1133,7 @@
                     <TextBlock x:Name="StatusLastUpdateText" Text="Last Sync: Never" Style="{StaticResource MetadataText}" FontFamily="{StaticResource PrimaryFontFamily}" VerticalAlignment="Center"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,24,0" VerticalAlignment="Center">
+                    <Path Style="{StaticResource Icon.InteractivePathStyle}" Data="{StaticResource Icon.Sun}" Stroke="{DynamicResource AccentBrush}" Width="14" Height="14" Margin="0,0,8,0" VerticalAlignment="Center"/>
                     <TextBlock x:Name="StatusConditionText" Text="CLEAR · MORNING" Style="{StaticResource MetadataText}" FontFamily="{StaticResource PrimaryFontFamily}" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" Margin="0,0,16,0" VerticalAlignment="Center"/>
                     <TextBlock Text="|" Style="{StaticResource MetadataText}" Margin="0,0,16,0" VerticalAlignment="Center" Opacity="0.3"/>
                     <TextBlock x:Name="AutoSyncLabel" Text="ENGINE STATUS: ACTIVE" Style="{StaticResource MetadataText}" FontFamily="{StaticResource PrimaryFontFamily}" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center"/>

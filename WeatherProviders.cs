@@ -90,17 +90,19 @@ namespace WeatherWall
 
         public static string GetIcon(string category)
         {
+            // Returns the resource key for the vector icon defined in Themes/Icons.xaml
             return category switch
             {
-                "clear" => "☀️",
-                "partly_cloudy" => "⛅",
-                "cloudy" => "☁️",
-                "overcast" => "☁️",
-                "rainy" => "🌧️",
-                "thunderstorm" => "⛈️",
-                "foggy" => "🌫️",
-                "snowy" => "❄️",
-                _ => "☁️"
+                "clear" => "Icon.Sun",
+                "partly_cloudy" => "Icon.Sun",
+                "cloudy" => "Icon.Cloud",
+                "overcast" => "Icon.Cloud",
+                "rainy" => "Icon.Rain",
+                "thunderstorm" => "Icon.Lightning",
+                "foggy" => "Icon.Fog",
+                "snowy" => "Icon.Snow",
+                "windy" => "Icon.Wind",
+                _ => "Icon.Cloud"
             };
         }
     }

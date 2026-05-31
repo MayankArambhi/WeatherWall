@@ -3,12 +3,14 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Windows;
+using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Windows.Threading;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
 using Microsoft.Win32;
 using Forms = System.Windows.Forms;
@@ -50,6 +52,9 @@ namespace WeatherWall
         public string Weather => OriginalRule.Weather;
         public string TimePeriod => OriginalRule.TimePeriod;
         public string? FullPath { get; set; }
+
+        public string FriendlyWeather => WeatherMapper.GetFriendlyName(OriginalRule.Weather);
+        public string FriendlyTimePeriod => CultureInfo.CurrentCulture.TextInfo.ToTitleCase(OriginalRule.TimePeriod ?? "");
 
         public bool IsMissing => string.IsNullOrEmpty(FullPath) || !File.Exists(FullPath);
         public Visibility MissingVisibility => IsMissing ? Visibility.Visible : Visibility.Collapsed;
@@ -125,6 +130,8 @@ namespace WeatherWall
         private string _consensusConfidenceText = "0%";
         private string _consensusWeatherCategory = "unknown";
         private bool _isUpdatingUI = false;
+        // When true we suppress the SelectionChanged-triggered duplicate animations
+        private bool _suppressTabSelectionChanged = false;
 
 
         [ComImport]
@@ -467,27 +474,134 @@ namespace WeatherWall
         {
             if (e.Source is System.Windows.Controls.TabControl)
             {
-                // Smooth fade transition for tab content (handled by opacity animation)
-                var tabControl = (System.Windows.Controls.TabControl)sender;
-                var selectedTab = tabControl.SelectedItem as TabItem;
-                if (selectedTab != null)
+                // If a tab change is in progress that already animates content, avoid running
+                // the content animation again (which causes a double-flicker). Always
+                // update the header indicator position.
+                UpdateHeaderIndicator(true);
+                if (_suppressTabSelectionChanged)
                 {
-                    // Animate content container with fade effect
-                    var fadeAnimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(150))
-                    {
-                        EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
-                    };
-                    
-                    // Create a storyboard for smooth transition
-                    var storyboard = new Storyboard();
-                    storyboard.Children.Add(fadeAnimation);
-                    
-                    // Start animation on the tab control
-                    Storyboard.SetTarget(fadeAnimation, tabControl);
-                    Storyboard.SetTargetProperty(fadeAnimation, new PropertyPath("Opacity"));
-                    storyboard.Begin(tabControl);
+                    return;
                 }
+
+                AnimateContentTransition();
             }
+        }
+
+        private void TabItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!(sender is TabItem tabItem)) return;
+            // Determine the target index
+            int targetIndex = MainTabControl.ItemContainerGenerator.IndexFromContainer(tabItem);
+            if (targetIndex < 0) return;
+
+            // Prevent the default selection change so we can animate first
+            e.Handled = true;
+
+            // Suppress the SelectionChanged handler's animation while we perform
+            // our coordinated fade-out/index-swap/fade-in sequence to avoid
+            // performing the animation twice.
+            _suppressTabSelectionChanged = true;
+
+            // Move the header indicator to the target immediately (animated)
+            UpdateHeaderIndicator(true, targetIndex);
+
+            // Animate content fade-out, switch selected index when faded, then fade-in
+            AnimateContentTransitionToIndex(targetIndex);
+        }
+
+        private void AnimateContentTransition()
+        {
+            try
+            {
+                var contentHost = MainTabControl.Template.FindName("ContentHost", MainTabControl) as ContentPresenter;
+                if (contentHost == null) return;
+
+                var fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(120)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
+                fadeOut.Completed += (s, e) =>
+                {
+                    var fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(220)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
+                    contentHost.BeginAnimation(UIElement.OpacityProperty, fadeIn);
+                };
+                contentHost.BeginAnimation(UIElement.OpacityProperty, fadeOut);
+            }
+            catch { }
+        }
+
+        // Animate content fade-out, then change selected index and fade-in
+        private void AnimateContentTransitionToIndex(int targetIndex)
+        {
+            try
+            {
+                var contentHost = MainTabControl.Template.FindName("ContentHost", MainTabControl) as ContentPresenter;
+                if (contentHost == null) { MainTabControl.SelectedIndex = targetIndex; return; }
+
+                var fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(120)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
+                fadeOut.Completed += (s, e) =>
+                {
+                    // switch to target content when faded out
+                    MainTabControl.SelectedIndex = targetIndex;
+                    var fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(220)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
+                    // When the fade-in finishes, re-enable SelectionChanged animations
+                    fadeIn.Completed += (fs, fe) => { _suppressTabSelectionChanged = false; };
+                    contentHost.BeginAnimation(UIElement.OpacityProperty, fadeIn);
+                };
+                contentHost.BeginAnimation(UIElement.OpacityProperty, fadeOut);
+            }
+            catch
+            {
+                MainTabControl.SelectedIndex = targetIndex;
+                // Ensure suppression is cleared if we bail out
+                _suppressTabSelectionChanged = false;
+            }
+        }
+
+        private void UpdateHeaderIndicator(bool animate, int? overrideIndex = null)
+        {
+            try
+            {
+            var headerPanel = MainTabControl.Template.FindName("HeaderPanel", MainTabControl) as System.Windows.Controls.Panel;
+            var indicator = MainTabControl.Template.FindName("HeaderIndicator", MainTabControl) as Border;
+            if (headerPanel == null || indicator == null) return;
+
+            int idx = overrideIndex ?? MainTabControl.SelectedIndex;
+            if (idx < 0) { indicator.Visibility = Visibility.Collapsed; return; }
+
+            var container = MainTabControl.ItemContainerGenerator.ContainerFromIndex(idx) as TabItem;
+                if (container == null) return;
+
+                // Force layout so ActualWidth is up-to-date
+                container.UpdateLayout();
+                headerPanel.UpdateLayout();
+
+                GeneralTransform transform = container.TransformToAncestor(headerPanel);
+                System.Windows.Point pos = transform.Transform(new System.Windows.Point(0, 0));
+                double targetX = pos.X;
+                double targetWidth = container.ActualWidth;
+
+                var tt = indicator.RenderTransform as TranslateTransform;
+                if (tt == null)
+                {
+                    tt = new TranslateTransform();
+                    indicator.RenderTransform = tt;
+                }
+
+                if (animate)
+                {
+                    var animX = new DoubleAnimation(tt.X, targetX, TimeSpan.FromMilliseconds(320)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
+                    tt.BeginAnimation(TranslateTransform.XProperty, animX);
+
+                    var widthAnim = new DoubleAnimation(indicator.Width, targetWidth, TimeSpan.FromMilliseconds(320)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
+                    indicator.BeginAnimation(FrameworkElement.WidthProperty, widthAnim);
+                }
+                else
+                {
+                    tt.X = targetX;
+                    indicator.Width = targetWidth;
+                }
+
+                indicator.Visibility = Visibility.Visible;
+            }
+            catch { }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -505,6 +619,19 @@ namespace WeatherWall
             Storyboard.SetTargetProperty(fadeInAnimation, new PropertyPath("Opacity"));
             
             storyboard.Begin(this);
+
+            // Initialize tab header indicator position without animation
+            this.Dispatcher.BeginInvoke(new Action(() => {
+                try { UpdateHeaderIndicator(false); }
+                catch { }
+            }), DispatcherPriority.Loaded);
+            // Ensure the main tab control fades in (was initialized with Opacity=0)
+            try
+            {
+                var tabFade = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(240)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
+                MainTabControl.BeginAnimation(UIElement.OpacityProperty, tabFade);
+            }
+            catch { }
         }
 
         private void FlushMemory()
@@ -864,8 +991,14 @@ namespace WeatherWall
                     {
                         // Update text while faded
                         WeatherStatusText.Text = newText;
-                        WeatherIconText.Text = icon;
-                        
+                        // Update vector icon from resource key returned by WeatherMapper
+                        try
+                        {
+                            var geom = TryFindResource(icon) as System.Windows.Media.Geometry;
+                            if (geom != null) WeatherConditionIcon.Data = geom;
+                        }
+                        catch { }
+
                         // Fade back in
                         var fadeInAnimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(120))
                         {
@@ -884,11 +1017,18 @@ namespace WeatherWall
                 else
                 {
                     WeatherStatusText.Text = newText;
-                    WeatherIconText.Text = icon;
+                    try
+                    {
+                        var geom = TryFindResource(icon) as System.Windows.Media.Geometry;
+                        if (geom != null) WeatherConditionIcon.Data = geom;
+                    }
+                    catch { }
                 }
 
                 string timePeriod = GetCurrentTimePeriod();
-                StatusConditionText.Text = $"{_config.LocationName.ToUpper()} · {activeCondition.Replace("_", " ").ToUpper()} · {timePeriod.ToUpper()}";
+                string friendlyCategory = WeatherMapper.GetFriendlyName(activeCondition);
+                string displayTimePeriod = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(timePeriod);
+                StatusConditionText.Text = $"{_config.LocationName.ToUpper()} · {friendlyCategory} · {displayTimePeriod}";
 
                 string overrideStatusText = isOverrideActive 
                     ? $"[OVERRIDE ACTIVE] Expires: {_config.ManualOverrideExpires:HH:mm:ss}" 
@@ -1062,6 +1202,48 @@ namespace WeatherWall
             return "night";
         }
 
+        // Normalize display strings to internal keys used by backend (snake_case)
+        private static string ToWeatherKey(string display)
+        {
+            if (string.IsNullOrWhiteSpace(display)) return "clear";
+            string s = display.Trim().ToLowerInvariant();
+            s = s.Replace(" ", "_");
+            // collapse multiple underscores
+            while (s.Contains("__")) s = s.Replace("__", "_");
+            return s;
+        }
+
+        private static string ToTimeKey(string display)
+        {
+            if (string.IsNullOrWhiteSpace(display)) return "morning";
+            string s = display.Trim().ToLowerInvariant();
+            s = s.Replace(" ", "_");
+            return s;
+        }
+
+        // Normalize any rules loaded from config; returns true if changes were made
+        private bool NormalizeConfigRules()
+        {
+            if (_config?.Rules == null) return false;
+            bool changed = false;
+            foreach (var r in _config.Rules)
+            {
+                string normWeather = ToWeatherKey(r.Weather);
+                string normTime = ToTimeKey(r.TimePeriod);
+                if (!string.Equals(r.Weather, normWeather, StringComparison.Ordinal))
+                {
+                    r.Weather = normWeather;
+                    changed = true;
+                }
+                if (!string.Equals(r.TimePeriod, normTime, StringComparison.Ordinal))
+                {
+                    r.TimePeriod = normTime;
+                    changed = true;
+                }
+            }
+            return changed;
+        }
+
         // Detect timezone from coordinates using reverse geocoding
         private async Task<string> DetectTimeZoneAsync(double latitude, double longitude)
         {
@@ -1144,7 +1326,14 @@ namespace WeatherWall
                 {
                     string json = File.ReadAllText(fullConfigPath);
                     var loadedConfig = JsonSerializer.Deserialize<AppConfig>(json);
-                    if (loadedConfig != null) _config = loadedConfig;
+                    if (loadedConfig != null) {
+                        _config = loadedConfig;
+                        // Normalize stored rule keys to canonical snake_case so later comparisons succeed
+                        if (NormalizeConfigRules())
+                        {
+                            SaveConfig();
+                        }
+                    }
                     
                     CleanupDuplicateRules();
                 }
@@ -1182,7 +1371,7 @@ namespace WeatherWall
             // Keep only the most recently added rule (last in the list) for each condition
             foreach (var rule in _config.Rules)
             {
-                var existing = uniqueRules.FirstOrDefault(r => r.Weather == rule.Weather && r.TimePeriod == rule.TimePeriod);
+                var existing = uniqueRules.FirstOrDefault(r => string.Equals(r.Weather, rule.Weather, StringComparison.OrdinalIgnoreCase) && string.Equals(r.TimePeriod, rule.TimePeriod, StringComparison.OrdinalIgnoreCase));
                 if (existing != null)
                 {
                     uniqueRules.Remove(existing);
@@ -1452,17 +1641,22 @@ namespace WeatherWall
         {
             if (RuleWallpaperGallery.SelectedItem is WallpaperItem item)
             {
-                string weather = (RuleWeatherCombo.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "clear";
-                string time = (RuleTimeCombo.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "morning";
+                // Keep display text for user feedback
+                string displayWeather = (RuleWeatherCombo.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "Clear";
+                string displayTime = (RuleTimeCombo.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "Morning";
 
-                _config.Rules.RemoveAll(r => r.Weather == weather && r.TimePeriod == time);
-                _config.Rules.Add(new WallpaperRule { Weather = weather, TimePeriod = time, FileName = item.FileName });
-                
+                // Normalize to internal canonical keys before storing
+                string weatherKey = ToWeatherKey(displayWeather);
+                string timeKey = ToTimeKey(displayTime);
+
+                _config.Rules.RemoveAll(r => string.Equals(r.Weather, weatherKey, StringComparison.OrdinalIgnoreCase) && string.Equals(r.TimePeriod, timeKey, StringComparison.OrdinalIgnoreCase));
+                _config.Rules.Add(new WallpaperRule { Weather = weatherKey, TimePeriod = timeKey, FileName = item.FileName });
+
                 SaveConfig();
                 RefreshRulesList();
                 _ = ApplyRuleBasedWallpaperAsync();
-                
-                System.Windows.MessageBox.Show($"Rule created for {weather} + {time}.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                System.Windows.MessageBox.Show($"Rule created for {displayWeather} · {displayTime}.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
@@ -1613,7 +1807,9 @@ namespace WeatherWall
                 {
                     Dispatcher.Invoke(() => {
                         var container = new StackPanel { Margin = new Thickness(0,0,0,16) };
-                        container.Children.Add(new TextBlock { Text = $"Condition: {match.Weather.ToUpper()} + {match.TimePeriod.ToUpper()}", FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(220,220,220)) });
+                        string matchFriendly = WeatherMapper.GetFriendlyName(match.Weather);
+                        string matchTime = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(match.TimePeriod ?? "");
+                        container.Children.Add(new TextBlock { Text = $"Condition: {matchFriendly} · {matchTime}", FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(220,220,220)) });
                         
                         var bestTb = new TextBlock { Margin = new Thickness(8,4,0,0) };
                         if (match.NeedsReview)
@@ -1651,8 +1847,8 @@ namespace WeatherWall
 
             foreach (var match in _suggestedMatches)
             {
-                // Remove existing rule for this exact condition to avoid duplicates
-                int removed = _config.Rules.RemoveAll(r => r.Weather == match.Weather && r.TimePeriod == match.TimePeriod);
+                // Remove existing rule for this exact condition to avoid duplicates (case-insensitive)
+                int removed = _config.Rules.RemoveAll(r => string.Equals(r.Weather, match.Weather, StringComparison.OrdinalIgnoreCase) && string.Equals(r.TimePeriod, match.TimePeriod, StringComparison.OrdinalIgnoreCase));
                 if (removed > 0) replacedCount++;
                 
                 _config.Rules.Add(new WallpaperRule { FileName = match.SelectedFileName, Weather = match.Weather, TimePeriod = match.TimePeriod });
@@ -1684,7 +1880,7 @@ namespace WeatherWall
             
             // Use selected location's timezone for time period detection
             string timePeriod = GetCurrentTimePeriod(_config.TimeZoneId);
-            var rule = _config.Rules.FirstOrDefault(r => r.Weather == _currentWeatherCategory && r.TimePeriod == timePeriod);
+            var rule = _config.Rules.FirstOrDefault(r => string.Equals(r.Weather, _currentWeatherCategory, StringComparison.OrdinalIgnoreCase) && string.Equals(r.TimePeriod, timePeriod, StringComparison.OrdinalIgnoreCase));
 
             if (rule != null && rule.FileName != _currentAppliedWallpaper && !string.IsNullOrEmpty(_config.WallpaperFolderPath))
             {
@@ -1694,9 +1890,10 @@ namespace WeatherWall
             Dispatcher.Invoke(() => {
                 // Show timezone context in status
                 string tzDisplay = _config.TimeZoneId == TimeZoneInfo.Local.Id ? "(System)" : $"({_config.LocationName})";
+                string displayTime = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(timePeriod);
                 StatusMatchedText.Text = rule != null ? 
-                    $"Rule Match: {rule.FileName} · {timePeriod} {tzDisplay}" : 
-                    $"Rule Match: None · {timePeriod} {tzDisplay}";
+                    $"Rule Match: {rule.FileName} · {displayTime} {tzDisplay}" : 
+                    $"Rule Match: None · {displayTime} {tzDisplay}";
             });
         }
 

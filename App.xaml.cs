@@ -48,6 +48,17 @@ namespace WeatherWall
             var splash = new SplashWindow();
             splash.Show();
 
+            // Diagnostic: attempt to load Icons.xaml separately to capture detailed errors early
+            try
+            {
+                var icons = new ResourceDictionary();
+                icons.Source = new Uri("Themes/Icons.xaml", UriKind.Relative);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex, "IconsLoadDiagnostic");
+            }
+
             base.OnStartup(e);
 
             // Initialize MainWindow in background
