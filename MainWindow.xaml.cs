@@ -490,6 +490,27 @@ namespace WeatherWall
         private void TabItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (!(sender is TabItem tabItem)) return;
+            // Ensure the click originated within the tab header area (Border in the TabItem template).
+            // Preview events tunnel from the root, so clicks elsewhere in the window can reach this handler.
+            // If the original source is not a child of the header Border, ignore the event.
+            var original = e.OriginalSource as DependencyObject;
+            var headerBorder = tabItem.Template.FindName("Border", tabItem) as Border;
+            if (headerBorder != null && original != null)
+            {
+                bool IsDescendant(DependencyObject root, DependencyObject? node)
+                {
+                    while (node != null)
+                    {
+                        if (node == root) return true;
+                        node = VisualTreeHelper.GetParent(node);
+                    }
+                    return false;
+                }
+
+                if (!IsDescendant(headerBorder, original))
+                    return;
+            }
+
             // Determine the target index
             int targetIndex = MainTabControl.ItemContainerGenerator.IndexFromContainer(tabItem);
             if (targetIndex < 0) return;
