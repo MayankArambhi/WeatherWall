@@ -513,16 +513,28 @@ namespace WeatherWall
         {
             try
             {
+                if (_suppressTabSelectionChanged) return;
+
                 var contentHost = MainTabControl.Template.FindName("ContentHost", MainTabControl) as ContentPresenter;
                 if (contentHost == null) return;
 
-                var fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(120)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
-                fadeOut.Completed += (s, e) =>
+                // Prepare transform
+                var tt = contentHost.RenderTransform as TranslateTransform;
+                if (tt == null)
                 {
-                    var fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(220)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
-                    contentHost.BeginAnimation(UIElement.OpacityProperty, fadeIn);
-                };
-                contentHost.BeginAnimation(UIElement.OpacityProperty, fadeOut);
+                    tt = new TranslateTransform(0, 0);
+                    contentHost.RenderTransform = tt;
+                }
+
+                // Entrance animation: slide from right and fade in
+                contentHost.Opacity = 0;
+                tt.X = 24;
+
+                var animX = new DoubleAnimation(24, 0, TimeSpan.FromMilliseconds(300)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
+                var fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(300)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
+
+                tt.BeginAnimation(TranslateTransform.XProperty, animX);
+                contentHost.BeginAnimation(UIElement.OpacityProperty, fadeIn);
             }
             catch { }
         }
@@ -533,18 +545,52 @@ namespace WeatherWall
             try
             {
                 var contentHost = MainTabControl.Template.FindName("ContentHost", MainTabControl) as ContentPresenter;
-                if (contentHost == null) { MainTabControl.SelectedIndex = targetIndex; return; }
-
-                var fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(120)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
-                fadeOut.Completed += (s, e) =>
+                if (contentHost == null)
                 {
-                    // switch to target content when faded out
                     MainTabControl.SelectedIndex = targetIndex;
-                    var fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(220)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
-                    // When the fade-in finishes, re-enable SelectionChanged animations
-                    fadeIn.Completed += (fs, fe) => { _suppressTabSelectionChanged = false; };
-                    contentHost.BeginAnimation(UIElement.OpacityProperty, fadeIn);
+                    _suppressTabSelectionChanged = false;
+                    return;
+                }
+
+                // Ensure transform exists
+                var tt = contentHost.RenderTransform as TranslateTransform;
+                if (tt == null)
+                {
+                    tt = new TranslateTransform(0, 0);
+                    contentHost.RenderTransform = tt;
+                }
+
+                // Exit animation for current content: slide left and fade out
+                var exitX = new DoubleAnimation(0, -24, TimeSpan.FromMilliseconds(160)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn } };
+                var fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(160)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn } };
+
+                exitX.Completed += (s, e) =>
+                {
+                    try
+                    {
+                        // Switch to target content
+                        MainTabControl.SelectedIndex = targetIndex;
+
+                        // Prepare new content off-screen to the right
+                        tt.X = 24;
+                        contentHost.Opacity = 0;
+
+                        var enterX = new DoubleAnimation(24, 0, TimeSpan.FromMilliseconds(320)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
+                        var fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(320)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
+
+                        // When the entrance finishes, allow SelectionChanged handler to run again
+                        fadeIn.Completed += (fs, fe) => { _suppressTabSelectionChanged = false; };
+
+                        tt.BeginAnimation(TranslateTransform.XProperty, enterX);
+                        contentHost.BeginAnimation(UIElement.OpacityProperty, fadeIn);
+                    }
+                    catch
+                    {
+                        _suppressTabSelectionChanged = false;
+                    }
                 };
+
+                tt.BeginAnimation(TranslateTransform.XProperty, exitX);
                 contentHost.BeginAnimation(UIElement.OpacityProperty, fadeOut);
             }
             catch
