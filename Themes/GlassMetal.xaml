@@ -34,37 +34,19 @@
     <SolidColorBrush x:Key="GlassBorderBrush" Color="{StaticResource GlassBorderColor}"/>
     <SolidColorBrush x:Key="GlassActiveBorderBrush" Color="{StaticResource GlassActiveBorderColor}"/>
 
-    <!-- Glossy glass gradient and highlights -->
-    <LinearGradientBrush x:Key="SubtleGlassBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Color="#081214" Offset="0.0"/>
-        <GradientStop Color="#0A0F14" Offset="0.18"/>
-        <GradientStop Color="#07090B" Offset="0.6"/>
-        <GradientStop Color="#020405" Offset="1.0"/>
-    </LinearGradientBrush>
+    <!-- Flattened brushes (removed glossy gradients) -->
+    <SolidColorBrush x:Key="SubtleGlassBrush" Color="{StaticResource CardBackgroundColor}"/>
 
-    <LinearGradientBrush x:Key="GlossyHighlightBrush" StartPoint="0,0" EndPoint="0,0.28">
-        <GradientStop Color="#0B3030" Offset="0.0"/>
-        <GradientStop Color="#041214" Offset="0.08"/>
-        <GradientStop Color="#00000000" Offset="1.0"/>
-    </LinearGradientBrush>
+    <!-- Glossy highlight replaced with transparent brush to remove shine -->
+    <SolidColorBrush x:Key="GlossyHighlightBrush" Color="#00000000" />
 
-    <LinearGradientBrush x:Key="GlassElevationBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Color="#0A1012" Offset="0.0"/>
-        <GradientStop Color="#07090B" Offset="0.15"/>
-        <GradientStop Color="#050607" Offset="1.0"/>
-    </LinearGradientBrush>
+    <SolidColorBrush x:Key="GlassElevationBrush" Color="{StaticResource CardBackgroundColor}"/>
 
-    <LinearGradientBrush x:Key="GlassElevationActiveBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Color="#0C2221" Offset="0.0"/>
-        <GradientStop Color="#071314" Offset="0.15"/>
-        <GradientStop Color="#050607" Offset="1.0"/>
-    </LinearGradientBrush>
+    <SolidColorBrush x:Key="GlassElevationActiveBrush" Color="{StaticResource CardBackgroundColor}"/>
 
     <!-- Status chips -->
     <SolidColorBrush x:Key="WeatherChipBackground" Color="#063A28"/>
     <SolidColorBrush x:Key="WeatherChipForeground" Color="#00E6B3"/>
-    <SolidColorBrush x:Key="TimeChipBackground" Color="#072536"/>
-    <SolidColorBrush x:Key="TimeChipForeground" Color="#7DD5FF"/>
 
     <!-- ========================================
          PREMIUM MICRO-ANIMATIONS & EASING
@@ -228,7 +210,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#08FFFFFF"/>
+                <Setter Property="Background" Value="#14000000"/>
                 <Setter Property="BorderBrush" Value="{DynamicResource GlassActiveBorderBrush}"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
@@ -272,7 +254,7 @@
                                 <Condition Property="IsChecked" Value="False"/>
                                 <Condition Property="IsMouseOver" Value="True"/>
                             </MultiTrigger.Conditions>
-                            <Setter Property="Background" Value="#08FFFFFF"/>
+                            <Setter Property="Background" Value="#14000000"/>
                             <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
                         </MultiTrigger>
                     </ControlTemplate.Triggers>
@@ -293,8 +275,7 @@
                 <ControlTemplate TargetType="ContentControl">
                     <Grid>
                         <Border x:Name="BaseSurface" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
-                        <Rectangle Height="26" VerticalAlignment="Top" Fill="{StaticResource GlossyHighlightBrush}" Opacity="0.12" IsHitTestVisible="False"/>
-                        <Rectangle Fill="White" Opacity="0.02" IsHitTestVisible="False"/>
+                        <!-- glossy rectangles removed to eliminate glassy highlights -->
                         <ContentPresenter Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
                     </Grid>
                 </ControlTemplate>

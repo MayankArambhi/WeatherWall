@@ -14,7 +14,7 @@
         TextOptions.TextRenderingMode="ClearType"
         Icon="icon_.ico"
         Loaded="Window_Loaded"
-        Opacity="0">
+        Opacity="1">
     
     <Window.Resources>
         <ResourceDictionary>
@@ -40,14 +40,14 @@
             <Color x:Key="AccentColorBright">#2FED88</Color>
             <Color x:Key="AccentColorDim">#17A850</Color>
 
-            <!-- Blue-green metallic tints for glossy reflections -->
-            <Color x:Key="GlassReflectionColorCyan">#0A4A5F</Color>
+            <!-- Reflection color placeholders (neutralized, no blue hues) -->
+            <Color x:Key="GlassReflectionColorCyan">#0A0A0A</Color>
             <Color x:Key="GlassReflectionColorGreen">#0A5A3F</Color>
-            <Color x:Key="GlassMetallicBlue">#1A5A7F</Color>
+            <Color x:Key="GlassMetallicBlue">#0A0A0A</Color>
 
             <!-- Subtle borders: minimal visual weight, rely on surfaces -->
             <Color x:Key="BorderColor">#1A4A3F</Color>
-            <Color x:Key="BorderColorBright">#4ADE80</Color>
+            <Color x:Key="BorderColorBright">#2FED88</Color>
             <Color x:Key="BorderColorDim">#0A2A1F</Color>
 
             <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{StaticResource WindowBackgroundColor}"/>
@@ -66,33 +66,16 @@
                  Polished reflections with blue-green luminosity
                  ======================================== -->
 
-            <!-- Glossy black glass with cyan-green top reflection: polished metal look -->
-            <LinearGradientBrush x:Key="SubtleGlassBrush" StartPoint="0,0" EndPoint="0,1">
-                <!-- Top: cyan-blue-tinted highlight for metallic sheen -->
-                <GradientStop Color="#151F22" Offset="0.0"/>
-                <!-- Mid: dark glass transition -->
-                <GradientStop Color="#0D1315" Offset="0.2"/>
-                <!-- Body: deep dark glass -->
-                <GradientStop Color="#080A0C" Offset="0.6"/>
-                <!-- Bottom: ultra-dark with subtle green undertone -->
-                <GradientStop Color="#050608" Offset="1.0"/>
-            </LinearGradientBrush>
+            <!-- Flattened brushes (removed glossy gradients) -->
+            <SolidColorBrush x:Key="SubtleGlassBrush" Color="{StaticResource CardBackgroundColor}"/>
 
-            <!-- Premium metallic reflection: glossy polished surface shine -->
-            <LinearGradientBrush x:Key="GlossyHighlightBrush" StartPoint="0,0" EndPoint="0,0.3">
-                <!-- Bright metallic top: cyan-tinted gloss -->
-                <GradientStop Color="#1F3A3F" Offset="0.0"/>
-                <!-- Sharp transition to dark -->
-                <GradientStop Color="#0A1315" Offset="0.08"/>
-                <!-- Fade to transparent -->
-                <GradientStop Color="#080A0C" Offset="1.0"/>
-            </LinearGradientBrush>
+            <!-- Glossy highlight replaced with transparent brush to remove shine -->
+            <SolidColorBrush x:Key="GlossyHighlightBrush" Color="#00000000" />
 
-            <!-- Blue-green metallic borders: subtle but premium, active states are bright -->
-            <Color x:Key="GlassBorderColor">#1A4A35</Color>
-            <Color x:Key="GlassAccentBorderColor">#1FDD77</Color>
-            <!-- Bright accent border ONLY for interactive/active states -->
-            <Color x:Key="GlassActiveBorderColor">#1FDD77</Color>
+            <!-- Border/active colors mapped to accent/neutral resources -->
+            <Color x:Key="GlassBorderColor">#082D2A</Color>
+            <Color x:Key="GlassAccentBorderColor">#2FED88</Color>
+            <Color x:Key="GlassActiveBorderColor">#2FED88</Color>
 
             <SolidColorBrush x:Key="GlassBorderBrush" Color="{StaticResource GlassBorderColor}"/>
             <SolidColorBrush x:Key="GlassAccentBorderBrush" Color="{StaticResource GlassAccentBorderColor}"/>
@@ -103,25 +86,9 @@
                  Blue-green reflective surfaces
                  ======================================== -->
 
-            <!-- Elevated card surface: darker with blue-green reflective top -->
-            <LinearGradientBrush x:Key="GlassElevationBrush" StartPoint="0,0" EndPoint="0,1">
-                <!-- Top: cyan-blue metallic reflection -->
-                <GradientStop Color="#141A1F" Offset="0.0"/>
-                <!-- Quick transition -->
-                <GradientStop Color="#0C1015" Offset="0.15"/>
-                <!-- Body: deep polished glass -->
-                <GradientStop Color="#0A0D10" Offset="1.0"/>
-            </LinearGradientBrush>
+            <SolidColorBrush x:Key="GlassElevationBrush" Color="{StaticResource CardBackgroundColor}"/>
 
-            <!-- Active state elevation: brighter with enhanced green-blue gloss -->
-            <LinearGradientBrush x:Key="GlassElevationActiveBrush" StartPoint="0,0" EndPoint="0,1">
-                <!-- Top: brighter cyan-green reflection -->
-                <GradientStop Color="#1A2A2F" Offset="0.0"/>
-                <!-- Green undertone in middle -->
-                <GradientStop Color="#111A1F" Offset="0.15"/>
-                <!-- Deep glass bottom -->
-                <GradientStop Color="#0D101315" Offset="1.0"/>
-            </LinearGradientBrush>
+            <SolidColorBrush x:Key="GlassElevationActiveBrush" Color="{StaticResource CardBackgroundColor}"/>
 
             <!-- ========================================
                  STATUS CHIPS: SHARP GLASS-METAL STYLE
@@ -131,9 +98,7 @@
             <!-- Weather chip: emerald-green glossy indicator -->
             <SolidColorBrush x:Key="WeatherChipBackground" Color="#0A3A28"/>
             <SolidColorBrush x:Key="WeatherChipForeground" Color="#1D8B50"/>
-            <!-- Time chip: cyan-blue glossy indicator -->
-            <SolidColorBrush x:Key="TimeChipBackground" Color="#0A2A38"/>
-            <SolidColorBrush x:Key="TimeChipForeground" Color="#7DD5FF"/>
+            <!-- Time chip brushes defined earlier to avoid duplicate keys -->
 
             <!-- ========================================
                  TYPOGRAPHY SYSTEM: Premium Futuristic
@@ -199,10 +164,10 @@
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter TargetName="SelectionBorder" Property="BorderBrush" Value="{DynamicResource GlassActiveBorderBrush}"/>
-                                    <Setter TargetName="SelectionBorder" Property="Background" Value="#08FFFFFF"/>
+                                    <Setter TargetName="SelectionBorder" Property="Background" Value="#14000000"/>
                                 </Trigger>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="SelectionBorder" Property="Background" Value="#06FFFFFF"/>
+                                    <Setter TargetName="SelectionBorder" Property="Background" Value="#0A000000"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -294,7 +259,8 @@
                 </Style.Resources>
             </Style>
 
-            <!-- Time Chip: Cool gray tone -->
+            <!-- Time chip brushes defined in theme (Themes/GlassMetal.xaml) -->
+
             <Style x:Key="TimeChip" TargetType="Border" BasedOn="{StaticResource BaseChip}">
                 <Setter Property="Background" Value="{DynamicResource TimeChipBackground}"/>
                 <Setter Property="BorderBrush" Value="#656565"/>
@@ -474,7 +440,7 @@
             </Grid>
         </Border>
 
-        <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="32,24" SelectionChanged="TabControl_SelectionChanged" MaxWidth="1400" HorizontalAlignment="Stretch" x:Name="MainTabControl" Opacity="0">
+            <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="32,24" SelectionChanged="TabControl_SelectionChanged" MaxWidth="1400" HorizontalAlignment="Stretch" x:Name="MainTabControl" Opacity="1">
             <TabControl.Resources>
                 <!-- Custom TabControl template with animated header indicator and content host -->
                 <Style TargetType="TabControl">
@@ -523,7 +489,7 @@
                                         <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="Border" Property="Background" Value="#08FFFFFF"/>
+                                        <Setter TargetName="Border" Property="Background" Value="#14000000"/>
                                     </Trigger>
                                     <MultiTrigger>
                                         <MultiTrigger.Conditions>
@@ -531,7 +497,7 @@
                                             <Condition Property="IsMouseOver" Value="True"/>
                                         </MultiTrigger.Conditions>
                                         <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource GlassActiveBorderBrush}"/>
-                                        <Setter TargetName="Border" Property="Background" Value="#06FFFFFF"/>
+                                        <Setter TargetName="Border" Property="Background" Value="#0A000000"/>
                                     </MultiTrigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -987,7 +953,7 @@
                         <StackPanel Margin="0,0,4,0">
                             
                             <!-- ADVANCED INFO BOX -->
-                            <ContentControl Style="{StaticResource ModernCard}" Padding="20,16" Margin="0,0,0,24" BorderBrush="#3ADE80" Background="#0D4ADE80">
+                            <ContentControl Style="{StaticResource ModernCard}" Padding="20,16" Margin="0,0,0,24" BorderBrush="{DynamicResource AccentBrush}" Background="#1400E6B3">
                                 <StackPanel>
                                     <TextBlock Text="WEATHER ENGINE STATUS" Style="{StaticResource SectionHeader}" Foreground="{DynamicResource AccentBrushBright}" Margin="0,0,0,4"/>
                                     <TextBlock Text="Open-Meteo and MET Norway are active by default. Optional alternative provider APIs can be configured inside the advanced settings below." 

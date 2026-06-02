@@ -41,7 +41,7 @@
                          VerticalAlignment="Bottom" 
                          Background="Transparent" 
                          BorderThickness="0" 
-                         Foreground="#4ADE80" 
+                         Foreground="{DynamicResource AccentBrush}"
                          Margin="40,0,40,30" 
                          Opacity="0.8"/>
         </Grid>
