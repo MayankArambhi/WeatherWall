@@ -1759,6 +1759,17 @@ namespace WeatherWall
             }
         }
 
+        private void DeleteAllRules_Click(object sender, RoutedEventArgs e)
+        {
+            var res = System.Windows.MessageBox.Show("Are you sure you want to delete ALL rules? This cannot be undone.", "Confirm Delete All", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (res == MessageBoxResult.Yes)
+            {
+                _config.Rules.Clear();
+                SaveConfig();
+                RefreshRulesList();
+            }
+        }
+
         private async void PreviewRule_Click(object sender, RoutedEventArgs e)
         {
             if (sender is System.Windows.Controls.Button btn && btn.DataContext is RuleItem item && !string.IsNullOrEmpty(item.FullPath))

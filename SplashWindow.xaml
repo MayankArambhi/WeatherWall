@@ -14,7 +14,7 @@
         </Storyboard>
     </Window.Resources>
 
-    <Border Background="#0B0B0B" CornerRadius="0" BorderBrush="#222222" BorderThickness="1">
+    <Border Background="#000210" CornerRadius="0" BorderBrush="#1d8b50" BorderThickness="1">
         <Grid>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Image Source="pack://application:,,,/logo.png" Width="120" Height="120" RenderOptions.BitmapScalingMode="HighQuality"/>
@@ -37,9 +37,9 @@
 
             <!-- Optional: Progress Bar (Very subtle) -->
             <ProgressBar IsIndeterminate="True" 
-                         Height="2" 
+                         Height="5" 
                          VerticalAlignment="Bottom" 
-                         Background="Transparent" 
+                         Background="#002f5b" 
                          BorderThickness="0" 
                          Foreground="{DynamicResource AccentBrush}"
                          Margin="40,0,40,30" 
