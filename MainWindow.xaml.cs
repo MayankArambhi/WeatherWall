@@ -76,9 +76,37 @@ namespace WeatherWall
     // MEMORY: Centralized thumbnail provider with size constraints
     public static class ThumbnailProvider
     {
+        // When true, skip expensive image decoding during user-driven scrolling.
+        public static volatile bool SuspendDecodingDuringScroll = false;
+
+        private static BitmapSource? _placeholderThumbnail;
+        private static BitmapSource GetPlaceholderThumbnail()
+        {
+            if (_placeholderThumbnail != null) return _placeholderThumbnail;
+            try
+            {
+                var wb = new WriteableBitmap(1, 1, 96, 96, PixelFormats.Pbgra32, null);
+                var pixels = new byte[4] { 0, 0, 0, 0 }; // transparent
+                wb.WritePixels(new Int32Rect(0, 0, 1, 1), pixels, 4, 0);
+                wb.Freeze();
+                _placeholderThumbnail = wb;
+                return _placeholderThumbnail;
+            }
+            catch
+            {
+                return null!;
+            }
+        }
+
         public static BitmapSource? GetThumbnail(string path)
         {
             if (string.IsNullOrEmpty(path) || !File.Exists(path)) return null;
+            // If scrolling is in progress, avoid expensive decoding; return lightweight placeholder
+            if (SuspendDecodingDuringScroll)
+            {
+                return GetPlaceholderThumbnail();
+            }
+
             try
             {
                 var bitmap = new BitmapImage();
@@ -87,13 +115,12 @@ namespace WeatherWall
                 // MEMORY: Strict size limits and cache options
                 bitmap.DecodePixelWidth = 160; 
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.CreateOptions = BitmapCreateOptions.IgnoreColorProfile | BitmapCreateOptions.DelayCreation;
+                bitmap.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
                 bitmap.EndInit();
                 if (bitmap.CanFreeze) bitmap.Freeze();
                 return bitmap;
-
             }
-            catch { return null; }
+            catch { return GetPlaceholderThumbnail(); }
         }
     }
 

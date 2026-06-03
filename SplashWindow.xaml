@@ -20,11 +20,11 @@
                 <Image Source="pack://application:,,,/logo.png" Width="120" Height="120" RenderOptions.BitmapScalingMode="HighQuality"/>
                 
                 <TextBlock Text="WeatherWall" 
-                           Foreground="#F8F8F8" 
+                           Foreground="#F8F8F8"
                            FontSize="24" 
                            FontWeight="SemiBold" 
                            HorizontalAlignment="Center" 
-                           Margin="0,15,0,0" 
+                           Margin="0,10,0,0" 
                            FontFamily="{StaticResource PrimaryFontFamily}" />
                 
                 <TextBlock Text="Adaptive Desktop Environments" 
