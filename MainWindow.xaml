@@ -1068,7 +1068,7 @@
                             <Image Source="logo.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
                         </Border>
                         <TextBlock Text="WeatherWall" Style="{StaticResource TitleText}" HorizontalAlignment="Center" FontSize="32"/>
-                        <TextBlock Text="Version 1.2.0" Style="{StaticResource MetadataText}" HorizontalAlignment="Center" Margin="0,8,0,24"/>
+                        <TextBlock Text="Version 1.3.0" Style="{StaticResource MetadataText}" HorizontalAlignment="Center" Margin="0,8,0,24"/>
                         <TextBlock Text="A premium Windows utility that automatically synchronizes your desktop wallpaper with real-time weather conditions. Designed for minimal intrusion and maximum workspace comfort." 
                                    TextAlignment="Center" TextWrapping="Wrap" Style="{StaticResource BodyText}" Margin="0,0,0,32" Opacity="0.8"/>
 
